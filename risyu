@@ -30,36 +30,14 @@ cat trim2 | sed 's/<\/tr><tr style="background-color:White;">/\n/g' | sed 's/<\/
 cat trim3 | sed 's/<td[^>]*>/<td>/g' | sed 's/<span[^>]*>/<span>/g' | sed 's/ //g' | sed 's/<span>//g' | sed 's/<\/span>//g' | sed 's/	//g' > trim4
 filename="trim4"
 
-cat trim4 | sed 's/<\/td><td>/,/g' | sed 's/<td>//g' | sed 's/<\/td>//g' | sed 's/amp;//g' > trim5
+cat trim4 | sed 's/<\/td><td>/,/g' | sed 's/<td>//g' | sed 's/<\/td>//g' | sed 's/amp;//g' | sed 's/<\/tr>//g' > trim5
 echo >> trim5
 
 sed -i -n '2,$p' trim5
+name=$(date '+%Y%m%d%H%M')
+cat trim5 > "risyu$name.csv"
 
-cat trim5
+
 rm trim*
-
-exit
-while IFS= read -r line; do
-    mode=1
-    for (( i=0; i<${#line}; i++ )); do
-        if [ $mode -eq 1 ]; then
-            if [ "${line:$i:1}" = ">" ]; then
-                mode=2
-            fi
-        elif [ $mode -eq 2 ]; then
-            if [ "${line:$i:1}" = "<" ]; then
-                mode=3
-            else
-                echo -n ${line:$i:1}
-            fi
-        elif [ $mode -eq 3 ]; then
-            if [ "${line:$i:1}" = ">" ]; then
-                mode=2
-                echo -n ","
-            fi
-        fi
-    done
-    echo ""  # To move to the next line for each line in the file
-done < "$filename"
 
 exit
