@@ -1,6 +1,13 @@
 #!/bin/bash
-filename="$HOME/金沢大学教務システム - 抽選科目登録状況.htm"
-name=$( cat "$filename" | grep "ctl00_phContents_ucRegistrationStatus_lblDate" | sed 's/[ :\/]//g ; s/<span>//g ; s/<spanid="ctl00_phContents_ucRegistrationStatus_lblDate">//g ; s/\r//g' )
+if [ -f "dir.csv" ]; then
+    dir=$(cat dir.csv)
+    filename=""$dir"/金沢大学教務システム - 抽選科目登録状況.htm"
+else
+    filename="$HOME/金沢大学教務システム - 抽選科目登録状況.htm"
+fi
+
+cat "$filename" > temp
+name=$( cat temp | grep "ctl00_phContents_ucRegistrationStatus_lblDate" | sed 's/[ :\/]//g ; s/<span>//g ; s/<spanid="ctl00_phContents_ucRegistrationStatus_lblDate">//g ; s/\r//g' )
 
 echo -n > trim1
 mode=1
@@ -20,7 +27,7 @@ while IFS= read -r line; do
 	else
 		:
 	fi
-done < "$filename"
+done < "temp"
 
 cat trim1 | sed -E ':a;N;$!ba;s/\r//g;s/\n//g' > trim2
 cat trim2 | sed 's/<\/tr><tr style="background-color:White;">/\n/g ; s/<\/tr><tr style="background-color:#EAF0E0;border-color:#A0A0A0;">/\n/g' > trim3
@@ -33,4 +40,5 @@ echo "時間割番号,科目区分,時間割名,曜日時限,教員名,対象学
 cat trim5 >> "risyu$name.csv"
 
 rm trim*
+rm temp
 exit
