@@ -1,7 +1,6 @@
 #!/bin/bash
 filename="$HOME/金沢大学教務システム - 抽選科目登録状況.htm"
-
-#cat "$filename" | grep table
+name=$( cat "$filename" | grep "ctl00_phContents_ucRegistrationStatus_lblDate" | sed 's/[ :\/]//g ; s/<span>//g ; s/<spanid="ctl00_phContents_ucRegistrationStatus_lblDate">//g ; s/\r//g' )
 
 echo -n > trim1
 mode=1
@@ -24,20 +23,14 @@ while IFS= read -r line; do
 done < "$filename"
 
 cat trim1 | sed -E ':a;N;$!ba;s/\r//g;s/\n//g' > trim2
-cat trim2 | sed 's/<\/tr><tr style="background-color:White;">/\n/g' | sed 's/<\/tr><tr style="background-color:#EAF0E0;border-color:#A0A0A0;">/\n/g' > trim3
-
-
-cat trim3 | sed 's/<td[^>]*>/<td>/g' | sed 's/<span[^>]*>/<span>/g' | sed 's/ //g' | sed 's/<span>//g' | sed 's/<\/span>//g' | sed 's/	//g' > trim4
-filename="trim4"
-
-cat trim4 | sed 's/<\/td><td>/,/g' | sed 's/<td>//g' | sed 's/<\/td>//g' | sed 's/amp;//g' | sed 's/<\/tr>//g' > trim5
+cat trim2 | sed 's/<\/tr><tr style="background-color:White;">/\n/g ; s/<\/tr><tr style="background-color:#EAF0E0;border-color:#A0A0A0;">/\n/g' > trim3
+cat trim3 | sed 's/<td[^>]*>/<td>/g ; s/<span[^>]*>/<span>/g ; s/ //g ; s/<span>//g ; s/<\/span>//g ; s/	//g' > trim4
+cat trim4 | sed 's/<\/td><td>/,/g ; s/<td>//g ; s/<\/td>//g ; s/amp;//g ; s/<\/tr>//g' > trim5
 echo >> trim5
 
 sed -i -n '2,$p' trim5
-name=$(date '+%Y%m%d%H%M')
-cat trim5 > "risyu$name.csv"
-
+echo "時間割番号,科目区分,時間割名,曜日時限,教員名,対象学生,適正人数,全登録数,優先指定,第１希望,第２希望,第３希望,第４希望,第５希望" > "risyu$name.csv"
+cat trim5 >> "risyu$name.csv"
 
 rm trim*
-
 exit
