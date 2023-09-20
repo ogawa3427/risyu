@@ -6,8 +6,8 @@ if os.path.exists("dir.csv"):
     print ('aru')
     with open('dir.csv', "r", encoding='utf-8') as dir:
         path = dir.readline()
-        line = dir.readline()
-        if line:
+        two = dir.readline()
+        if two:
             print ('Error!Check your dir.csv')
         filename = os.path.join(path, "金沢大学教務システム - 抽選科目登録状況.htm")
 
@@ -17,11 +17,19 @@ else:
 
 print (filename)
 
-
-# Read content from the given filename
 with open(filename, 'r', encoding='utf-8') as f:
-    content = f.read()
-""""
+    line = f.readline()
+    mode = 0
+    while line:
+        if '						</tbody></table>' in line:
+            mode = 2
+        if mode == 1:
+            print (line, end="")
+        if '						<table' in line:
+            mode = 1
+ 
+
+"""
 # Extract name
 name_pattern = r'ctl00_phContents_ucRegistrationStatus_lblDate.*?>([^<]+)<'
 name_match = re.search(name_pattern, content)
