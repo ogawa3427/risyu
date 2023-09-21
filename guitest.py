@@ -1,6 +1,7 @@
 import os
 import re
 import PySimpleGUI as sg
+sg.theme("DarkBlue")
 compl=""
 content = ""
 header = "時間割番号,科目区分,時間割名,曜日時限,教員名,対象学生,適正人数,全登録数,優先指定,第１希望,第２希望,第３希望,第４希望,第５希望"
@@ -132,7 +133,6 @@ while True:
 
 		if values['-ONLYGS-'] == True:
 			thelines = '\n'.join(line for line in thelines.splitlines() if "ＧＳ" in line)
-			#thelines = '\n'.join(line for line in thelines.splitlines() if "ＧＳ言語" not in line)
 
 		thelines = '\n'.join(line for line in thelines.splitlines() if buttontext in line)
 
