@@ -2,6 +2,7 @@ import os
 import re
 import PySimpleGUI as sg
 compl=""
+content = ""
 header = "時間割番号,科目区分,時間割名,曜日時限,教員名,対象学生,適正人数,全登録数,優先指定,第１希望,第２希望,第３希望,第４希望,第５希望"
 with open('dir.csv', "r", encoding='utf-8') as dir:
 		defpath = dir.readline()
@@ -60,7 +61,6 @@ while True:
 		line = f.readline()
 		mode = 0
 		#turn = 1
-		content = ""
 		while line:
 			if "ctl00_phContents_ucRegistrationStatus_lb" in line:
 				name = line
@@ -89,7 +89,7 @@ while True:
 
 		content = re.sub(r'^\n', '', content)
 		content = content.replace("eskape", "\n")
-		content = header + content
+		contents = header + content
 
 	name = re.sub(r'<.*?>', '', name)
 	name = re.sub(r'\t', '', name)
@@ -99,7 +99,7 @@ while True:
 	name = name + ".csv"
 
 	with open(name, 'w', encoding='utf-8') as file:
-		file.write(content)
+		file.write(contents)
 	compl = "保存しました" + name
 	window1['-COMPL-'].update(compl)
 	window1['-ERROR-'].update('')
@@ -114,9 +114,8 @@ layout2 = [
 [sg.Button('月4'), sg.Button('火4'), sg.Button('水4'), sg.Button('木4'), sg.Button('金4')], 
 [sg.Button('月5'), sg.Button('火5'), sg.Button('水5'), sg.Button('木5'), sg.Button('金5')], 
 [sg.Button('6限'), sg.Button('7限'), sg.Button('8限'), sg.Button('集中')],
-[sg.Text(compl, key='-COMPL-')], 
+[sg.Text('フリーワード'), sg.InputText(key='-WORD-'), sg.Button('検索', key='-SEARCH-')], 
 [sg.Text('', key='-ERROR-', size=(30, 1), text_color='red')], 
-[sg.Button('(最新版を元に)表示', key='-NEXT-')]
 ]
 window2 = sg.Window('risyu', layout2, size=(700,600))
 
@@ -126,4 +125,18 @@ while True:
 		break
 	else:
 		buttontext = event
-		print(buttontext)
+		if buttontext == '-SEARCH-':
+			buttontext = values['-WORD-']
+
+		thelines = content
+
+		if values['-ONLYGS-'] == True:
+			thelines = '\n'.join(line for line in thelines.splitlines() if "ＧＳ" in line)
+			#thelines = '\n'.join(line for line in thelines.splitlines() if "ＧＳ言語" not in line)
+
+		thelines = '\n'.join(line for line in thelines.splitlines() if buttontext in line)
+
+
+
+
+		print(thelines)
