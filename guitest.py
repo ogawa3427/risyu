@@ -7,7 +7,7 @@ header = "時間割番号,科目区分,時間割名,曜日時限,教員名,対�
 
 layout = [[sg.Text('金沢大学教務システム - 抽選科目登録状況.htmが入っているディレクトリのフルパスを入力')], 
 [sg.Text('パスを保存しておらず未入力の場合は$HOMEを見ます')], 
-[sg.Checkbox("入力したパスを保存する", key="save", default=True)], 
+[sg.Checkbox("入力したパスを保存する", key="-SAVE-", default=True)], 
 [sg.InputText(key='-INP-'), sg.Button('実行', key='-SUBMIT-')], 
 [sg.Text(compl)]]
 window = sg.Window('risyu', layout, size=(700,600))
@@ -18,19 +18,33 @@ while True:
 		print(values['-INP-'])
 
 #HomeOrOther
-		
+		if values['-INP-'] == "":
 
-#dir,csvありますかチェック
-if os.path.exists("dir.csv"):
-    with open('dir.csv', "r", encoding='utf-8') as dir:
-        path = dir.readline()
-        two = dir.readline()
-        if two:
-            print ('Error!Check your dir.csv')
-        filename = os.path.join(path, "金沢大学教務システム - 抽選科目登録状況.htm")
-else:
-    filename = os.path.join(os.environ["HOME"], "金沢大学教務システム - 抽選科目登録状況.htm")
+			if os.path.exists("dir.csv"):
+				with open('dir.csv', "r", encoding='utf-8') as dir:
+					path = dir.readline()
+#        			two = dir.readline()
+#        			if two:
+#            			print ('Error!Check your dir.csv')
+				if path:
+					filename = os.path.join(os.environ["HOME"], "金沢大学教務システム - 抽選科目登録状況.htm") #なしありbrank
+				else:
+					filename = os.path.join(path, "金沢大学教務システム - 抽選科目登録状況.htm") #なしありvalid
 
+			else:
+				filename = os.path.join(os.environ["HOME"], "金沢大学教務システム - 抽選科目登録状況.htm") #なしなし
+
+		else: #あり
+			path = values['-INP-']
+			filename = os.path.join(path, "金沢大学教務システム - 抽選科目登録状況.htm")
+			if valued[-SAVE] == True:
+				with open('dir.csv', 'w', encoding='utf-8') as file:
+					file.write(path)
+
+	elif event==sg.WIN_CLOSED:
+		break
+
+"""
 with open(filename, 'r', encoding='utf-8') as f:
     line = f.readline()
     mode = 0
@@ -75,6 +89,4 @@ name = name + ".csv"
 
 with open(name, 'w', encoding='utf-8') as file:
     file.write(content)
-
-	if event==sg.WIN_CLOSED:
-		break
+"""
