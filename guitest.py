@@ -1,3 +1,5 @@
+#coding: utf-8
+
 import os
 import re
 import PySimpleGUI as sg
@@ -140,7 +142,9 @@ layout2 = [
 [sg.Button('月5'), sg.Button('火5'), sg.Button('水5'), sg.Button('木5'), sg.Button('金5')], 
 [sg.Button('6限'), sg.Button('7限'), sg.Button('8限'), sg.Button('集中'), sg.Combo(guns, key='-GUN-', size=(4,1), default_value='全群')],
 [sg.InputText(key='-WORD-', size=(20,1)), sg.Button('フリーワード検索', key='-SEARCH-', size=(15,1))], 
+[sg.Checkbox("担当教員表示", key="-TEA-", default=True)],
 [sg.Text('', key='-ERROR-', size=(30, 1), text_color='red')], 
+[sg.Text('',key='-RES-'),sg.Text('hey\nhi\nbie')] 
 ]
 window2 = sg.Window('risyu', layout2, size=(350,900))
 
@@ -156,18 +160,22 @@ while True:
 		if buttontext == '-SEARCH-':
 			buttontext = values['-WORD-']
 
-		thelines = content
+			thelines = content
 
-		if values['-ONLYGS-'] == True:
-			thelines = '\n'.join(line for line in thelines.splitlines() if "ＧＳ" in line)
+			if values['-ONLYGS-'] == True:
+				thelines = '\n'.join(line for line in thelines.splitlines() if "ＧＳ" in line)
+				thelines = '\n'.join(line for line in thelines.splitlines() if not "ＧＳ言語" in line)
+				thelines = re.sub(r',ＧＳ科目', '', thelines)
 
-		if re.match(r"^\d", values['-GUN-']):
-			gunkey = "^7" + values['-GUN-'] + "[A-F]"
-			thelines = '\n'.join(line for line in thelines.splitlines() if re.search(gunkey, line))
+			if re.match(r"^\d", values['-GUN-']):
+				gunkey = "^7" + values['-GUN-'] + "[A-F]"
+				thelines = '\n'.join(line for line in thelines.splitlines() if re.search(gunkey, line))
 
-		thelines = '\n'.join(line for line in thelines.splitlines() if buttontext in line)
-
-
-
-
-		print(thelines)
+			if not values['-TEA-']:
+				thelines = "\n".join([",".join(re.split(',', line)[:3] + re.split(',', line)[5:]) for line in thelines.strip().split("\n")])
+#きんにくん
+			#thelines = re.sub(r',{2,}', ',', thelines)
+			thelines = '\n'.join(line for line in thelines.splitlines() if buttontext in line)
+		#thelines = re.sub(r'', '', thelines)
+		#print(thelines)
+			window2['-RES-'].update(thelines)
