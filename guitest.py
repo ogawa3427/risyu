@@ -15,20 +15,23 @@ if os.path.exists("dir.csv"):
 		defpath = dir.readline() #あったら代入
 
 layout1 = [
-[sg.Text('金沢大学教務システム - 抽選科目登録状況.htmが入っているディレクトリのフルパスを入力')], 
+[sg.Text('金沢大学教務システム - 抽選科目登録状況.htmが')], 
+[sg.Text('入っているディレクトリのフルパスを入力')], 
 [sg.Text('パスを保存しておらず未入力の場合は$HOMEを見ます')], 
-[sg.Checkbox("入力したパスを保存する", key="-SAVE-", default=True)], 
+[sg.Checkbox("入力したパスを保存する", key="-SAVE-", default=True), sg.Checkbox("新しいパスに更新", key="-IGN-", default=False)], 
 [sg.InputText(key='-INP-', default_text=defpath), sg.Button('実行', key='-SUBMIT-')], 
 [sg.Text(compl, key='-COMPL-')], 
 [sg.Text('', key='-ERROR-', size=(30, 1), text_color='red')], 
 [sg.Button('(最新版を元に)表示', key='-NEXT-')]
 ]
-window1 = sg.Window('risyu', layout1, size=(700,600))
+window1 = sg.Window('risyu', layout1, size=(400, 250))
 
 while True:
 	event, values = window1.read()
 
 	if event=='-SUBMIT-':
+		if values['-IGN-']:
+			defpath = values['-INP-']
 		if not values['-INP-']:
 			filename = os.path.join(os.environ["HOME"], "金沢大学教務システム - 抽選科目登録状況.htm") #なしありbrank
 		else: #あり
@@ -38,6 +41,7 @@ while True:
 					file.write(defpath)
 		if not os.path.exists(filename):
 			window1['-ERROR-'].update('指定されたファイルが存在しません')
+			window1['-COMPL-'].update('')
 			continue
 
 		with open(filename, 'r', encoding='utf-8') as f:
@@ -124,6 +128,8 @@ repl = r"\1月\2日\3:\4:\5現在"
 asof = re.sub(patt, repl, asof)
 
 
+guns = ["全群", "1", "2", "3", "4", "5", "6"]
+
 layout2 = [
 [sg.Text(asof)], 
 [sg.Checkbox("GSのみ", key="-ONLYGS-", default=True)], 
@@ -132,11 +138,11 @@ layout2 = [
 [sg.Button('月3'), sg.Button('火3'), sg.Button('水3'), sg.Button('木3'), sg.Button('金3')], 
 [sg.Button('月4'), sg.Button('火4'), sg.Button('水4'), sg.Button('木4'), sg.Button('金4')], 
 [sg.Button('月5'), sg.Button('火5'), sg.Button('水5'), sg.Button('木5'), sg.Button('金5')], 
-[sg.Button('6限'), sg.Button('7限'), sg.Button('8限'), sg.Button('集中')],
-[sg.Text('フリーワード'), sg.InputText(key='-WORD-'), sg.Button('検索', key='-SEARCH-')], 
+[sg.Button('6限'), sg.Button('7限'), sg.Button('8限'), sg.Button('集中'), sg.Combo(guns, key='-GUN-', size=(4,1), default_value='全群')],
+[sg.InputText(key='-WORD-', size=(20,1)), sg.Button('フリーワード検索', key='-SEARCH-', size=(15,1))], 
 [sg.Text('', key='-ERROR-', size=(30, 1), text_color='red')], 
 ]
-window2 = sg.Window('risyu', layout2, size=(700,600))
+window2 = sg.Window('risyu', layout2, size=(350,900))
 
 while True:
 	if sta == 0:
@@ -154,6 +160,10 @@ while True:
 
 		if values['-ONLYGS-'] == True:
 			thelines = '\n'.join(line for line in thelines.splitlines() if "ＧＳ" in line)
+
+		if re.match(r"^\d", values['-GUN-']):
+			gunkey = "^7" + values['-GUN-'] + "[A-F]"
+			thelines = '\n'.join(line for line in thelines.splitlines() if re.search(gunkey, line))
 
 		thelines = '\n'.join(line for line in thelines.splitlines() if buttontext in line)
 
