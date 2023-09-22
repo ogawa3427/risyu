@@ -1,11 +1,18 @@
 import os
 import re
 import PySimpleGUI as sg
+
 sg.theme("DarkBlue")
 compl=""
 content = ""
 header = "時間割番号,科目区分,時間割名,曜日時限,教員名,対象学生,適正人数,全登録数,優先指定,第１希望,第２希望,第３希望,第４希望,第５希望"
 defpath=''
+name = ""
+openfile = ""
+
+if os.path.exists("dir.csv"):
+	with open('dir.csv', "r", encoding='utf-8') as dir:
+		defpath = dir.readline() #あったら代入
 
 layout1 = [
 [sg.Text('金沢大学教務システム - 抽選科目登録状況.htmが入っているディレクトリのフルパスを入力')], 
@@ -20,60 +27,35 @@ window1 = sg.Window('risyu', layout1, size=(700,600))
 
 while True:
 	event, values = window1.read()
+
 	if event=='-SUBMIT-':
-
-#HomeOrOther
-		if values['-INP-'] == "":
-
-			if os.path.exists("dir.csv"):
-				with open('dir.csv', "r", encoding='utf-8') as dir:
-					path = dir.readline()
-#					two = dir.readline()
-#					if two:
-#						print ('Error!Check your dir.csv')
-				if path:
-					filename = os.path.join(path, "金沢大学教務システム - 抽選科目登録状況.htm") #なしありvalid
-				else:
-					filename = os.path.join(os.environ["HOME"], "金沢大学教務システム - 抽選科目登録状況.htm") #なしありbrank
-
-			else:
-				filename = os.path.join(os.environ["HOME"], "金沢大学教務システム - 抽選科目登録状況.htm") #なしなし
-
+		if not values['-INP-']:
+			filename = os.path.join(os.environ["HOME"], "金沢大学教務システム - 抽選科目登録状況.htm") #なしありbrank
 		else: #あり
-			path = values['-INP-']
-			filename = os.path.join(path, "金沢大学教務システム - 抽選科目登録状況.htm")
-			if values['-SAVE-'] == True:
+			filename = os.path.join(defpath, "金沢大学教務システム - 抽選科目登録状況.htm")
+			if values['-SAVE-']:
 				with open('dir.csv', 'w', encoding='utf-8') as file:
-					file.write(path)
-		window['-INP-'].update(defpath)
+					file.write(defpath)
 		if not os.path.exists(filename):
 			window1['-ERROR-'].update('指定されたファイルが存在しません')
 			continue
-	elif event==sg.WIN_CLOSED:
-		sta = 0
-		break
 
-	elif event=='-NEXT-':
-		sta = 1
-		window1.close()
-		break
-
-	with open(filename, 'r', encoding='utf-8') as f:
-		line = f.readline()
-		mode = 0
-		#turn = 1
-		while line:
-			if "ctl00_phContents_ucRegistrationStatus_lb" in line:
-				name = line
-			if '                        </tbody></table>' in line:
-				mode = 2
-			if mode == 1:
-				if "</tr><tr" in line:
-					line = "eskape"
-				content += line
-			if 'th align' in line:
-				mode = 1
+		with open(filename, 'r', encoding='utf-8') as f:
 			line = f.readline()
+			mode = 0
+			#turn = 1
+			while line:
+				if "ctl00_phContents_ucRegistrationStatus_lb" in line:
+					name = line
+				if '                        </tbody></table>' in line:
+					mode = 2
+				if mode == 1:
+					if "</tr><tr" in line:
+						line = "eskape"
+					content += line
+				if 'th align' in line:
+					mode = 1
+				line = f.readline()
 			#print (turn)
 			#turn += 1
 		content = content.replace(" ", "")
@@ -92,22 +74,58 @@ while True:
 		content = content.replace("eskape", "\n")
 		contents = header + content
 
-	name = re.sub(r'<.*?>', '', name)
-	name = re.sub(r'\t', '', name)
-	name = re.sub(r'[ :\/]', '', name)
-	name = re.sub(r'\n', '', name)
-	name = "risyu" + name
-	name = name + ".csv"
+		name = re.sub(r'<.*?>', '', name)
+		name = re.sub(r'\t', '', name)
+		name = re.sub(r'[ :\/]', '', name)
+		name = re.sub(r'\n', '', name)
+		name = "risyu" + name
+		name = name + ".csv"
 
-	with open(name, 'w', encoding='utf-8') as file:
-		file.write(contents)
-	compl = "保存しました" + name
-	window1['-COMPL-'].update(compl)
-	window1['-ERROR-'].update('')
+		with open(name, 'w', encoding='utf-8') as file:
+			file.write(contents)
+		compl = "保存しました" + name
+		window1['-COMPL-'].update(compl)
+		window1['-ERROR-'].update('')
+
+
+
+	elif event==sg.WIN_CLOSED:
+		sta = 0
+		break
+
+	elif event=='-NEXT-':
+		sta = 1
+		if not content:
+			pwd='.'
+			ls = os.listdir(pwd)
+			newls = [ls for ls in ls if re.search("risyu", ls)]
+			newestls = [newls for newls in newls if re.search("csv", newls)]
+
+			numlist = [re.findall(r'\d+', fname)[0] for fname in newestls]
+			openfile = max(numlist)
+			openfile = re.sub(r'^', 'risyu', openfile)
+			openfile = re.sub(r'$', '.csv', openfile)
+
+			with open(openfile,'r', encoding='utf-8') as ofile:
+				line = ofile.readline()
+				content = ""
+				while line: 
+					content += line
+					line = ofile.readline()
+		window1.close()
+		break
+
+
+asof = name + openfile
+asof = re.sub(r'^risyu\d{4}', '', asof)
+asof = re.sub(r'.{4}$', '', asof)
+patt = r"(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})"
+repl = r"\1月\2日\3:\4:\5現在"
+asof = re.sub(patt, repl, asof)
 
 
 layout2 = [
-[sg.Text('金沢大学教務システム - 抽選科目登録状況.htmが入っているディレクトリのフルパスを入力')], 
+[sg.Text(asof)], 
 [sg.Checkbox("GSのみ", key="-ONLYGS-", default=True)], 
 [sg.Button('月1'), sg.Button('火1'), sg.Button('水1'), sg.Button('木1'), sg.Button('金1')], 
 [sg.Button('月2'), sg.Button('火2'), sg.Button('水2'), sg.Button('木2'), sg.Button('金2')], 
@@ -121,6 +139,9 @@ layout2 = [
 window2 = sg.Window('risyu', layout2, size=(700,600))
 
 while True:
+	if sta == 0:
+		break
+
 	event, values = window2.read()
 	if event == sg.WIN_CLOSED:
 		break
