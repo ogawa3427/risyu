@@ -6,9 +6,9 @@ $HOMEに抽選科目登録状況のHTMLを投げ込んでrisyu(シェルスク�
 dir.csvにフルパスを書いとくとそこからHTMLを探します  
 私はDownloadにしてる
 
-python3.8
-PySimpleGUI
-tknter
+python3.8  
+PySimpleGUI  
+tknter  
 
 商用利用不可
 
