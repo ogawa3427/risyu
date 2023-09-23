@@ -1,9 +1,11 @@
-#coding: utf-8
-
+encoding='utf-8'
+# -*- coding: utf-8 -*-
+import sys
+import codecs
 import os
 import re
 import PySimpleGUI as sg
-
+sg.set_options(font=("MS Gothic", 14))
 sg.theme("DarkBlue")
 compl=""
 content = ""
@@ -149,33 +151,34 @@ layout2 = [
 window2 = sg.Window('risyu', layout2, size=(350,900))
 
 while True:
+
 	if sta == 0:
 		break
-
+	thelines = content
 	event, values = window2.read()
+
 	if event == sg.WIN_CLOSED:
 		break
+	
 	else:
 		buttontext = event
 		if buttontext == '-SEARCH-':
 			buttontext = values['-WORD-']
 
-			thelines = content
+		if values['-ONLYGS-'] == True:
+			thelines = '\n'.join(line for line in thelines.splitlines() if "ＧＳ" in line)
+			thelines = '\n'.join(line for line in thelines.splitlines() if not "ＧＳ言語" in line)
+			thelines = re.sub(r',ＧＳ科目', '', thelines)
 
-			if values['-ONLYGS-'] == True:
-				thelines = '\n'.join(line for line in thelines.splitlines() if "ＧＳ" in line)
-				thelines = '\n'.join(line for line in thelines.splitlines() if not "ＧＳ言語" in line)
-				thelines = re.sub(r',ＧＳ科目', '', thelines)
+		if re.match(r"^\d", values['-GUN-']):
+			gunkey = "^7" + values['-GUN-'] + "[A-F]"
+			thelines = '\n'.join(line for line in thelines.splitlines() if re.search(gunkey, line))
 
-			if re.match(r"^\d", values['-GUN-']):
-				gunkey = "^7" + values['-GUN-'] + "[A-F]"
-				thelines = '\n'.join(line for line in thelines.splitlines() if re.search(gunkey, line))
-
-			if not values['-TEA-']:
-				thelines = "\n".join([",".join(re.split(',', line)[:3] + re.split(',', line)[5:]) for line in thelines.strip().split("\n")])
+		if not values['-TEA-']:
+			thelines = "\n".join([",".join(re.split(',', line)[:3] + re.split(',', line)[5:]) for line in thelines.strip().split("\n")])
 #きんにくん
 			#thelines = re.sub(r',{2,}', ',', thelines)
-			thelines = '\n'.join(line for line in thelines.splitlines() if buttontext in line)
+		thelines = '\n'.join(line for line in thelines.splitlines() if buttontext in line)
 		#thelines = re.sub(r'', '', thelines)
 		#print(thelines)
-			window2['-RES-'].update(thelines)
+		window2['-RES-'].update(thelines)
