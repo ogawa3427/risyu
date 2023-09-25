@@ -103,25 +103,26 @@ while True:
 
 	elif event=='-NEXT-':
 		sta = 1
-		if not content:
-			pwd='.'
-			ls = os.listdir(pwd)
-			newls = [ls for ls in ls if re.search("risyu", ls)]
-			newestls = [newls for newls in newls if re.search("csv", newls)]
+		pwd='.'
+		ls = os.listdir(pwd)
+		newls = [ls for ls in ls if re.search("risyu", ls)]
+		newestls = [newls for newls in newls if re.search("csv", newls)]
 
-			numlist = [re.findall(r'\d+', fname)[0] for fname in newestls if re.findall(r'\d+', fname)]
-			openfile = max(numlist)
-			openfile = re.sub(r'^', 'risyu', openfile)
-			openfile = re.sub(r'$', '.csv', openfile)
-
-			with open(openfile,'r', encoding='utf-8') as ofile:
+		numlist = [re.findall(r'\d+', fname)[0] for fname in newestls if re.findall(r'\d+', fname)]
+		openfile = max(numlist)
+		openfile = re.sub(r'^', 'risyu', openfile)
+		openfile = re.sub(r'$', '.csv', openfile)
+		with open(openfile,'r', encoding='utf-8') as ofile:
+			line = ofile.readline()
+			content = ""
+			while line:
+				content += line
 				line = ofile.readline()
-				content = ""
-				while line: 
-					content += line
-					line = ofile.readline()
-		window1.close()
+			content = re.sub(r'^時間割番号,.*+$\n', '', content)
+			print(content)
+			window1.close()
 		break
+
 
 
 asof = name + openfile
@@ -148,19 +149,20 @@ layout2 = [
 [sg.Button('6限'), sg.Button('7限'), sg.Button('8限'), sg.Button('集中'), sg.Combo(guns, key='-GUN-', size=(4,1), default_value='全群')],
 [sg.InputText(key='-WORD-', size=(20,1)), sg.Button('フリーワード検索', key='-SEARCH-', size=(17,1))], 
 [sg.Text('', key='-ERROR-', size=(30, 1), text_color='red')], 
-[sg.Text('',key='-RES0-',font=('Meiryo',17)),
-sg.Text('',key='-RES1-',font=('Meiryo',17)),
-sg.Text('',key='-RES2-',font=('Meiryo',17)),
-sg.Text('',key='-RES3-',font=('Meiryo',17)),
-sg.Text('',key='-RES4-',font=('Meiryo',17)),
-sg.Text('',key='-RES5-',font=('Meiryo',17)),
-sg.Text('',key='-RES6-',font=('Meiryo',17)),
-sg.Text('',key='-RES7-',font=('Meiryo',17)),
-sg.Text('',key='-RES8-',font=('Meiryo',17)),
-sg.Text('',key='-RES9-',font=('Meiryo',17)),
-sg.Text('',key='-RES10-',font=('Meiryo',17)),
-sg.Text('',key='-RES11-',font=('Meiryo',17)),
-sg.Text('',key='-RES12-',font=('Meiryo',17)),
+[sg.Text('',key='-RES0-',font=('Meiryo',10)),
+sg.Text('',key='-RES1-',font=('Meiryo',10)),
+sg.Text('',key='-RES2-',font=('Meiryo',10)),
+sg.Text('',key='-RES3-',font=('Meiryo',10)),
+sg.Text('',key='-RES4-',font=('Meiryo',10)),
+sg.Text('',key='-RES5-',font=('Meiryo',10)),
+sg.Text('',key='-RES6-',font=('Meiryo',10)),
+sg.Text('',key='-RES7-',font=('Meiryo',10)),
+sg.Text('',key='-RES8-',font=('Meiryo',10)),
+sg.Text('',key='-RES9-',font=('Meiryo',10)),
+sg.Text('',key='-RES10-',font=('Meiryo',10)),
+sg.Text('',key='-RES11-',font=('Meiryo',10)),
+sg.Text('',key='-RES12-',font=('Meiryo',10)),
+sg.Text('',key='-RES13-',font=('Meiryo',10)),
 ] 
 ]
 window2 = sg.Window('risyu', layout2, size=(550,900), keep_on_top=True)
@@ -215,7 +217,7 @@ while True:
 
 # 各行を改行で分割し、各行をさらにコンマで分割
 		split_lines = [line.split(',') for line in thelines.split('\n')]
-
+		print(split_lines)
 # 列数を取得 (最初の行の列数を基準とする)
 		num_columns = len(split_lines[0])
 
@@ -230,10 +232,7 @@ while True:
 		for n, column_data in res.items():
 			print(f'res[{n}] = {column_data}')
 
-
-
-		for n, column_data in res.items():
-    # 各列のデータを文字列として結合
+	# 各列のデータを文字列として結合
 			data_str = '\n'.join(column_data)
-    # 対応するウィンドウのキーを動的に生成してデータを更新
+	# 対応するウィンドウのキーを動的に生成してデータを更新
 			window2[f'-RES{n}-'].update(data_str)
