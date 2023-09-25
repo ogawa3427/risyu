@@ -134,6 +134,10 @@ asof = re.sub(patt, repl, asof)
 
 guns = ["全群", "1", "2", "3", "4", "5", "6"]
 
+
+
+
+
 layout2 = [
 [sg.Text(asof)], 
 [sg.Button('月1'), sg.Button('火1'), sg.Button('水1'), sg.Button('木1'), sg.Button('金1'), sg.Checkbox("GSのみ", key="-ONLYGS-", default=True)], 
@@ -144,7 +148,20 @@ layout2 = [
 [sg.Button('6限'), sg.Button('7限'), sg.Button('8限'), sg.Button('集中'), sg.Combo(guns, key='-GUN-', size=(4,1), default_value='全群')],
 [sg.InputText(key='-WORD-', size=(20,1)), sg.Button('フリーワード検索', key='-SEARCH-', size=(17,1))], 
 [sg.Text('', key='-ERROR-', size=(30, 1), text_color='red')], 
-[sg.Text('',key='-RES-',font=('Arial',17))] 
+[sg.Text('',key='-RES0-',font=('Meiryo',17)),
+sg.Text('',key='-RES1-',font=('Meiryo',17)),
+sg.Text('',key='-RES2-',font=('Meiryo',17)),
+sg.Text('',key='-RES3-',font=('Meiryo',17)),
+sg.Text('',key='-RES4-',font=('Meiryo',17)),
+sg.Text('',key='-RES5-',font=('Meiryo',17)),
+sg.Text('',key='-RES6-',font=('Meiryo',17)),
+sg.Text('',key='-RES7-',font=('Meiryo',17)),
+sg.Text('',key='-RES8-',font=('Meiryo',17)),
+sg.Text('',key='-RES9-',font=('Meiryo',17)),
+sg.Text('',key='-RES10-',font=('Meiryo',17)),
+sg.Text('',key='-RES11-',font=('Meiryo',17)),
+sg.Text('',key='-RES12-',font=('Meiryo',17)),
+] 
 ]
 window2 = sg.Window('risyu', layout2, size=(550,900), keep_on_top=True)
 
@@ -195,7 +212,28 @@ while True:
 			thelines = re.sub(r'^7', '', thelines, flags=re.MULTILINE)
 			thelines = re.sub(r'(?<=^.{2})[^,]+,', ',', thelines, flags=re.MULTILINE)
 
-#きんにくん
-			#thelines = re.sub(r',{2,}', ',', thelines)
-		#print(thelines)
-		window2['-RES-'].update(thelines)
+
+# 各行を改行で分割し、各行をさらにコンマで分割
+		split_lines = [line.split(',') for line in thelines.split('\n')]
+
+# 列数を取得 (最初の行の列数を基準とする)
+		num_columns = len(split_lines[0])
+
+# res変数の初期化
+		res = {}
+
+		# 各列のデータをres変数に格納
+		for n in range(num_columns):
+			res[n] = [row[n] for row in split_lines]
+
+		# 確認のために各res変数を出力
+		for n, column_data in res.items():
+			print(f'res[{n}] = {column_data}')
+
+
+
+		for n, column_data in res.items():
+    # 各列のデータを文字列として結合
+			data_str = '\n'.join(column_data)
+    # 対応するウィンドウのキーを動的に生成してデータを更新
+			window2[f'-RES{n}-'].update(data_str)
