@@ -153,6 +153,21 @@ while True:
 	if sta == 0:
 		break
 	thelines = content
+
+	# （英語クラス）を含む行だけを取得
+	english_class_lines = '\n'.join([line for line in thelines.split('\n') if '（英語クラス）' in line])
+	english_class_lines = re.sub(r'（英語クラス）', '', english_class_lines)
+	english_class_lines = '\n'.join([re.sub(r'(^[^,]*,[^,]*),', r'\1,[英]', line) for line in english_class_lines.split('\n')])
+
+# （英語クラス）を含まない行だけを取得
+	non_english_class_lines = '\n'.join([line for line in thelines.split('\n') if '（英語クラス）' not in line])
+
+	thelines = english_class_lines + non_english_class_lines
+
+
+
+
+
 	event, values = window2.read()
 
 	if event == sg.WIN_CLOSED:
