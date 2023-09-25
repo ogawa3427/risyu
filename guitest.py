@@ -136,17 +136,15 @@ guns = ["全群", "1", "2", "3", "4", "5", "6"]
 
 layout2 = [
 [sg.Text(asof)], 
-[sg.Checkbox("GSのみ", key="-ONLYGS-", default=True)], 
-[sg.Button('月1'), sg.Button('火1'), sg.Button('水1'), sg.Button('木1'), sg.Button('金1')], 
-[sg.Button('月2'), sg.Button('火2'), sg.Button('水2'), sg.Button('木2'), sg.Button('金2')], 
-[sg.Button('月3'), sg.Button('火3'), sg.Button('水3'), sg.Button('木3'), sg.Button('金3')], 
+[sg.Button('月1'), sg.Button('火1'), sg.Button('水1'), sg.Button('木1'), sg.Button('金1'), sg.Checkbox("GSのみ", key="-ONLYGS-", default=True)], 
+[sg.Button('月2'), sg.Button('火2'), sg.Button('水2'), sg.Button('木2'), sg.Button('金2'), sg.Checkbox("担当教員表示", key="-TEA-", default=True)], 
+[sg.Button('月3'), sg.Button('火3'), sg.Button('水3'), sg.Button('木3'), sg.Button('金3'), sg.Checkbox("時間割番号を省略", key="-RYA-", default=True)], 
 [sg.Button('月4'), sg.Button('火4'), sg.Button('水4'), sg.Button('木4'), sg.Button('金4')], 
 [sg.Button('月5'), sg.Button('火5'), sg.Button('水5'), sg.Button('木5'), sg.Button('金5')], 
 [sg.Button('6限'), sg.Button('7限'), sg.Button('8限'), sg.Button('集中'), sg.Combo(guns, key='-GUN-', size=(4,1), default_value='全群')],
 [sg.InputText(key='-WORD-', size=(20,1)), sg.Button('フリーワード検索', key='-SEARCH-', size=(17,1))], 
-[sg.Checkbox("担当教員表示", key="-TEA-", default=True), sg.Checkbox("時間割番号を省略", key="-RYA-", default=True)],
 [sg.Text('', key='-ERROR-', size=(30, 1), text_color='red')], 
-[sg.Text('',key='-RES-',font=('Arial',20))] 
+[sg.Text('',key='-RES-',font=('Arial',17))] 
 ]
 window2 = sg.Window('risyu', layout2, size=(550,900), keep_on_top=True)
 
