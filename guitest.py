@@ -28,7 +28,7 @@ layout1 = [
 [sg.Text('', key='-ERROR-', size=(30, 1), text_color='red')], 
 [sg.Button('(最新版を元に)表示', key='-NEXT-')]
 ]
-window1 = sg.Window('risyu', layout1, size=(400, 250))
+window1 = sg.Window('risyu', layout1, size=(500, 300), keep_on_top=True)
 
 while True:
 	event, values = window1.read()
@@ -109,7 +109,7 @@ while True:
 			newls = [ls for ls in ls if re.search("risyu", ls)]
 			newestls = [newls for newls in newls if re.search("csv", newls)]
 
-			numlist = [re.findall(r'\d+', fname)[0] for fname in newestls]
+			numlist = [re.findall(r'\d+', fname)[0] for fname in newestls if re.findall(r'\d+', fname)]
 			openfile = max(numlist)
 			openfile = re.sub(r'^', 'risyu', openfile)
 			openfile = re.sub(r'$', '.csv', openfile)
@@ -143,12 +143,12 @@ layout2 = [
 [sg.Button('月4'), sg.Button('火4'), sg.Button('水4'), sg.Button('木4'), sg.Button('金4')], 
 [sg.Button('月5'), sg.Button('火5'), sg.Button('水5'), sg.Button('木5'), sg.Button('金5')], 
 [sg.Button('6限'), sg.Button('7限'), sg.Button('8限'), sg.Button('集中'), sg.Combo(guns, key='-GUN-', size=(4,1), default_value='全群')],
-[sg.InputText(key='-WORD-', size=(20,1)), sg.Button('フリーワード検索', key='-SEARCH-', size=(15,1))], 
-[sg.Checkbox("担当教員表示", key="-TEA-", default=True)],
+[sg.InputText(key='-WORD-', size=(20,1)), sg.Button('フリーワード検索', key='-SEARCH-', size=(17,1))], 
+[sg.Checkbox("担当教員表示", key="-TEA-", default=True), sg.Checkbox("時間割番号を省略", key="-RYA-", default=True)],
 [sg.Text('', key='-ERROR-', size=(30, 1), text_color='red')], 
-[sg.Text('',key='-RES-'),sg.Text('hey\nhi\nbie')] 
+[sg.Text('',key='-RES-',font=('Arial',20))] 
 ]
-window2 = sg.Window('risyu', layout2, size=(350,900))
+window2 = sg.Window('risyu', layout2, size=(550,900), keep_on_top=True)
 
 while True:
 
@@ -164,6 +164,7 @@ while True:
 		buttontext = event
 		if buttontext == '-SEARCH-':
 			buttontext = values['-WORD-']
+		thelines = '\n'.join(line for line in thelines.splitlines() if buttontext in line)
 
 		if values['-ONLYGS-'] == True:
 			thelines = '\n'.join(line for line in thelines.splitlines() if "ＧＳ" in line)
@@ -176,9 +177,12 @@ while True:
 
 		if not values['-TEA-']:
 			thelines = "\n".join([",".join(re.split(',', line)[:3] + re.split(',', line)[5:]) for line in thelines.strip().split("\n")])
+
+		if values['-RYA-']:
+			thelines = re.sub(r'^7', '', thelines, flags=re.MULTILINE)
+			thelines = re.sub(r'(?<=^.{2})[^,]+,', ',', thelines, flags=re.MULTILINE)
+
 #きんにくん
 			#thelines = re.sub(r',{2,}', ',', thelines)
-		thelines = '\n'.join(line for line in thelines.splitlines() if buttontext in line)
-		#thelines = re.sub(r'', '', thelines)
 		#print(thelines)
 		window2['-RES-'].update(thelines)
