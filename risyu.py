@@ -1,9 +1,11 @@
 encoding='utf-8'
 # -*- coding: utf-8 -*-
+import io
 import sys
 import codecs
 import os
 import re
+import pandas as pd
 import PySimpleGUI as sg
 sg.set_options(font=("MS Gothic", 14))
 sg.theme("DarkBlue")
@@ -55,7 +57,7 @@ while True:
 			while line:
 				if "ctl00_phContents_ucRegistrationStatus_lb" in line:
 					name = line
-				if '                        </tbody></table>' in line:
+				if '						</tbody></table>' in line:
 					mode = 2
 				if mode == 1:
 					if "</tr><tr" in line:
@@ -119,10 +121,9 @@ while True:
 				content += line
 				line = ofile.readline()
 			content = re.sub(r'^時間割番号,.*+$\n', '', content)
-			print(content)
+			#print(content)
 			window1.close()
 		break
-
 
 
 asof = name + openfile
@@ -136,15 +137,12 @@ asof = re.sub(patt, repl, asof)
 guns = ["全群", "1", "2", "3", "4", "5", "6"]
 
 
-
-
-
 layout2 = [
-[sg.Text(asof)], 
+[sg.Text(asof), sg.Button('高度な設定', key='-SET-', size=(17,1)), sg.Button('所属設定', key='-AFF-', size=(17,1))], 
 [sg.Button('月1'), sg.Button('火1'), sg.Button('水1'), sg.Button('木1'), sg.Button('金1'), sg.Checkbox("GSのみ", key="-ONLYGS-", default=True)], 
-[sg.Button('月2'), sg.Button('火2'), sg.Button('水2'), sg.Button('木2'), sg.Button('金2'), sg.Checkbox("担当教員表示", key="-TEA-", default=True)], 
+[sg.Button('月2'), sg.Button('火2'), sg.Button('水2'), sg.Button('木2'), sg.Button('金2'), sg.Checkbox("担当教員を省略", key="-TEA-", default=False)], 
 [sg.Button('月3'), sg.Button('火3'), sg.Button('水3'), sg.Button('木3'), sg.Button('金3'), sg.Checkbox("時間割番号を省略", key="-RYA-", default=True)], 
-[sg.Button('月4'), sg.Button('火4'), sg.Button('水4'), sg.Button('木4'), sg.Button('金4')], 
+[sg.Button('月4'), sg.Button('火4'), sg.Button('水4'), sg.Button('木4'), sg.Button('金4'), sg.Checkbox("優先/限定を簡略化", key="-RYA-", default=True)], 
 [sg.Button('月5'), sg.Button('火5'), sg.Button('水5'), sg.Button('木5'), sg.Button('金5')], 
 [sg.Button('6限'), sg.Button('7限'), sg.Button('8限'), sg.Button('集中'), sg.Combo(guns, key='-GUN-', size=(4,1), default_value='全群')],
 [sg.InputText(key='-WORD-', size=(20,1)), sg.Button('フリーワード検索', key='-SEARCH-', size=(17,1))], 
@@ -167,72 +165,79 @@ sg.Text('',key='-RES13-',font=('Meiryo',10)),
 ]
 window2 = sg.Window('risyu', layout2, size=(550,900), keep_on_top=True)
 
-while True:
 
+#厄介な書き換え
+english_class_lines = '\n'.join([line for line in content.split('\n') if '（英語クラス）' in line])
+
+english_class_lines = re.sub(r'（英語クラス）', '', english_class_lines)
+english_class_lines = '\n'.join([re.sub(r'(^[^,]*,[^,]*),', r'\1,[英]', line) for line in english_class_lines.split('\n')])
+
+non_english_class_lines = '\n'.join([line for line in content.split('\n') if '（英語クラス）' not in line])
+
+content = non_english_class_lines + '\n' + english_class_lines
+
+#並べ替え
+content = '\n'.join(sorted(content.split('\n'), key=lambda x: x.split(',')[0]))
+
+
+#main loop
+while True:
+	event, values = window2.read()
+	thelines = content
 	if sta == 0:
 		break
-	thelines = content
 
-	# （英語クラス）を含む行だけを取得
-	english_class_lines = '\n'.join([line for line in thelines.split('\n') if '（英語クラス）' in line])
-	english_class_lines = re.sub(r'（英語クラス）', '', english_class_lines)
-	english_class_lines = '\n'.join([re.sub(r'(^[^,]*,[^,]*),', r'\1,[英]', line) for line in english_class_lines.split('\n')])
-
-# （英語クラス）を含まない行だけを取得
-	non_english_class_lines = '\n'.join([line for line in thelines.split('\n') if '（英語クラス）' not in line])
-
-	thelines = english_class_lines + non_english_class_lines
-
-
-
-
-
-	event, values = window2.read()
-
-	if event == sg.WIN_CLOSED:
+	elif event == sg.WIN_CLOSED:
 		break
 	
 	else:
-		buttontext = event
-		if buttontext == '-SEARCH-':
-			buttontext = values['-WORD-']
-		thelines = '\n'.join(line for line in thelines.splitlines() if buttontext in line)
-
+		#トグル系スクリーニング/書き換え
 		if values['-ONLYGS-'] == True:
 			thelines = '\n'.join(line for line in thelines.splitlines() if "ＧＳ" in line)
 			thelines = '\n'.join(line for line in thelines.splitlines() if not "ＧＳ言語" in line)
 			thelines = re.sub(r',ＧＳ科目', '', thelines)
 
-		if re.match(r"^\d", values['-GUN-']):
-			gunkey = "^7" + values['-GUN-'] + "[A-F]"
-			thelines = '\n'.join(line for line in thelines.splitlines() if re.search(gunkey, line))
-
-		if not values['-TEA-']:
+		if values['-TEA-']:
 			thelines = "\n".join([",".join(re.split(',', line)[:3] + re.split(',', line)[5:]) for line in thelines.strip().split("\n")])
 
 		if values['-RYA-']:
 			thelines = re.sub(r'^7', '', thelines, flags=re.MULTILINE)
 			thelines = re.sub(r'(?<=^.{2})[^,]+,', ',', thelines, flags=re.MULTILINE)
 
+		if re.match(r"^\d", values['-GUN-']):
+			if values['-RYA-']:
+				gunkey = "^" + values['-GUN-'] + "[A-F]"
+			else:
+				gunkey = "^7" + values['-GUN-'] + "[A-F]"
+			thelines = '\n'.join(line for line in thelines.splitlines() if re.search(gunkey, line))
 
-# 各行を改行で分割し、各行をさらにコンマで分割
+		print(thelines)
+
+		buttontext = event
+		if buttontext == '-SEARCH-':
+			buttontext = values['-WORD-']
+		thelines = '\n'.join(line for line in thelines.splitlines() if buttontext in line)
+
+
+#格納&表示
 		split_lines = [line.split(',') for line in thelines.split('\n')]
-		print(split_lines)
-# 列数を取得 (最初の行の列数を基準とする)
 		num_columns = len(split_lines[0])
 
-# res変数の初期化
 		res = {}
+		updated_columns = set()  # このセットで更新された列番号をトラッキングします
 
-		# 各列のデータをres変数に格納
 		for n in range(num_columns):
 			res[n] = [row[n] for row in split_lines]
 
-		# 確認のために各res変数を出力
-		for n, column_data in res.items():
-			print(f'res[{n}] = {column_data}')
+			if res[n]:
+				updated_columns.add(n)
+			for n, column_data in res.items():
+				print(f'res[{n}] = {column_data}')
 
-	# 各列のデータを文字列として結合
 			data_str = '\n'.join(column_data)
-	# 対応するウィンドウのキーを動的に生成してデータを更新
 			window2[f'-RES{n}-'].update(data_str)
+
+		#ガベコレ的な
+		for i in range(14):
+			if i not in updated_columns:
+				window2[f'-RES{i}-'].update('')
