@@ -3,6 +3,8 @@
 事務さんからOK出ましたが
 鯖の負荷には注意
 
+https://burnt-learning-ae0.notion.site/risyu-68085c98995a4446b9fbdb91e10142b0?pvs=4
+
 自己責任においてクローン等するようにしてください
 
 NO　WARRANTIY
