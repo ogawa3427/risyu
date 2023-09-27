@@ -7,6 +7,9 @@ import os
 import re
 import pandas as pd
 import PySimpleGUI as sg
+import tkinter as tk
+from tkinter import messagebox
+
 sg.set_options(font=("MS Gothic", 14))
 sg.theme("DarkBlue")
 compl=""
@@ -20,11 +23,61 @@ if os.path.exists("dir.csv"):
 	with open('dir.csv', "r", encoding='utf-8') as dir:
 		defpath = dir.readline() #あったら代入
 
+
+
+
+
+class Application(tk.Frame):
+	def __init__(self, root):
+		super().__init__(root, width=400, height=800, borderwidth=4, relief='groove')
+		self.root = root
+		self.grid(sticky="nsew")
+		self.create_widgets()
+
+	def create_widgets(self):
+		self.label1 = tk.Label(self, text="金沢大学教務システム - 抽選科目登録状況.htmが")
+		self.label1.grid(row=0, column=0, columnspan=3, sticky="w")
+
+		self.label2 = tk.Label(self, text="入っているディレクトリのフルパスを入力")
+		self.label2.grid(row=1, column=0, columnspan=3, sticky="w")
+
+		self.label3 = tk.Label(self, text="パスを保存しておらず未入力の場合は$HOMEを見ます")
+		self.label3.grid(row=2, column=0, columnspan=3, sticky="w")
+
+		self.chk_var1 = tk.BooleanVar()
+		self.chk1 = tk.Checkbutton(self, text="入力したパスを保存する", variable=self.chk_var1)
+		self.chk1.grid(row=3, column=0, columnspan=2, pady=10)
+
+		self.chk_var2 = tk.BooleanVar()
+		self.chk2 = tk.Checkbutton(self, text="新しいパスに更新", variable=self.chk_var2)
+		self.chk2.grid(row=3, column=2, columnspan=1, pady=10)
+
+		quit_btn = tk.Button(self, text='最新版を表示', command=self.root.destroy, width=10)
+		quit_btn.grid(row=4, column=0, columnspan=1, pady=10)
+
+		self.text_box = tk.Entry(self, width=30)
+		self.text_box.grid(row=5, column=0, columnspan=2, pady=10)
+
+		quit_btn = tk.Button(self, text='実行', command=self.root.destroy)
+		quit_btn.grid(row=5, column=2, columnspan=1, pady=10)
+
+
+	def input_handler(self):
+		text = self.text_box.get()
+		self.messeage['text'] = text + '!'
+
+
+root = tk.Tk()
+root.title('risyu')
+root.geometry('450x250')
+app = Application(root=root)
+root.mainloop()
+
+
+
+
 layout1 = [
-[sg.Text('金沢大学教務システム - 抽選科目登録状況.htmが')], 
-[sg.Text('入っているディレクトリのフルパスを入力')], 
-[sg.Text('パスを保存しておらず未入力の場合は$HOMEを見ます')], 
-[sg.Checkbox("入力したパスを保存する", key="-SAVE-", default=True), sg.Checkbox("新しいパスに更新", key="-IGN-", default=False)], 
+[sg.Checkbox("", key="-SAVE-", default=True), sg.Checkbox("", key="-IGN-", default=False)], 
 [sg.InputText(key='-INP-', default_text=defpath), sg.Button('実行', key='-SUBMIT-')], 
 [sg.Text(compl, key='-COMPL-')], 
 [sg.Text('', key='-ERROR-', size=(30, 1), text_color='red')], 
