@@ -44,21 +44,29 @@ class Application(tk.Frame):
 		self.label3 = tk.Label(self, text="パスを保存しておらず未入力の場合は$HOMEを見ます")
 		self.label3.grid(row=2, column=0, columnspan=3, sticky="w")
 
-		self.chk_var1 = tk.BooleanVar()
-		self.chk1 = tk.Checkbutton(self, text="入力したパスを保存する", variable=self.chk_var1)
+		self.chk_vars = tk.BooleanVar()
+		self.chk1 = tk.Checkbutton(self, text="入力したパスを保存する", variable=self.chk_vars)
 		self.chk1.grid(row=3, column=0, columnspan=2, pady=10)
 
-		self.chk_var2 = tk.BooleanVar()
-		self.chk2 = tk.Checkbutton(self, text="新しいパスに更新", variable=self.chk_var2)
+		self.chk_varr = tk.BooleanVar()
+		self.chk2 = tk.Checkbutton(self, text="新しいパスに更新", variable=self.chk_varr)
 		self.chk2.grid(row=3, column=2, columnspan=1, pady=10)
 
-		quit_btn = tk.Button(self, text='最新版を表示', command=self.root.destroy, width=10)
+		self.labelw = tk.Label(self, text="ファイルが見つかりません")
+		self.labelw.grid(row=0, column=0)
+		self.labelw.grid_forget()
+
+		self.labels = tk.Label(self, text="保存しました[ファイル名]")
+		self.labels.grid(row=0, column=0)
+		self.labels.grid_forget()
+
+		quit_btn = tk.Button(self, text='最新版を表示', command=self.go_next, width=10)
 		quit_btn.grid(row=4, column=0, columnspan=1, pady=10)
 
 		self.text_box = tk.Entry(self, width=30)
 		self.text_box.grid(row=5, column=0, columnspan=2, pady=10)
 
-		quit_btn = tk.Button(self, text='実行', command=self.root.destroy)
+		quit_btn = tk.Button(self, text='実行', command=self.csvmaker)
 		quit_btn.grid(row=5, column=2, columnspan=1, pady=10)
 
 
@@ -66,42 +74,44 @@ class Application(tk.Frame):
 		text = self.text_box.get()
 		self.messeage['text'] = text + '!'
 
+	def go_next(self):
+		sta = 1
+		pwd='.'
+		ls = os.listdir(pwd)
+		newls = [ls for ls in ls if re.search("risyu", ls)]
+		newestls = [newls for newls in newls if re.search("csv", newls)]
 
-root = tk.Tk()
-root.title('risyu')
-root.geometry('450x250')
-app = Application(root=root)
-root.mainloop()
+		numlist = [re.findall(r'\d+', fname)[0] for fname in newestls if re.findall(r'\d+', fname)]
+		openfile = max(numlist)
+		openfile = re.sub(r'^', 'risyu', openfile)
+		openfile = re.sub(r'$', '.csv', openfile)
+		with open(openfile,'r', encoding='utf-8') as ofile:
+			line = ofile.readline()
+			content = ""
+			while line:
+				content += line
+				line = ofile.readline()
+			content = re.sub(r'^時間割番号,.*+$\n', '', content)
 
+		
+		for widget in self.winfo_children():
+			widget.destroy()			#print(content)
+		print(content)
 
-
-
-layout1 = [
-[sg.Checkbox("", key="-SAVE-", default=True), sg.Checkbox("", key="-IGN-", default=False)], 
-[sg.InputText(key='-INP-', default_text=defpath), sg.Button('実行', key='-SUBMIT-')], 
-[sg.Text(compl, key='-COMPL-')], 
-[sg.Text('', key='-ERROR-', size=(30, 1), text_color='red')], 
-[sg.Button('(最新版を元に)表示', key='-NEXT-')]
-]
-window1 = sg.Window('risyu', layout1, size=(500, 300), keep_on_top=True)
-
-while True:
-	event, values = window1.read()
-
-	if event=='-SUBMIT-':
-		if values['-IGN-']:
-			defpath = values['-INP-']
-		if not values['-INP-']:
+	def csvmaker(self):
+		inp = text_box.get()
+		if inp:
+			defpath = inp
+		if not inp:
 			filename = os.path.join(os.environ["HOME"], "金沢大学教務システム - 抽選科目登録状況.htm") #なしありbrank
 		else: #あり
 			filename = os.path.join(defpath, "金沢大学教務システム - 抽選科目登録状況.htm")
-			if values['-SAVE-']:
+			if self.chk_vars.get():
 				with open('dir.csv', 'w', encoding='utf-8') as file:
 					file.write(defpath)
 		if not os.path.exists(filename):
 			window1['-ERROR-'].update('指定されたファイルが存在しません')
 			window1['-COMPL-'].update('')
-			continue
 
 		with open(filename, 'r', encoding='utf-8') as f:
 			line = f.readline()
@@ -152,30 +162,25 @@ while True:
 
 
 
+root = tk.Tk()
+root.title('risyu')
+root.geometry('450x250')
+app = Application(root=root)
+root.mainloop()
+
+
+
+
+while True:
+	event, values = window1.read()
+
+	if event=='-SUBMIT-':
+
+
+
+
 	elif event==sg.WIN_CLOSED:
 		sta = 0
-		break
-
-	elif event=='-NEXT-':
-		sta = 1
-		pwd='.'
-		ls = os.listdir(pwd)
-		newls = [ls for ls in ls if re.search("risyu", ls)]
-		newestls = [newls for newls in newls if re.search("csv", newls)]
-
-		numlist = [re.findall(r'\d+', fname)[0] for fname in newestls if re.findall(r'\d+', fname)]
-		openfile = max(numlist)
-		openfile = re.sub(r'^', 'risyu', openfile)
-		openfile = re.sub(r'$', '.csv', openfile)
-		with open(openfile,'r', encoding='utf-8') as ofile:
-			line = ofile.readline()
-			content = ""
-			while line:
-				content += line
-				line = ofile.readline()
-			content = re.sub(r'^時間割番号,.*+$\n', '', content)
-			#print(content)
-			window1.close()
 		break
 
 
