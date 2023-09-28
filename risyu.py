@@ -6,6 +6,7 @@ import codecs
 import os
 import re
 import tkinter as tk
+from tkinter import ttk
 from tkinter import messagebox
 
 class Application(tk.Frame):
@@ -29,6 +30,7 @@ class Application(tk.Frame):
 
 		self.content = '\n'.join(sorted(self.content.split('\n'), key=lambda x: x.split(',')[0]))
 
+		self.tree = None
 
 	def generate_buttons_info(self):
 		days = ["月", "火", "水", "木", "金"]
@@ -87,9 +89,6 @@ class Application(tk.Frame):
 			self.buttons[(row, col)] = btn  # ボタンを辞書に追加
 
 
-	def display_key(self, key):
-		self.butkey = key
-		print(self.butkey)
 
 	def go_next(self):
 		pwd = '.'
@@ -110,8 +109,7 @@ class Application(tk.Frame):
 
 		
 		for widget in self.winfo_children():
-			widget.destroy()			#print(content)
-		print(self.content)
+			widget.destroy()
 
 		self.asof = self.name + openfile
 		self.asof = re.sub(r'^risyu\d{4}', '', self.asof)
@@ -153,8 +151,7 @@ class Application(tk.Frame):
 				if 'th align' in line:
 					mode = 1
 				line = f.readline()
-			#print (turn)
-			#turn += 1
+
 		self.content = self.content.replace(" ", "")
 		self.content = self.content.replace("\t", "")
 		self.content = self.content.replace("\n", "")
@@ -248,6 +245,17 @@ class Application(tk.Frame):
 		self.buttons[(9, 5)] = btn
 
 
+		table_frame = ttk.Frame(self)
+		table_frame.grid(row=10, column=0, columnspan=12, pady=10, padx=10, sticky='nsew')
+		self.table = ttk.Treeview(table_frame, columns=('A', 'B', 'C'))
+		self.table.pack(fill=tk.BOTH, expand=True)
+
+		if not hasattr(self, 'tree') or not self.tree:
+			self.tree = ttk.Treeview(self, columns=("Column1", "Column2", "Column3"))
+			self.tree.grid(row=10, column=0, columnspan=10)
+
+
+
 
 
 
@@ -256,6 +264,13 @@ class Application(tk.Frame):
 
 		#トグル系スクリーニング/書き換え
 		print('こんにちは')
+
+		if self.dropdown_var.get() == '全群':
+			pass
+		else:
+			thegun = '^7' + self.dropdown_var.get() + '[A-Z].*?\n$'
+			thelines = re.sub(thegun, '', thelines)
+			print(thegun)
 
 		if self.tea_var.get():
 			thelines = "\n".join([",".join(re.split(',', line)[:4] + re.split(',', line)[5:]) for line in thelines.strip().split("\n")])
@@ -278,40 +293,32 @@ class Application(tk.Frame):
 			thelines = '\n'.join(line for line in thelines.splitlines() if re.search(gunkey, line))
 
 
-		if key == 'search':
-			buttontext = self.ser_box.get()
-			if not buttontext:
-				thelines = '\n'.join(line for line in thelines.splitlines() if buttontext in line)
-			else:
+		
+		buttontext = self.ser_box.get()
+		if buttontext:
+			thelines = '\n'.join(line for line in thelines.splitlines() if buttontext in line)
+		else:
+			if key == 'search':
 				pass
+			else:
+				thelines = '\n'.join(line for line in thelines.splitlines() if key in line)
 		print(key)
+
+		
 		#print(thelines)
 
+		# 既存のエントリをクリア
+		for item in self.tree.get_children():
+			self.tree.delete(item)
 
-#格納&表示
-"""
-		split_lines = [line.split(',') for line in thelines.split('\n')]
-		num_columns = len(split_lines[0])
+	# データの挿入
+		lines_list = [line.split(",") for line in thelines.split("\n") if line]
+		for item in lines_list:
+			self.tree.insert("", "end", values=(item[0], item[1], item[2]))
 
-		res = {}
-		updated_columns = set()  # このセットで更新された列番号をトラッキングします
+	# 再描画のトリガー
+		self.tree.update_idletasks()
 
-		for n in range(num_columns):
-			res[n] = [row[n] for row in split_lines]
-
-			if res[n]:
-				updated_columns.add(n)
-			for n, column_data in res.items():
-				print(f'res[{n}] = {column_data}')
-
-			data_str = '\n'.join(column_data)
-			window2[f'-RES{n}-'].update(data_str)
-
-		#ガベコレ的な
-		for i in range(14):
-			if i not in updated_columns:
-				window2[f'-RES{i}-'].update('')
-"""
 
 
 root = tk.Tk()
@@ -320,10 +327,5 @@ root.geometry('450x900')
 app = Application(root=root)
 root.mainloop()
 
-
-
-
-
-#並べ替え
 
 
