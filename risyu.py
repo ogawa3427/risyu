@@ -217,6 +217,7 @@ class Application(tk.Frame):
 		self.buttons[(8, 3)] = btn
 
 		self.onlygs_var = tk.BooleanVar()
+		self.onlygs_var.set(True)
 		self.onlygs_chk = tk.Checkbutton(self, text="GSのみ", variable=self.onlygs_var)  # こちらも変数名を変更
 		self.onlygs_chk.grid(row=1, column=5, columnspan=1, pady=1)
 
@@ -225,10 +226,12 @@ class Application(tk.Frame):
 		self.tea_chk.grid(row=2, column=5, columnspan=1, pady=1)
 
 		self.numo_var = tk.BooleanVar()
+		self.numo_var.set(True)
 		self.numo_chk = tk.Checkbutton(self, text="時間割番号を省略", variable=self.numo_var)  # こちらも変数名を変更
 		self.numo_chk.grid(row=3, column=5, columnspan=1, pady=1)
 
 		self.ryaku_var = tk.BooleanVar()
+		self.ryaku_var.set(True)
 		self.ryaku_chk = tk.Checkbutton(self, text="優先/限定を簡略化", variable=self.ryaku_var)  # こちらも変数名を変更
 		self.ryaku_chk.grid(row=4, column=5, columnspan=1, pady=1)
 
@@ -252,7 +255,7 @@ class Application(tk.Frame):
 
 		if not hasattr(self, 'tree') or not self.tree:
 			self.tree = ttk.Treeview(self, columns=("Column1", "Column2", "Column3"))
-			self.tree.grid(row=10, column=0, columnspan=10)
+			self.tree.grid(row=10, column=0, columnspan=20)
 
 
 
@@ -301,7 +304,10 @@ class Application(tk.Frame):
 			if key == 'search':
 				pass
 			else:
-				thelines = '\n'.join(line for line in thelines.splitlines() if key in line)
+				if key == '6限' or key == '7限' or key == '8限':
+					key = re.sub(r'限', '', key)
+					key = '(月|火|水|木|金)' + key
+				thelines = '\n'.join(line for line in thelines.splitlines() if re.search(key, line))
 		print(key)
 
 		
