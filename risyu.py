@@ -253,9 +253,22 @@ class Application(tk.Frame):
 		self.table = ttk.Treeview(table_frame, columns=('A', 'B', 'C'))
 		self.table.pack(fill=tk.BOTH, expand=True)
 
+
+		headers_list = self.header.split(',')
+
 		if not hasattr(self, 'tree') or not self.tree:
-			self.tree = ttk.Treeview(self, columns=("Column1", "Column2", "Column3"))
-			self.tree.grid(row=10, column=0, columnspan=20)
+			self.tree = ttk.Treeview(self, columns=headers_list)
+	
+		for header in headers_list:
+			self.tree.column(header, width=100)  # こちらの横幅は適切に調整してください
+			self.tree.heading(header, text=header)
+
+
+
+
+		self.tree.grid(row=10, column=0, columnspan=20)
+
+
 
 
 
@@ -275,14 +288,10 @@ class Application(tk.Frame):
 			thelines = re.sub(thegun, '', thelines)
 			print(thegun)
 
-		if self.tea_var.get():
-			thelines = "\n".join([",".join(re.split(',', line)[:4] + re.split(',', line)[5:]) for line in thelines.strip().split("\n")])
-
 		if self.onlygs_var.get():
 			print('OK')
 			thelines = '\n'.join(line for line in thelines.splitlines() if "ＧＳ" in line)
 			thelines = '\n'.join(line for line in thelines.splitlines() if not "ＧＳ言語" in line)
-			thelines = re.sub(r',ＧＳ科目', '', thelines)
 
 		if self.numo_var.get():
 			thelines = re.sub(r'^7', '', thelines, flags=re.MULTILINE)
@@ -320,9 +329,16 @@ class Application(tk.Frame):
 	# データの挿入
 		lines_list = [line.split(",") for line in thelines.split("\n") if line]
 		for item in lines_list:
-			self.tree.insert("", "end", values=(item[0], item[1], item[2]))
+			self.tree.insert("", "end", values=item)
+
+		if self.tea_var.get():
+			self.tree.column("教員名", width=0)
+		else:
+			self.tree.column("教員名", width=100)
 
 	# 再描画のトリガー
+		self.tree["show"] = "headings"
+
 		self.tree.update_idletasks()
 
 
