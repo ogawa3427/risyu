@@ -9,10 +9,7 @@ import tkinter as tk
 from tkinter import messagebox
 
 class Application(tk.Frame):
-
 	def __init__(self, root):
-
-
 		if os.path.exists("dir.csv"):
 			with open('dir.csv', "r", encoding='utf-8') as dir:
 				self.defpath = dir.readline() #あったら代入
@@ -29,6 +26,9 @@ class Application(tk.Frame):
 
 		self.buttons_info = self.generate_buttons_info()
 		self.create_widgets()
+
+		self.content = '\n'.join(sorted(self.content.split('\n'), key=lambda x: x.split(',')[0]))
+
 
 	def generate_buttons_info(self):
 		days = ["月", "火", "水", "木", "金"]
@@ -219,29 +219,25 @@ class Application(tk.Frame):
 		btn.grid(row=8, column=3, pady=1, padx=1)
 		self.buttons[(8, 3)] = btn
 
-		self.onlygs_var = tk.BooleanVar()  # 変数名を変更
+		self.onlygs_var = tk.BooleanVar()
 		self.onlygs_chk = tk.Checkbutton(self, text="GSのみ", variable=self.onlygs_var)  # こちらも変数名を変更
 		self.onlygs_chk.grid(row=1, column=5, columnspan=1, pady=1)
 
-		self.tea_var = tk.BooleanVar()  # 変数名を変更
+		self.tea_var = tk.BooleanVar()
 		self.tea_chk = tk.Checkbutton(self, text="教員名を省略", variable=self.tea_var)  # こちらも変数名を変更
 		self.tea_chk.grid(row=2, column=5, columnspan=1, pady=1)
 
-		self.numo_var = tk.BooleanVar()  # 変数名を変更
+		self.numo_var = tk.BooleanVar()
 		self.numo_chk = tk.Checkbutton(self, text="時間割番号を省略", variable=self.numo_var)  # こちらも変数名を変更
 		self.numo_chk.grid(row=3, column=5, columnspan=1, pady=1)
 
-		self.ryaku_var = tk.BooleanVar()  # 変数名を変更
+		self.ryaku_var = tk.BooleanVar()
 		self.ryaku_chk = tk.Checkbutton(self, text="優先/限定を簡略化", variable=self.ryaku_var)  # こちらも変数名を変更
 		self.ryaku_chk.grid(row=4, column=5, columnspan=1, pady=1)
 
 		self.dropdown_var = tk.StringVar(self)
-		self.dropdown_var.set(self.guns[0])  # デフォルトの選択を設定
-
-	# OptionMenuウィジェットの作成
+		self.dropdown_var.set(self.guns[0])
 		self.dropdown_menu = tk.OptionMenu(self, self.dropdown_var, *self.guns)
-
-	# ウィジェットを右下に配置
 		self.dropdown_menu.grid(row=8, column=4, pady=1, padx=1, columnspan=2)
 
 		self.ser_box = tk.Entry(self, width=30)
@@ -253,72 +249,47 @@ class Application(tk.Frame):
 
 
 
-root = tk.Tk()
-root.title('risyu')
-root.geometry('450x900')
-app = Application(root=root)
-root.mainloop()
 
 
+	def display_key(self, key):
+		thelines = self.content
 
-
-
-
-
-#厄介な書き換え
-english_class_lines = '\n'.join([line for line in self.content.split('\n') if '（英語クラス）' in line])
-
-english_class_lines = re.sub(r'（英語クラス）', '', english_class_lines)
-english_class_lines = '\n'.join([re.sub(r'(^[^,]*,[^,]*),', r'\1,[英]', line) for line in english_class_lines.split('\n')])
-
-non_english_class_lines = '\n'.join([line for line in self.content.split('\n') if '（英語クラス）' not in line])
-
-self.content = non_english_class_lines + '\n' + english_class_lines
-
-#並べ替え
-self.content = '\n'.join(sorted(self.content.split('\n'), key=lambda x: x.split(',')[0]))
-
-
-#main loop
-while True:
-	event, values = window2.read()
-	thelines = content
-	if sta == 0:
-		break
-
-	elif event == sg.WIN_CLOSED:
-		break
-	
-	else:
 		#トグル系スクリーニング/書き換え
-		if values['-ONLYGS-'] == True:
+		print('こんにちは')
+
+		if self.tea_var.get():
+			thelines = "\n".join([",".join(re.split(',', line)[:4] + re.split(',', line)[5:]) for line in thelines.strip().split("\n")])
+
+		if self.onlygs_var.get():
+			print('OK')
 			thelines = '\n'.join(line for line in thelines.splitlines() if "ＧＳ" in line)
 			thelines = '\n'.join(line for line in thelines.splitlines() if not "ＧＳ言語" in line)
 			thelines = re.sub(r',ＧＳ科目', '', thelines)
 
-		if values['-TEA-']:
-			thelines = "\n".join([",".join(re.split(',', line)[:3] + re.split(',', line)[5:]) for line in thelines.strip().split("\n")])
-
-		if values['-RYA-']:
+		if self.numo_var.get():
 			thelines = re.sub(r'^7', '', thelines, flags=re.MULTILINE)
 			thelines = re.sub(r'(?<=^.{2})[^,]+,', ',', thelines, flags=re.MULTILINE)
 
-		if re.match(r"^\d", values['-GUN-']):
-			if values['-RYA-']:
-				gunkey = "^" + values['-GUN-'] + "[A-F]"
+		if re.match(r"^\d", self.dropdown_var.get()):
+			if self.numo_var.get():
+				gunkey = "^" +  self.dropdown_var.get() + "[A-F]"
 			else:
-				gunkey = "^7" + values['-GUN-'] + "[A-F]"
+				gunkey = "^7" +  self.dropdown_var.get() + "[A-F]"
 			thelines = '\n'.join(line for line in thelines.splitlines() if re.search(gunkey, line))
 
-		print(thelines)
 
-		buttontext = event
-		if buttontext == '-SEARCH-':
-			buttontext = values['-WORD-']
-		thelines = '\n'.join(line for line in thelines.splitlines() if buttontext in line)
+		if key == 'search':
+			buttontext = self.ser_box.get()
+			if not buttontext:
+				thelines = '\n'.join(line for line in thelines.splitlines() if buttontext in line)
+			else:
+				pass
+		print(key)
+		#print(thelines)
 
 
 #格納&表示
+"""
 		split_lines = [line.split(',') for line in thelines.split('\n')]
 		num_columns = len(split_lines[0])
 
@@ -340,3 +311,19 @@ while True:
 		for i in range(14):
 			if i not in updated_columns:
 				window2[f'-RES{i}-'].update('')
+"""
+
+
+root = tk.Tk()
+root.title('risyu')
+root.geometry('450x900')
+app = Application(root=root)
+root.mainloop()
+
+
+
+
+
+#並べ替え
+
+
