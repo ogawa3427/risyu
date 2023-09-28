@@ -20,8 +20,10 @@ class Application(tk.Frame):
 		self.content = ''
 		self.guns = ["全群", "1", "2", "3", "4", "5", "6"]
 
+		self.tree = None
 
-		super().__init__(root, width=400, height=800, borderwidth=4, relief='groove')
+
+		super().__init__(root, width=300, height=800, borderwidth=4, relief='groove')
 		self.root = root
 		self.grid(sticky="nsew")
 
@@ -238,7 +240,7 @@ class Application(tk.Frame):
 		self.dropdown_var = tk.StringVar(self)
 		self.dropdown_var.set(self.guns[0])
 		self.dropdown_menu = tk.OptionMenu(self, self.dropdown_var, *self.guns)
-		self.dropdown_menu.grid(row=8, column=4, pady=1, padx=1, columnspan=2)
+		self.dropdown_menu.grid(row=8, column=4, pady=1, padx=1, columnspan=1)
 
 		self.ser_box = tk.Entry(self, width=30)
 		self.ser_box.grid(row=9, column=0, columnspan=5, pady=10)
@@ -249,7 +251,9 @@ class Application(tk.Frame):
 
 
 		table_frame = ttk.Frame(self)
+		table_frame = ttk.Frame(self, width=500, height=900)
 		table_frame.grid(row=10, column=0, columnspan=12, pady=10, padx=10, sticky='nsew')
+
 		self.table = ttk.Treeview(table_frame, columns=('A', 'B', 'C'))
 		self.table.pack(fill=tk.BOTH, expand=True)
 
@@ -260,18 +264,16 @@ class Application(tk.Frame):
 			self.tree = ttk.Treeview(self, columns=headers_list)
 	
 		for header in headers_list:
-			self.tree.column(header, width=100)  # こちらの横幅は適切に調整してください
+			self.tree.column(header, width=80)  # こちらの横幅は適切に調整してください
 			self.tree.heading(header, text=header)
 
+		#はいじめての列幅
+		column_widths = {"時間割番号": 35, "科目区分":120, "時間割名":120, "教員名":100, "曜日時限": 35, "適正人数": 35, "全登録数": 35, "優先指定":35, "第１希望":35 ,"第２希望":35 ,"第３希望":35 ,"第４希望":35 ,"第５希望":35}
 
+		for col, width in column_widths.items():
+			self.tree.column(col, width=width)
 
-
-		self.tree.grid(row=10, column=0, columnspan=20)
-
-
-
-
-
+		self.tree.grid(row=10, column=0, columnspan=6)
 
 
 
@@ -331,10 +333,25 @@ class Application(tk.Frame):
 		for item in lines_list:
 			self.tree.insert("", "end", values=item)
 
+
+
+
+#列のひひょじ
+		if self.numo_var.get():
+			self.tree.column('時間割番号', width=45)
+		else:
+			self.tree.column('時間割番号', width=120)
 		if self.tea_var.get():
 			self.tree.column("教員名", width=0)
 		else:
 			self.tree.column("教員名", width=100)
+
+		if self.onlygs_var.get():
+			self.tree.column("科目区分", width=0)
+		else:
+			self.tree.column("科目区分", width=100)
+
+
 
 	# 再描画のトリガー
 		self.tree["show"] = "headings"
