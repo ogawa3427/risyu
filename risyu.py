@@ -70,9 +70,6 @@ class Application(tk.Frame):
 		quit_btn.grid(row=5, column=2, columnspan=1, pady=10)
 
 
-	def input_handler(self):
-		text = self.text_box.get()
-		self.messeage['text'] = text + '!'
 
 	def go_next(self):
 		sta = 1
@@ -98,8 +95,15 @@ class Application(tk.Frame):
 			widget.destroy()			#print(content)
 		print(content)
 
+		asof = name + openfile
+		asof = re.sub(r'^risyu\d{4}', '', asof)
+		asof = re.sub(r'.{4}$', '', asof)
+		patt = r"(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})"
+		repl = r"\1月\2日\3:\4:\5現在"	
+		asof = re.sub(patt, repl, asof)
+
 	def csvmaker(self):
-		inp = text_box.get()
+		inp = self.text_box.get()
 		if inp:
 			defpath = inp
 		if not inp:
@@ -110,8 +114,8 @@ class Application(tk.Frame):
 				with open('dir.csv', 'w', encoding='utf-8') as file:
 					file.write(defpath)
 		if not os.path.exists(filename):
-			window1['-ERROR-'].update('指定されたファイルが存在しません')
-			window1['-COMPL-'].update('')
+			self.labels.config(text='')
+			self.labelw.config(text='ファイルが見つかりません')
 
 		with open(filename, 'r', encoding='utf-8') as f:
 			line = f.readline()
@@ -153,12 +157,12 @@ class Application(tk.Frame):
 		name = re.sub(r'\n', '', name)
 		name = "risyu" + name
 		name = name + ".csv"
+		name = '保存しました' + name
 
 		with open(name, 'w', encoding='utf-8') as file:
 			file.write(contents)
-		compl = "保存しました" + name
-		window1['-COMPL-'].update(compl)
-		window1['-ERROR-'].update('')
+		self.labels.config(text=name)
+		self.labelw.config(text='')
 
 
 
@@ -170,26 +174,6 @@ root.mainloop()
 
 
 
-
-while True:
-	event, values = window1.read()
-
-	if event=='-SUBMIT-':
-
-
-
-
-	elif event==sg.WIN_CLOSED:
-		sta = 0
-		break
-
-
-asof = name + openfile
-asof = re.sub(r'^risyu\d{4}', '', asof)
-asof = re.sub(r'.{4}$', '', asof)
-patt = r"(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})"
-repl = r"\1月\2日\3:\4:\5現在"
-asof = re.sub(patt, repl, asof)
 
 
 guns = ["全群", "1", "2", "3", "4", "5", "6"]
