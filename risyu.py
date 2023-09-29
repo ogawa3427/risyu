@@ -51,6 +51,8 @@ class Application(tk.Frame):
 				data = json.load(setting)
 				self.defpath = data['filedir']
 
+
+
 		self.label1 = tk.Label(self, text="金沢大学教務システム - 抽選科目登録状況.htmが")
 		self.label1.grid(row=0, column=0, columnspan=3, sticky="w")
 
@@ -493,25 +495,23 @@ class Application(tk.Frame):
 		self.make_table()
 
 	def make_table(self):
-
 		print(self.oklines)
 		lines = self.oklines.strip().split('\n')
 		oklist = [line.split(',') for line in lines]
 
-		cols = self.oklines.count(',')  
-		rows = self.oklines.count('\n') 
-		for r in range(10):
-			for c in range(10):
+		cols = self.oklines.count(',')
+		rows = self.oklines.count('\n')
+		for r in range(10):  # この値は適切に変更する必要があるかもしれません
+			for c in range(10):  # この値も適切に変更する必要があるかもしれません
 				frame = tk.Frame(
-					root,
+					self,  # ここを変更します
 					relief="solid",
 					bd=1
 				)
-				frame.grid(row=r+5, column=c, sticky='nsew')
+				frame.grid(row=r+5, column=c, sticky='nsew', columnspan=3)
 				label = tk.Label(frame, text=oklist[r][c])
 				label.pack(fill='both', expand=True)
 				print('aho')
-
 
 root = tk.Tk()
 
