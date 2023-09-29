@@ -8,29 +8,12 @@ from tkinter import messagebox
 
 class Application(tk.Frame):
 	def __init__(self, root):
-		if not os.path.exists("setting.json"):
-			initdate = {
-			'filedir': '',
-			'newparson': True,
-			'iki': '',
-			'rui': ''
-	}
-			gotojson = json.dumps(initdate,  indent=4)
-			with open('setting.json', "w", encoding='utf-8') as set:
-				set.write(gotojson) #あったら代入
-			self.defpath = ''
-		else:
-			with open('setting.json', 'r', encoding='utf-8') as setting:
-				data = json.load(setting)
-				self.defpath = data['filedir']
-
-
 		self.header = "時間割番号,科目区分,時間割名,曜日時限,教員名,対象学生,適正人数,全登録数,優先指定,第１希望,第２希望,第３希望,第４希望,第５希望"
 		self.name = ''
 		self.content = ''
 		self.guns = ["全群", "1", "2", "3", "4", "5", "6"]
 
-		super().__init__(root, width=430, height=900, borderwidth=4, relief='groove')
+		super().__init__(root, width=500, height=900, borderwidth=4, relief='groove')
 		self.root = root
 		self.grid(sticky="nsew")
 
@@ -52,6 +35,22 @@ class Application(tk.Frame):
 
 
 	def create_widgets(self):
+		if not os.path.exists("setting.json"):
+			initdate = {
+			'filedir': '',
+			'newparson': True,
+			'iki': '',
+			'rui': ''
+	}
+			gotojson = json.dumps(initdate,  indent=4)
+			with open('setting.json', "w", encoding='utf-8') as set:
+				set.write(gotojson) #あったら代入
+			self.defpath = ''
+		else:
+			with open('setting.json', 'r', encoding='utf-8') as setting:
+				data = json.load(setting)
+				self.defpath = data['filedir']
+
 		self.label1 = tk.Label(self, text="金沢大学教務システム - 抽選科目登録状況.htmが")
 		self.label1.grid(row=0, column=0, columnspan=3, sticky="w")
 
@@ -380,8 +379,6 @@ class Application(tk.Frame):
 	def show_buttons(self):
 		self.headers_list = self.header.split(',')
 
-
-
 		btn = tk.Button(self, text="高度な設定", command=lambda k="sett": self.display_key(k))
 		btn.grid(row=0, column=0, pady=1, padx=1, columnspan=3)
 		self.buttons[(0, 0)] = btn
@@ -447,11 +444,6 @@ class Application(tk.Frame):
 		self.buttons[(9, 5)] = btn
 
 
-
-
-
-
-
 	def display_key(self, key):
 		thelines = self.content
 		if key == 'aff':
@@ -495,12 +487,36 @@ class Application(tk.Frame):
 					key = re.sub(r'限', '', key)
 					key = '(月|火|水|木|金)' + key
 				thelines = '\n'.join(line for line in thelines.splitlines() if re.search(key, line))
+		self.oklines = thelines
 		print(key)
 
-	
+		self.make_table()
+
+	def make_table(self):
+
+		print(self.oklines)
+		lines = self.oklines.strip().split('\n')
+		oklist = [line.split(',') for line in lines]
+
+		cols = self.oklines.count(',')  
+		rows = self.oklines.count('\n') 
+		for r in range(10):
+			for c in range(10):
+				frame = tk.Frame(
+					root,
+					relief="solid",
+					bd=1
+				)
+				frame.grid(row=r+5, column=c, sticky='nsew')
+				label = tk.Label(frame, text=oklist[r][c])
+				label.pack(fill='both', expand=True)
+				print('aho')
 
 
 root = tk.Tk()
+
+	
+
 root.title('risyu')
 root.geometry('720x900')
 app = Application(root=root)
