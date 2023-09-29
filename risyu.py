@@ -13,9 +13,9 @@ class Application(tk.Frame):
 		self.content = ''
 		self.guns = ["全群", "1", "2", "3", "4", "5", "6"]
 
-		super().__init__(root, width=500, height=900, borderwidth=4, relief='groove')
+		super().__init__(root, width=700, height=900, borderwidth=4, relief='groove')
 		self.root = root
-		self.grid(sticky="nsew")
+		self.pack()
 
 		self.buttons_info = self.generate_buttons_info()
 		self.create_widgets()
@@ -54,41 +54,38 @@ class Application(tk.Frame):
 
 
 		self.label1 = tk.Label(self, text="金沢大学教務システム - 抽選科目登録状況.htmが")
-		self.label1.grid(row=0, column=0, columnspan=3, sticky="w")
+		self.label1.pack(anchor=tk.N)
 
 		self.label2 = tk.Label(self, text="入っているディレクトリのフルパスを入力")
-		self.label2.grid(row=1, column=0, columnspan=3, sticky="w")
+		self.label2.pack()
 
 		self.label3 = tk.Label(self, text="パスを保存しておらず未入力の場合は$HOMEを見ます")
-		self.label3.grid(row=2, column=0, columnspan=3, sticky="w")
+		self.label3.pack()
 
 		self.chk_vars = tk.BooleanVar()
 		self.chk_vars.set(True) 
 		self.chk1 = tk.Checkbutton(self, text="入力したパスを保存する", variable=self.chk_vars)
-		self.chk1.grid(row=3, column=0, columnspan=2, pady=10)
+		self.chk1.pack()
+
+		quit_btn = tk.Button(self, text='最新版を表示', command=self.go_next, width=10)
+		quit_btn.pack(side=tk.RIGHT)
+
+
+		self.text_box = tk.Entry(self, width=30)
+		self.text_box.insert(0, self.defpath)
+		self.text_box.pack()
+
+		quit_btn = tk.Button(self, text='実行', command=self.csvmaker)
+		quit_btn.pack(side=tk.LEFT)
 
 		self.labelw = tk.Label(self, text="ファイルが見つかりません", fg="red")
 
 		self.labels = tk.Label(self, text="保存しました[ファイル名]")
-		self.labels.grid(row=0, column=0)
-		self.labels.grid_forget()
 
-		quit_btn = tk.Button(self, text='最新版を表示', command=self.go_next, width=10)
-		quit_btn.grid(row=4, column=0, columnspan=1, pady=10)
 
-		self.text_box = tk.Entry(self, width=30)
-		self.text_box.insert(0, self.defpath)
-		self.text_box.grid(row=5, column=0, columnspan=2, pady=10)
 
-		quit_btn = tk.Button(self, text='実行', command=self.csvmaker)
-		quit_btn.grid(row=5, column=2, columnspan=1, pady=10)
 
-		self.buttons = {}  # すべてのボタンをこの辞書に保存
 
-		for (row, col), btn_text in self.buttons_info.items():
-			btn = tk.Button(self, text=btn_text, command=lambda k=btn_text: self.display_key(k))
-			#btn.grid(row=row, column=col, pady=10, padx=10)
-			self.buttons[(row, col)] = btn  # ボタンを辞書に追加
 
 	def csvmaker(self):
 		self.content = ''
@@ -108,8 +105,8 @@ class Application(tk.Frame):
 				with open('setting.json', 'w') as file:
 					json.dump(data, file, indent=4)
 		if not os.path.exists(filename):
-			self.labels.grid_forget()
-			self.labelw.grid(row=6, column=0)
+			self.labels.pack_forget()
+			self.labelw.pack()
 
 		with open(filename, 'r', encoding='utf-8') as f:
 			line = f.readline()
@@ -156,8 +153,8 @@ class Application(tk.Frame):
 
 		self.name = '保存しました' + self.name
 		self.labels.config(text=self.name)
-		self.labels.grid(row=6, column=0)
-		self.labelw.grid_forget()
+		self.labels.pack()
+		self.labelw.pack_forget()
 
 
 	def go_next(self):
@@ -243,31 +240,34 @@ class Application(tk.Frame):
 			widget.destroy()
 
 		self.labelr = tk.Label(self, text="あてはまる所属にチェック\n履修登録期間の初めに再度表示されることがあります\n(この画面は再度表示できます)")
-		self.labelr.grid(row=0, column=0, columnspan=4, sticky="w")
+		self.labelr.pack()
+
+		radio_f = tk.Frame(self)
+		radio_f.pack(pady=10)
 
 		self.radio_var = tk.IntVar()
 		self.radio_var.trace("w", self.update_combobox_options)
-		radio1 = tk.Radiobutton(self, text="人社", variable=self.radio_var, value=1, font=("Arial", 14))
-		radio2 = tk.Radiobutton(self, text="理工", variable=self.radio_var, value=2, font=("Arial", 14))
-		radio3 = tk.Radiobutton(self, text="医薬保", variable=self.radio_var, value=3, font=("Arial", 14))
-		radio4 = tk.Radiobutton(self, text="融合", variable=self.radio_var, value=4, font=("Arial", 14))
-		radio1.grid(row=1, column=0, sticky="w")
-		radio2.grid(row=1, column=1, sticky="w")
-		radio3.grid(row=1, column=2, sticky="w")
-		radio4.grid(row=1, column=3, sticky="w")
+		radio1 = tk.Radiobutton(radio_f, text="人社", variable=self.radio_var, value=1, font=("Arial", 14))
+		radio2 = tk.Radiobutton(radio_f, text="理工", variable=self.radio_var, value=2, font=("Arial", 14))
+		radio3 = tk.Radiobutton(radio_f, text="医薬保", variable=self.radio_var, value=3, font=("Arial", 14))
+		radio4 = tk.Radiobutton(radio_f, text="融合", variable=self.radio_var, value=4, font=("Arial", 14))
+		radio1.pack(anchor = tk.W, side=tk.LEFT, padx=5)
+		radio2.pack(side = tk.LEFT, padx=5)
+		radio3.pack(side = tk.LEFT, padx=5)
+		radio4.pack(side = tk.LEFT, padx=5)
 		
 
 		style = ttk.Style()
 		style.configure('Large.TCombobox', font=('Arial', 19))
 		style.configure('Large.TCombobox*Listbox', font=('Arial', 19))  # この行で選択肢の文字の大きさを変更
 		self.combobox = ttk.Combobox(self, style='Large.TCombobox', values=[] ,font=("Arial", 14))
-		self.combobox.grid(row=2, column=0, columnspan=4, sticky='w')
+		self.combobox.pack(anchor=tk.CENTER, pady=20)
 
 
 
 
 		do_btn = tk.Button(self, text='次へ', command=self.autoinit)
-		do_btn.grid(row=3, column=0, pady=10)
+		do_btn.pack(anchor=tk.CENTER, fill=tk.X)
 
 	def autoinit(self):
 		iki = self.radio_var.get()
@@ -316,14 +316,21 @@ class Application(tk.Frame):
 
 
 
-		self.rkubun = tk.Label(self, text="区分")
-		self.rkubun.grid(row=3, column=1, columnspan=1, sticky="w")
-		self.rgentei = tk.Label(self, text="限定")
-		self.rgentei.grid(row=3, column=4, columnspan=1, sticky="w")
-		self.ryuusen = tk.Label(self, text="優先")
-		self.ryuusen.grid(row=3, column=5, columnspan=1, sticky="w")
-		self.ryuusen = tk.Label(self, text="以外")
-		self.ryuusen.grid(row=3, column=6, columnspan=1, sticky="w")
+		outer_frame = tk.Frame(self)
+		outer_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+
+		self.rkubun = tk.Label(outer_frame, text="区分")
+		self.rkubun.pack(anchor=tk.W, side=tk.LEFT)
+
+		rframe = tk.Frame(outer_frame)
+		rframe.pack(padx=10, anchor=tk.E, side=tk.LEFT, fill=tk.X)
+
+		self.rgentei = tk.Label(rframe, text="限定")
+		self.rgentei.pack(anchor=tk.NE, side=tk.RIGHT, fill=tk.X, expand=True)
+		self.ryuusen = tk.Label(rframe, text="優先")
+		self.ryuusen.pack(side=tk.LEFT)
+		self.ryuusen = tk.Label(rframe, text="以外")
+		self.ryuusen.pack(side=tk.LEFT)
 
 
 		with open('role.json', 'r', encoding='utf-8') as f:
@@ -334,7 +341,7 @@ class Application(tk.Frame):
 
 			attr_name = 'kubunname' + str(i)
 			setattr(self, attr_name, tk.Label(self, text=self.nowyuusen[i]))
-			getattr(self, attr_name).grid(row=3+i, column=0, columnspan=4, sticky="w")
+			getattr(self, attr_name).pack()
 
 			block = data.get(str(self.nowyuusen[i]), [])
 			vgen = block[0]
@@ -348,7 +355,7 @@ class Application(tk.Frame):
 
 			chk_attr_name = 'genv' + str(i)
 			setattr(self, chk_attr_name, tk.Checkbutton(self, text="", variable=getattr(self, attr_gen)))
-			getattr(self, chk_attr_name).grid(row=3+i, column=4, columnspan=1, sticky="w")
+			getattr(self, chk_attr_name).pack()
 		
 			attr_gen = 'yuu' + str(i)
 			setattr(self, attr_gen, tk.BooleanVar())
@@ -356,7 +363,7 @@ class Application(tk.Frame):
 
 			chk_attr_name = 'yuuv' + str(i)
 			setattr(self, chk_attr_name, tk.Checkbutton(self, text="", variable=getattr(self, attr_gen)))
-			getattr(self, chk_attr_name).grid(row=3+i, column=5, columnspan=1, sticky="w")
+			getattr(self, chk_attr_name).pack()
 
 			attr_gen = 'iga' + str(i)
 			setattr(self, attr_gen, tk.BooleanVar())
@@ -364,12 +371,12 @@ class Application(tk.Frame):
 
 			chk_attr_name = 'igav' + str(i)
 			setattr(self, chk_attr_name, tk.Checkbutton(self, text="", variable=getattr(self, attr_gen)))
-			getattr(self, chk_attr_name).grid(row=3+i, column=6, columnspan=1, sticky="w")
+			getattr(self, chk_attr_name).pack()
 
 
 
 		back_btn = tk.Button(self, text='完了', command=self.backtothelist)
-		back_btn.grid(row=i+4, column=0, pady=10)
+		back_btn.pack()
 
 
 	def backtothelist(self):
@@ -382,67 +389,67 @@ class Application(tk.Frame):
 		self.headers_list = self.header.split(',')
 
 		btn = tk.Button(self, text="高度な設定", command=lambda k="sett": self.display_key(k))
-		btn.grid(row=0, column=0, pady=1, padx=1, columnspan=3)
+		btn.pack()
 		self.buttons[(0, 0)] = btn
 
 		btn = tk.Button(self, text="所属設定", command=lambda k="aff": self.display_key(k))
-		btn.grid(row=0, column=3, pady=1, padx=1, columnspan=3)
+		btn.pack()
 		self.buttons[(0, 4)] = btn
 
 		self.labelasof = tk.Label(self, text=self.asof)
-		self.labelasof.grid(row=1, column=0, columnspan=5)
+		self.labelasof.pack()
 
 		for (row, col), btn_text in self.buttons_info.items():
 			# ここで新しいボタンを作成しています。
 			btn = tk.Button(self, text=btn_text, command=lambda k=btn_text: self.display_key(k))
-			btn.grid(row=row+1, column=col, pady=1, padx=1)
+			btn.pack()
 			self.buttons[(row+1, col)] = btn
 
 		btn = tk.Button(self, text="6限", command=lambda k="6限": self.display_key(k))
-		btn.grid(row=8, column=0, pady=1, padx=1)
+		btn.pack()
 		self.buttons[(8, 0)] = btn
 
 		btn = tk.Button(self, text="7限", command=lambda k="7限": self.display_key(k))
-		btn.grid(row=8, column=1, pady=1, padx=1)
+		btn.pack()
 		self.buttons[(8, 1)] = btn
 
 		btn = tk.Button(self, text="8限", command=lambda k="8限": self.display_key(k))
-		btn.grid(row=8, column=2, pady=1, padx=1)
+		btn.pack()
 		self.buttons[(8, 2)] = btn
 
 		btn = tk.Button(self, text="集中", command=lambda k="集中": self.display_key(k))
-		btn.grid(row=8, column=3, pady=1, padx=1)
+		btn.pack()
 		self.buttons[(8, 3)] = btn
 
 		self.onlygs_var = tk.BooleanVar()
 		self.onlygs_var.set(True)
 		self.onlygs_chk = tk.Checkbutton(self, text="GSのみ", variable=self.onlygs_var)  # こちらも変数名を変更
-		self.onlygs_chk.grid(row=1, column=5, columnspan=1, pady=1)
+		self.onlygs_chk.pack()
 
 		self.tea_var = tk.BooleanVar()
 		self.tea_chk = tk.Checkbutton(self, text="教員名を省略", variable=self.tea_var)  # こちらも変数名を変更
-		self.tea_chk.grid(row=2, column=5, columnspan=1, pady=1)
+		self.tea_chk.pack()
 
 		self.numo_var = tk.BooleanVar()
 		self.numo_var.set(True)
 		self.numo_chk = tk.Checkbutton(self, text="時間割番号を省略", variable=self.numo_var)  # こちらも変数名を変更
-		self.numo_chk.grid(row=3, column=5, columnspan=1, pady=1)
+		self.numo_chk.pack()
 
 		self.ryaku_var = tk.BooleanVar()
 		self.ryaku_var.set(True)
 		self.ryaku_chk = tk.Checkbutton(self, text="優先/限定を簡略化", variable=self.ryaku_var)  # こちらも変数名を変更
-		self.ryaku_chk.grid(row=4, column=5, columnspan=1, pady=1)
+		self.ryaku_chk.pack()
 
 		self.dropdown_var = tk.StringVar(self)
 		self.dropdown_var.set(self.guns[0])
 		self.dropdown_menu = tk.OptionMenu(self, self.dropdown_var, *self.guns)
-		self.dropdown_menu.grid(row=8, column=4, pady=1, padx=1, columnspan=1)
+		self.dropdown_menu.pack()
 
 		self.ser_box = tk.Entry(self, width=30)
-		self.ser_box.grid(row=9, column=0, columnspan=5, pady=10)
+		self.ser_box.pack()
 
 		btn = tk.Button(self, text="フリーワード検索", command=lambda k="search": self.display_key(k))
-		btn.grid(row=9, column=5, pady=1, padx=1)
+		btn.pack()
 		self.buttons[(9, 5)] = btn
 
 
@@ -508,7 +515,7 @@ class Application(tk.Frame):
 					relief="solid",
 					bd=1
 				)
-				frame.grid(row=r+5, column=c, sticky='nsew', columnspan=3)
+				frame.pack()
 				label = tk.Label(frame, text=oklist[r][c])
 				label.pack(fill='both', expand=True)
 				print('aho')
