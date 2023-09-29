@@ -8,16 +8,14 @@ from tkinter import messagebox
 
 class Application(tk.Frame):
 	def __init__(self, root):
-		if  os.path.exists("setting.json"):
+		if not os.path.exists("setting.json"):
 			initdate = {
 			'filedir': '',
 			'newparson': True,
-			'yuusen': False,
-			'iki': '融合学域',
-			'rui': 'スマート創成科学類'
+			'iki': '',
+			'rui': ''
 	}
-
-			gotojson = json.dumps(initdate)
+			gotojson = json.dumps(initdate,  indent=4)
 			with open('setting.json', "w", encoding='utf-8') as set:
 				set.write(gotojson) #あったら代入
 			self.defpath = ''
@@ -199,20 +197,15 @@ class Application(tk.Frame):
 		with open('setting.json', 'r', encoding='utf-8') as f:
 			data = json.load(f)
 		np = data['newparson']
-		altyuusen = data['yuusen']
-		keys_list = list(altyuusen.keys())
-
-		if np:
+		
+		if not np:
 			pass
 		else:
-			if keys_list == self.nowyuusen:
+			if False:
 				print('OK')
 				self.show_buttons()
 			else:
 				pass
-
-
-
 
 
 		self.regroll()
@@ -235,6 +228,16 @@ class Application(tk.Frame):
 
 
 	def regroll(self):
+		with open('setting.json', 'r', encoding='utf-8') as f:
+			data = json.load(f)
+		rui = data['rui']
+		iki = data['iki']
+		iki = re.sub(r'人間社会学域', '1', iki)
+		iki = re.sub(r'理工学域', '2', iki)
+		iki = re.sub(r'医薬保健学域', '3', iki)
+		iki = re.sub(r'融合学域', '4', iki)
+
+
 		for widget in self.winfo_children():
 			widget.destroy()
 
@@ -251,6 +254,7 @@ class Application(tk.Frame):
 		radio2.grid(row=1, column=1, sticky="w")
 		radio3.grid(row=1, column=2, sticky="w")
 		radio4.grid(row=1, column=3, sticky="w")
+		
 
 		style = ttk.Style()
 		style.configure('Large.TCombobox', font=('Arial', 19))
@@ -259,8 +263,58 @@ class Application(tk.Frame):
 		self.combobox.grid(row=2, column=0, columnspan=4, sticky='w')
 
 
+
+
 		do_btn = tk.Button(self, text='次へ', command=self.autoinit)
 		do_btn.grid(row=3, column=0, pady=10)
+
+	def autoinit(self):
+		iki = self.radio_var.get()
+		rui = self.combobox.get()
+		iki = re.sub(r'1', '人間社会学域', str(iki))
+		iki = re.sub(r'2', '理工学域', str(iki))
+		iki = re.sub(r'3', '医薬保健学域', str(iki))
+		iki = re.sub(r'4', '融合学域', str(iki))
+		rui = re.sub(r'学類', '', str(rui))
+
+		with open('setting.json', 'r', encoding='utf-8') as f:
+			data = json.load(f)
+		data['iki'] = iki
+		data['rui'] = rui
+		with open('setting.json', 'w', encoding='utf-8') as f:
+			data = json.dump(data, f, indent=4)
+
+
+		self.yuul = len(self.nowyuusen)
+		with open('setting.json', 'r', encoding='utf-8') as f:
+			data = json.load(f)
+		iki = data['iki']
+		rui = data['rui']
+		if os.path.exists("role.json"):
+			initdict = {}
+			for i in range(1, self.yuul):
+
+			
+				if iki in self.nowyuusen[i] or rui in self.nowyuusen[i]:
+					if '限定' in self.nowyuusen[i]:
+						gen = True
+						yuu, iga = False, False
+					elif '優先' in self.nowyuusen[i]:
+						yuu = True
+						gen, iga = False, False
+					if '以外' in self.nowyuusen[i]:
+						gen, yuu = False, False
+						iga = True
+				else:
+					gen, yuu, iga = False, False, False
+				initdict[self.nowyuusen[i]] = [gen, yuu, iga]
+				gotoinit = json.dumps(initdict)
+
+			with open('role.json', 'w', encoding='utf-8') as f:
+				f.write(gotoinit)
+
+
+
 		self.rkubun = tk.Label(self, text="区分")
 		self.rkubun.grid(row=3, column=1, columnspan=1, sticky="w")
 		self.rgentei = tk.Label(self, text="限定")
@@ -271,49 +325,25 @@ class Application(tk.Frame):
 		self.ryuusen.grid(row=3, column=6, columnspan=1, sticky="w")
 
 
-	def autoinit(self):
-		yuul = len(self.nowyuusen)
-		with open('setting.json', 'r', encoding='utf-8') as f:
-			data = json.load(f)
-		iki = data['iki']
-		rui = data['rui']
-		if not os.path.exists("role.json"):
-			initdict = {}
-			for i in range(1, yuul):
-
-			
-				if iki in self.nowyuusen[i] or rui in self.nowyuusen[i]:
-					if '限定' in self.nowyuusen[i]:
-						gen = True
-						yuu, iga = False
-					elif '優先' in self.nowyuusen[i]:
-						yuu = True
-						gen, iga = False
-					if '以外' in self.nowyuusen[i]:
-						gen, yuu = False
-						iga = True
-				else:
-					gen, yuu, iga = False
-				initdict[self.nowyuusen[i]] = [gen, yuu, iga]
-
-			with open('role.json', 'w', encoding='utf-8') as f:
-				pass
 		with open('role.json', 'r', encoding='utf-8') as f:
-			roles = json.load(f)
+			data = json.load(f)
+		print(data)
 
-		altyuusen = roles['全学生']
-		altyuusen = altyuusen['new']
-		print(altyuusen)
-		print('baka')
+		for i in range(1,self.yuul):
 
-		for i in range(1,yuul):
 			attr_name = 'kubunname' + str(i)
 			setattr(self, attr_name, tk.Label(self, text=self.nowyuusen[i]))
 			getattr(self, attr_name).grid(row=3+i, column=0, columnspan=4, sticky="w")
 
+			block = data.get(str(self.nowyuusen[i]), [])
+			vgen = block[0]
+			vyuu = block[1]
+			viga = block[2]
+
+
 			attr_gen = 'gen' + str(i)
 			setattr(self, attr_gen, tk.BooleanVar())
-			getattr(self, attr_gen).set(True)  # BooleanVarの初期値をTrueに設定
+			getattr(self, attr_gen).set(vgen)  # BooleanVarの初期値をTrueに設定
 
 			chk_attr_name = 'genv' + str(i)
 			setattr(self, chk_attr_name, tk.Checkbutton(self, text="", variable=getattr(self, attr_gen)))
@@ -321,7 +351,7 @@ class Application(tk.Frame):
 		
 			attr_gen = 'yuu' + str(i)
 			setattr(self, attr_gen, tk.BooleanVar())
-			getattr(self, attr_gen).set(True)  # BooleanVarの初期値をTrueに設定
+			getattr(self, attr_gen).set(vyuu)  # BooleanVarの初期値をTrueに設定
 
 			chk_attr_name = 'yuuv' + str(i)
 			setattr(self, chk_attr_name, tk.Checkbutton(self, text="", variable=getattr(self, attr_gen)))
@@ -329,7 +359,7 @@ class Application(tk.Frame):
 
 			attr_gen = 'iga' + str(i)
 			setattr(self, attr_gen, tk.BooleanVar())
-			getattr(self, attr_gen).set(False)  # BooleanVarの初期値をTrueに設定
+			getattr(self, attr_gen).set(viga)  # BooleanVarの初期値をTrueに設定
 
 			chk_attr_name = 'igav' + str(i)
 			setattr(self, chk_attr_name, tk.Checkbutton(self, text="", variable=getattr(self, attr_gen)))
