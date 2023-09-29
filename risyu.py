@@ -5,50 +5,131 @@ import sys
 import codecs
 import os
 import re
-import pandas as pd
-import PySimpleGUI as sg
-sg.set_options(font=("MS Gothic", 14))
-sg.theme("DarkBlue")
-compl=""
-content = ""
-header = "時間割番号,科目区分,時間割名,曜日時限,教員名,対象学生,適正人数,全登録数,優先指定,第１希望,第２希望,第３希望,第４希望,第５希望"
-defpath=''
-name = ""
-openfile = ""
+import tkinter as tk
+from tkinter import ttk
+from tkinter import messagebox
 
-if os.path.exists("dir.csv"):
-	with open('dir.csv', "r", encoding='utf-8') as dir:
-		defpath = dir.readline() #あったら代入
+class Application(tk.Frame):
+	def __init__(self, root):
+		if os.path.exists("dir.csv"):
+			with open('dir.csv', "r", encoding='utf-8') as dir:
+				self.defpath = dir.readline() #あったら代入
 
-layout1 = [
-[sg.Text('金沢大学教務システム - 抽選科目登録状況.htmが')], 
-[sg.Text('入っているディレクトリのフルパスを入力')], 
-[sg.Text('パスを保存しておらず未入力の場合は$HOMEを見ます')], 
-[sg.Checkbox("入力したパスを保存する", key="-SAVE-", default=True), sg.Checkbox("新しいパスに更新", key="-IGN-", default=False)], 
-[sg.InputText(key='-INP-', default_text=defpath), sg.Button('実行', key='-SUBMIT-')], 
-[sg.Text(compl, key='-COMPL-')], 
-[sg.Text('', key='-ERROR-', size=(30, 1), text_color='red')], 
-[sg.Button('(最新版を元に)表示', key='-NEXT-')]
-]
-window1 = sg.Window('risyu', layout1, size=(500, 300), keep_on_top=True)
+		self.header = "時間割番号,科目区分,時間割名,曜日時限,教員名,対象学生,適正人数,全登録数,優先指定,第１希望,第２希望,第３希望,第４希望,第５希望"
+		self.name = ''
+		self.content = ''
+		self.guns = ["全群", "1", "2", "3", "4", "5", "6"]
 
-while True:
-	event, values = window1.read()
+		super().__init__(root, width=430, height=900, borderwidth=4, relief='groove')
+		self.root = root
+		self.grid(sticky="nsew")
 
-	if event=='-SUBMIT-':
-		if values['-IGN-']:
-			defpath = values['-INP-']
-		if not values['-INP-']:
+		self.buttons_info = self.generate_buttons_info()
+		self.create_widgets()
+
+		self.content = '\n'.join(sorted(self.content.split('\n'), key=lambda x: x.split(',')[0]))
+
+
+	def generate_buttons_info(self):
+		days = ["月", "火", "水", "木", "金"]
+		info = {}
+
+		for row in range(1, 6):  # 1から5までのループ
+			for col, day in enumerate(days):
+				key = (row, col)
+				value = f"{day}{row}"
+				info[key] = value
+		return info
+
+
+	def create_widgets(self):
+		self.label1 = tk.Label(self, text="金沢大学教務システム - 抽選科目登録状況.htmが")
+		self.label1.grid(row=0, column=0, columnspan=3, sticky="w")
+
+		self.label2 = tk.Label(self, text="入っているディレクトリのフルパスを入力")
+		self.label2.grid(row=1, column=0, columnspan=3, sticky="w")
+
+		self.label3 = tk.Label(self, text="パスを保存しておらず未入力の場合は$HOMEを見ます")
+		self.label3.grid(row=2, column=0, columnspan=3, sticky="w")
+
+		self.chk_vars = tk.BooleanVar()
+		self.chk1 = tk.Checkbutton(self, text="入力したパスを保存する", variable=self.chk_vars)
+		self.chk1.grid(row=3, column=0, columnspan=2, pady=10)
+
+		self.chk_varr = tk.BooleanVar()
+		self.chk2 = tk.Checkbutton(self, text="新しいパスに更新", variable=self.chk_varr)
+		self.chk2.grid(row=3, column=2, columnspan=1, pady=10)
+
+		self.labelw = tk.Label(self, text="ファイルが見つかりません")
+		self.labelw.grid(row=0, column=0)
+		self.labelw.grid_forget()
+
+		self.labels = tk.Label(self, text="保存しました[ファイル名]")
+		self.labels.grid(row=0, column=0)
+		self.labels.grid_forget()
+
+		quit_btn = tk.Button(self, text='最新版を表示', command=self.go_next, width=10)
+		quit_btn.grid(row=4, column=0, columnspan=1, pady=10)
+
+		self.text_box = tk.Entry(self, width=30)
+		self.text_box.insert(0, self.defpath)
+		self.text_box.grid(row=5, column=0, columnspan=2, pady=10)
+
+		quit_btn = tk.Button(self, text='実行', command=self.csvmaker)
+		quit_btn.grid(row=5, column=2, columnspan=1, pady=10)
+
+		self.buttons = {}  # すべてのボタンをこの辞書に保存
+
+		for (row, col), btn_text in self.buttons_info.items():
+			btn = tk.Button(self, text=btn_text, command=lambda k=btn_text: self.display_key(k))
+			#btn.grid(row=row, column=col, pady=10, padx=10)
+			self.buttons[(row, col)] = btn  # ボタンを辞書に追加
+
+
+	def go_next(self):
+		pwd = '.'
+		ls = os.listdir(pwd)
+		newls = [ls for ls in ls if re.search("risyu", ls)]
+		newestls = [newls for newls in newls if re.search("csv", newls)]
+
+		numlist = [re.findall(r'\d+', fname)[0] for fname in newestls if re.findall(r'\d+', fname)]
+		openfile = max(numlist)
+		openfile = re.sub(r'^', 'risyu', openfile)
+		openfile = re.sub(r'$', '.csv', openfile)
+		with open(openfile,'r', encoding='utf-8') as ofile:
+			line = ofile.readline()
+			while line:
+				self.content += line
+				line = ofile.readline()
+			self.content = re.sub(r'^時間割番号,.*+$\n', '', self.content)
+
+		
+		for widget in self.winfo_children():
+			widget.destroy()
+
+		self.asof = self.name + openfile
+		self.asof = re.sub(r'^risyu\d{4}', '', self.asof)
+		self.asof = re.sub(r'.{4}$', '', self.asof)
+		patt = r"(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})"
+		repl = r"\1月\2日\3:\4:\5現在"	
+		self.asof = re.sub(patt, repl, self.asof)
+
+		self.show_buttons()
+
+	def csvmaker(self):
+		inp = self.text_box.get()
+		if inp:
+			defpath = inp
+		if not inp:
 			filename = os.path.join(os.environ["HOME"], "金沢大学教務システム - 抽選科目登録状況.htm") #なしありbrank
 		else: #あり
 			filename = os.path.join(defpath, "金沢大学教務システム - 抽選科目登録状況.htm")
-			if values['-SAVE-']:
+			if self.chk_vars.get():
 				with open('dir.csv', 'w', encoding='utf-8') as file:
 					file.write(defpath)
 		if not os.path.exists(filename):
-			window1['-ERROR-'].update('指定されたファイルが存在しません')
-			window1['-COMPL-'].update('')
-			continue
+			self.labels.config(text='')
+			self.labelw.config(text='ファイルが見つかりません')
 
 		with open(filename, 'r', encoding='utf-8') as f:
 			line = f.readline()
@@ -62,182 +143,191 @@ while True:
 				if mode == 1:
 					if "</tr><tr" in line:
 						line = "eskape"
-					content += line
+					self.content += line
 				if 'th align' in line:
 					mode = 1
 				line = f.readline()
-			#print (turn)
-			#turn += 1
-		content = content.replace(" ", "")
-		content = content.replace("\t", "")
-		content = content.replace("\n", "")
-		content = content.replace("</span>", "")
-		content = re.sub(r'<span.*?>', '', content)
-		content = re.sub(r'<td.*?>', '<td>', content)
-		content = content.replace("</td><td>", ",")
-		content = content.replace("<td>", "")
-		content = content.replace("</td>", "")
-		content = content.replace("&amp;", "&")
-		content = re.sub(r'<\/tr>.*', '', content)
 
-		content = re.sub(r'^\n', '', content)
-		content = content.replace("eskape", "\n")
-		contents = header + content
+		self.content = self.content.replace(" ", "")
+		self.content = self.content.replace("\t", "")
+		self.content = self.content.replace("\n", "")
+		self.content = self.content.replace("</span>", "")
+		self.content = re.sub(r'<span.*?>', '', self.content)
+		self.content = re.sub(r'<td.*?>', '<td>', self.content)
+		self.content = self.content.replace("</td><td>", ",")
+		self.content = self.content.replace("<td>", "")
+		self.content = self.content.replace("</td>", "")
+		self.content = self.content.replace("&amp;", "&")
+		self.content = re.sub(r'<\/tr>.*', '', self.content)
 
-		name = re.sub(r'<.*?>', '', name)
-		name = re.sub(r'\t', '', name)
-		name = re.sub(r'[ :\/]', '', name)
-		name = re.sub(r'\n', '', name)
-		name = "risyu" + name
-		name = name + ".csv"
+		self.content = re.sub(r'^\n', '', self.content)
+		self.content = self.content.replace("eskape", "\n")
+		self.contents = self.header + self.content
 
-		with open(name, 'w', encoding='utf-8') as file:
-			file.write(contents)
-		compl = "保存しました" + name
-		window1['-COMPL-'].update(compl)
-		window1['-ERROR-'].update('')
+		self.name = re.sub(r'<.*?>', '', self.name)
+		self.name = re.sub(r'\t', '', self.name)
+		self.name = re.sub(r'[ :\/]', '', self.name)
+		self.name = re.sub(r'\n', '', self.name)
+		self.name = "risyu" + self.name
+		self.name = self.name + ".csv"
 
+		with open(self.name, 'w', encoding='utf-8') as file:
+			file.write(self.contents)
 
+		self.name = '保存しました' + self.name
+		self.labels.config(text=self.name)
+		self.labelw.config(text='')
 
-	elif event==sg.WIN_CLOSED:
-		sta = 0
-		break
+	def show_buttons(self):
+		btn = tk.Button(self, text="高度な設定", command=lambda k="sett": self.display_key(k))
+		btn.grid(row=0, column=0, pady=1, padx=1, columnspan=3)
+		self.buttons[(0, 0)] = btn
 
-	elif event=='-NEXT-':
-		sta = 1
-		pwd='.'
-		ls = os.listdir(pwd)
-		newls = [ls for ls in ls if re.search("risyu", ls)]
-		newestls = [newls for newls in newls if re.search("csv", newls)]
+		btn = tk.Button(self, text="所属設定", command=lambda k="aff": self.display_key(k))
+		btn.grid(row=0, column=3, pady=1, padx=1, columnspan=3)
+		self.buttons[(0, 4)] = btn
 
-		numlist = [re.findall(r'\d+', fname)[0] for fname in newestls if re.findall(r'\d+', fname)]
-		openfile = max(numlist)
-		openfile = re.sub(r'^', 'risyu', openfile)
-		openfile = re.sub(r'$', '.csv', openfile)
-		with open(openfile,'r', encoding='utf-8') as ofile:
-			line = ofile.readline()
-			content = ""
-			while line:
-				content += line
-				line = ofile.readline()
-			content = re.sub(r'^時間割番号,.*+$\n', '', content)
-			#print(content)
-			window1.close()
-		break
+		self.labelasof = tk.Label(self, text=self.asof)
+		self.labelasof.grid(row=1, column=0, columnspan=5)
 
+		for (row, col), btn_text in self.buttons_info.items():
+			# ここで新しいボタンを作成しています。
+			btn = tk.Button(self, text=btn_text, command=lambda k=btn_text: self.display_key(k))
+			btn.grid(row=row+1, column=col, pady=1, padx=1)
+			self.buttons[(row+1, col)] = btn
 
-asof = name + openfile
-asof = re.sub(r'^risyu\d{4}', '', asof)
-asof = re.sub(r'.{4}$', '', asof)
-patt = r"(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})"
-repl = r"\1月\2日\3:\4:\5現在"
-asof = re.sub(patt, repl, asof)
+		btn = tk.Button(self, text="6限", command=lambda k="6限": self.display_key(k))
+		btn.grid(row=8, column=0, pady=1, padx=1)
+		self.buttons[(8, 0)] = btn
 
+		btn = tk.Button(self, text="7限", command=lambda k="7限": self.display_key(k))
+		btn.grid(row=8, column=1, pady=1, padx=1)
+		self.buttons[(8, 1)] = btn
 
-guns = ["全群", "1", "2", "3", "4", "5", "6"]
+		btn = tk.Button(self, text="8限", command=lambda k="8限": self.display_key(k))
+		btn.grid(row=8, column=2, pady=1, padx=1)
+		self.buttons[(8, 2)] = btn
 
+		btn = tk.Button(self, text="集中", command=lambda k="集中": self.display_key(k))
+		btn.grid(row=8, column=3, pady=1, padx=1)
+		self.buttons[(8, 3)] = btn
 
-layout2 = [
-[sg.Text(asof), sg.Button('高度な設定', key='-SET-', size=(17,1)), sg.Button('所属設定', key='-AFF-', size=(17,1))], 
-[sg.Button('月1'), sg.Button('火1'), sg.Button('水1'), sg.Button('木1'), sg.Button('金1'), sg.Checkbox("GSのみ", key="-ONLYGS-", default=True)], 
-[sg.Button('月2'), sg.Button('火2'), sg.Button('水2'), sg.Button('木2'), sg.Button('金2'), sg.Checkbox("担当教員を省略", key="-TEA-", default=False)], 
-[sg.Button('月3'), sg.Button('火3'), sg.Button('水3'), sg.Button('木3'), sg.Button('金3'), sg.Checkbox("時間割番号を省略", key="-RYA-", default=True)], 
-[sg.Button('月4'), sg.Button('火4'), sg.Button('水4'), sg.Button('木4'), sg.Button('金4'), sg.Checkbox("優先/限定を簡略化", key="-RYA-", default=True)], 
-[sg.Button('月5'), sg.Button('火5'), sg.Button('水5'), sg.Button('木5'), sg.Button('金5')], 
-[sg.Button('6限'), sg.Button('7限'), sg.Button('8限'), sg.Button('集中'), sg.Combo(guns, key='-GUN-', size=(4,1), default_value='全群')],
-[sg.InputText(key='-WORD-', size=(20,1)), sg.Button('フリーワード検索', key='-SEARCH-', size=(17,1))], 
-[sg.Text('', key='-ERROR-', size=(30, 1), text_color='red')], 
-[sg.Text('',key='-RES0-',font=('Meiryo',10)),
-sg.Text('',key='-RES1-',font=('Meiryo',10)),
-sg.Text('',key='-RES2-',font=('Meiryo',10)),
-sg.Text('',key='-RES3-',font=('Meiryo',10)),
-sg.Text('',key='-RES4-',font=('Meiryo',10)),
-sg.Text('',key='-RES5-',font=('Meiryo',10)),
-sg.Text('',key='-RES6-',font=('Meiryo',10)),
-sg.Text('',key='-RES7-',font=('Meiryo',10)),
-sg.Text('',key='-RES8-',font=('Meiryo',10)),
-sg.Text('',key='-RES9-',font=('Meiryo',10)),
-sg.Text('',key='-RES10-',font=('Meiryo',10)),
-sg.Text('',key='-RES11-',font=('Meiryo',10)),
-sg.Text('',key='-RES12-',font=('Meiryo',10)),
-sg.Text('',key='-RES13-',font=('Meiryo',10)),
-] 
-]
-window2 = sg.Window('risyu', layout2, size=(550,900), keep_on_top=True)
+		self.onlygs_var = tk.BooleanVar()
+		self.onlygs_var.set(True)
+		self.onlygs_chk = tk.Checkbutton(self, text="GSのみ", variable=self.onlygs_var)  # こちらも変数名を変更
+		self.onlygs_chk.grid(row=1, column=5, columnspan=1, pady=1)
+
+		self.tea_var = tk.BooleanVar()
+		self.tea_chk = tk.Checkbutton(self, text="教員名を省略", variable=self.tea_var)  # こちらも変数名を変更
+		self.tea_chk.grid(row=2, column=5, columnspan=1, pady=1)
+
+		self.numo_var = tk.BooleanVar()
+		self.numo_var.set(True)
+		self.numo_chk = tk.Checkbutton(self, text="時間割番号を省略", variable=self.numo_var)  # こちらも変数名を変更
+		self.numo_chk.grid(row=3, column=5, columnspan=1, pady=1)
+
+		self.ryaku_var = tk.BooleanVar()
+		self.ryaku_var.set(True)
+		self.ryaku_chk = tk.Checkbutton(self, text="優先/限定を簡略化", variable=self.ryaku_var)  # こちらも変数名を変更
+		self.ryaku_chk.grid(row=4, column=5, columnspan=1, pady=1)
+
+		self.dropdown_var = tk.StringVar(self)
+		self.dropdown_var.set(self.guns[0])
+		self.dropdown_menu = tk.OptionMenu(self, self.dropdown_var, *self.guns)
+		self.dropdown_menu.grid(row=8, column=4, pady=1, padx=1, columnspan=1)
+
+		self.ser_box = tk.Entry(self, width=30)
+		self.ser_box.grid(row=9, column=0, columnspan=5, pady=10)
+
+		btn = tk.Button(self, text="フリーワード検索", command=lambda k="search": self.display_key(k))
+		btn.grid(row=9, column=5, pady=1, padx=1)
+		self.buttons[(9, 5)] = btn
 
 
-#厄介な書き換え
-english_class_lines = '\n'.join([line for line in content.split('\n') if '（英語クラス）' in line])
-
-english_class_lines = re.sub(r'（英語クラス）', '', english_class_lines)
-english_class_lines = '\n'.join([re.sub(r'(^[^,]*,[^,]*),', r'\1,[英]', line) for line in english_class_lines.split('\n')])
-
-non_english_class_lines = '\n'.join([line for line in content.split('\n') if '（英語クラス）' not in line])
-
-content = non_english_class_lines + '\n' + english_class_lines
-
-#並べ替え
-content = '\n'.join(sorted(content.split('\n'), key=lambda x: x.split(',')[0]))
+		table_frame = ttk.Frame(self)
+		table_frame = ttk.Frame(self, width=200, height=900)
+		table_frame.grid(row=10, column=0, columnspan=6, pady=1, padx=1)
+		table_frame.grid_propagate(False)
 
 
-#main loop
-while True:
-	event, values = window2.read()
-	thelines = content
-	if sta == 0:
-		break
+		headers_list = self.header.split(',')
 
-	elif event == sg.WIN_CLOSED:
-		break
+		if not hasattr(self, 'tree') or not self.tree:
+			self.tree = ttk.Treeview(self, columns=headers_list, height=400)
 	
-	else:
+		for header in headers_list:
+			self.tree.column(header, width=80)  # こちらの横幅は適切に調整してください
+			self.tree.heading(header, text=header)
+
+		# はいじめての列幅
+		column_widths = {"時間割番号": 45, "科目区分":70, "時間割名":100, "教員名":80, "曜日時限": 35, "適正人数": 35, "全登録数": 35, "優先指定":35, "第１希望":35 ,"第２希望":35 ,"第３希望":30 ,"第４希望":30 ,"第５希望":30}
+
+		for col, width in column_widths.items():
+			self.tree.column(col, width=width)
+
+		self.tree.grid(row=10, column=0, columnspan=6)
+
+
+	def display_key(self, key):
+		thelines = self.content
+
 		#トグル系スクリーニング/書き換え
-		if values['-ONLYGS-'] == True:
+		print('こんにちは')
+
+		if self.dropdown_var.get() == '全群':
+			pass
+		else:
+			thegun = '^7' + self.dropdown_var.get() + '[A-Z].*?\n$'
+			thelines = re.sub(thegun, '', thelines)
+			print(thegun)
+
+		if self.onlygs_var.get():
+			print('OK')
 			thelines = '\n'.join(line for line in thelines.splitlines() if "ＧＳ" in line)
 			thelines = '\n'.join(line for line in thelines.splitlines() if not "ＧＳ言語" in line)
-			thelines = re.sub(r',ＧＳ科目', '', thelines)
 
-		if values['-TEA-']:
-			thelines = "\n".join([",".join(re.split(',', line)[:3] + re.split(',', line)[5:]) for line in thelines.strip().split("\n")])
-
-		if values['-RYA-']:
+		if self.numo_var.get():
 			thelines = re.sub(r'^7', '', thelines, flags=re.MULTILINE)
 			thelines = re.sub(r'(?<=^.{2})[^,]+,', ',', thelines, flags=re.MULTILINE)
 
-		if re.match(r"^\d", values['-GUN-']):
-			if values['-RYA-']:
-				gunkey = "^" + values['-GUN-'] + "[A-F]"
+		if re.match(r"^\d", self.dropdown_var.get()):
+			if self.numo_var.get():
+				gunkey = "^" +  self.dropdown_var.get() + "[A-F]"
 			else:
-				gunkey = "^7" + values['-GUN-'] + "[A-F]"
+				gunkey = "^7" +  self.dropdown_var.get() + "[A-F]"
 			thelines = '\n'.join(line for line in thelines.splitlines() if re.search(gunkey, line))
 
-		print(thelines)
+	
+		buttontext = self.ser_box.get()
+		if buttontext:
+			thelines = '\n'.join(line for line in thelines.splitlines() if buttontext in line)
+		else:
+			if key == 'search':
+				pass
+			else:
+				if key == '6限' or key == '7限' or key == '8限':
+					key = re.sub(r'限', '', key)
+					key = '(月|火|水|木|金)' + key
+				thelines = '\n'.join(line for line in thelines.splitlines() if re.search(key, line))
+		print(key)
 
-		buttontext = event
-		if buttontext == '-SEARCH-':
-			buttontext = values['-WORD-']
-		thelines = '\n'.join(line for line in thelines.splitlines() if buttontext in line)
+		
+		# 既存のエントリをクリア
+		for item in self.tree.get_children():
+			self.tree.delete(item)
 
+	# データの挿入
+		lines_list = [line.split(",") for line in thelines.split("\n") if line]
+		for item in lines_list:
+			self.tree.insert("", "end", values=item)
 
-#格納&表示
-		split_lines = [line.split(',') for line in thelines.split('\n')]
-		num_columns = len(split_lines[0])
+	# 再描画のトリガー
+		self.tree["show"] = "headings"
 
-		res = {}
-		updated_columns = set()  # このセットで更新された列番号をトラッキングします
+		self.tree.update_idletasks()
 
-		for n in range(num_columns):
-			res[n] = [row[n] for row in split_lines]
-
-			if res[n]:
-				updated_columns.add(n)
-			for n, column_data in res.items():
-				print(f'res[{n}] = {column_data}')
-
-			data_str = '\n'.join(column_data)
-			window2[f'-RES{n}-'].update(data_str)
-
-		#ガベコレ的な
-		for i in range(14):
-			if i not in updated_columns:
-				window2[f'-RES{i}-'].update('')
+root = tk.Tk()
+root.title('risyu')
+root.geometry('530x900')
+app = Application(root=root)
+root.mainloop()
