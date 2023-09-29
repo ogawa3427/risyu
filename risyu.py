@@ -12,10 +12,11 @@ class Application(tk.Frame):
 			initdate = {
 			'filedir': '',
 			'newparson': True,
-			'yuusen': {
-				'new': 'Y'
-				}
-			}
+			'yuusen': False,
+			'iki': '融合学域',
+			'rui': 'スマート創成科学類'
+	}
+
 			gotojson = json.dumps(initdate)
 			with open('setting.json', "w", encoding='utf-8') as set:
 				set.write(gotojson) #あったら代入
@@ -210,7 +211,7 @@ class Application(tk.Frame):
 			else:
 				pass
 
-			
+
 
 
 
@@ -258,9 +259,10 @@ class Application(tk.Frame):
 		self.combobox.grid(row=2, column=0, columnspan=4, sticky='w')
 
 
-
+		do_btn = tk.Button(self, text='次へ', command=self.autoinit)
+		do_btn.grid(row=3, column=0, pady=10)
 		self.rkubun = tk.Label(self, text="区分")
-		self.rkubun.grid(row=3, column=0, columnspan=1, sticky="w")
+		self.rkubun.grid(row=3, column=1, columnspan=1, sticky="w")
 		self.rgentei = tk.Label(self, text="限定")
 		self.rgentei.grid(row=3, column=4, columnspan=1, sticky="w")
 		self.ryuusen = tk.Label(self, text="優先")
@@ -268,7 +270,41 @@ class Application(tk.Frame):
 		self.ryuusen = tk.Label(self, text="以外")
 		self.ryuusen.grid(row=3, column=6, columnspan=1, sticky="w")
 
+
+	def autoinit(self):
 		yuul = len(self.nowyuusen)
+		with open('setting.json', 'r', encoding='utf-8') as f:
+			data = json.load(f)
+		iki = data['iki']
+		rui = data['rui']
+		if not os.path.exists("role.json"):
+			initdict = {}
+			for i in range(1, yuul):
+
+			
+				if iki in self.nowyuusen[i] or rui in self.nowyuusen[i]:
+					if '限定' in self.nowyuusen[i]:
+						gen = True
+						yuu, iga = False
+					elif '優先' in self.nowyuusen[i]:
+						yuu = True
+						gen, iga = False
+					if '以外' in self.nowyuusen[i]:
+						gen, yuu = False
+						iga = True
+				else:
+					gen, yuu, iga = False
+				initdict[self.nowyuusen[i]] = [gen, yuu, iga]
+
+			with open('role.json', 'w', encoding='utf-8') as f:
+				pass
+		with open('role.json', 'r', encoding='utf-8') as f:
+			roles = json.load(f)
+
+		altyuusen = roles['全学生']
+		altyuusen = altyuusen['new']
+		print(altyuusen)
+		print('baka')
 
 		for i in range(1,yuul):
 			attr_name = 'kubunname' + str(i)
