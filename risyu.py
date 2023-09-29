@@ -20,8 +20,6 @@ class Application(tk.Frame):
 		self.content = ''
 		self.guns = ["全群", "1", "2", "3", "4", "5", "6"]
 
-
-
 		super().__init__(root, width=430, height=900, borderwidth=4, relief='groove')
 		self.root = root
 		self.grid(sticky="nsew")
@@ -42,7 +40,6 @@ class Application(tk.Frame):
 				value = f"{day}{row}"
 				info[key] = value
 		return info
-
 
 
 	def create_widgets(self):
@@ -87,7 +84,6 @@ class Application(tk.Frame):
 			btn = tk.Button(self, text=btn_text, command=lambda k=btn_text: self.display_key(k))
 			#btn.grid(row=row, column=col, pady=10, padx=10)
 			self.buttons[(row, col)] = btn  # ボタンを辞書に追加
-
 
 
 	def go_next(self):
@@ -254,7 +250,6 @@ class Application(tk.Frame):
 		table_frame.grid_propagate(False)
 
 
-
 		headers_list = self.header.split(',')
 
 		if not hasattr(self, 'tree') or not self.tree:
@@ -271,7 +266,6 @@ class Application(tk.Frame):
 			self.tree.column(col, width=width)
 
 		self.tree.grid(row=10, column=0, columnspan=6)
-
 
 
 	def display_key(self, key):
@@ -303,8 +297,7 @@ class Application(tk.Frame):
 				gunkey = "^7" +  self.dropdown_var.get() + "[A-F]"
 			thelines = '\n'.join(line for line in thelines.splitlines() if re.search(gunkey, line))
 
-
-		
+	
 		buttontext = self.ser_box.get()
 		if buttontext:
 			thelines = '\n'.join(line for line in thelines.splitlines() if buttontext in line)
@@ -319,8 +312,6 @@ class Application(tk.Frame):
 		print(key)
 
 		
-		#print(thelines)
-
 		# 既存のエントリをクリア
 		for item in self.tree.get_children():
 			self.tree.delete(item)
@@ -330,35 +321,13 @@ class Application(tk.Frame):
 		for item in lines_list:
 			self.tree.insert("", "end", values=item)
 
-
-
 	# 再描画のトリガー
 		self.tree["show"] = "headings"
 
 		self.tree.update_idletasks()
-
-"""
-#列のひひょじ
-		if self.numo_var.get():
-			self.tree.column('時間割番号', width=45)
-
-		if self.tea_var.get():
-			self.tree.column("教員名", width=0)
-
-		if self.onlygs_var.get():
-			self.tree.column("科目区分", width=0)
-"""
-
-
-
-
-
 
 root = tk.Tk()
 root.title('risyu')
 root.geometry('530x900')
 app = Application(root=root)
 root.mainloop()
-
-
-
