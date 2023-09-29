@@ -1,19 +1,30 @@
 encoding='utf-8'
-# -*- coding: utf-8 -*-
-import io
-import sys
-import codecs
 import os
 import re
+import json
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 
 class Application(tk.Frame):
 	def __init__(self, root):
-		if os.path.exists("dir.csv"):
-			with open('dir.csv', "r", encoding='utf-8') as dir:
-				self.defpath = dir.readline() #あったら代入
+		if  os.path.exists("setting.json"):
+			initdate = {
+			'filedir': '',
+			'newparson': True,
+			'yuusen': {
+				'new': 'Y'
+				}
+			}
+			gotojson = json.dumps(initdate)
+			with open('setting.json', "w", encoding='utf-8') as set:
+				set.write(gotojson) #あったら代入
+			self.defpath = ''
+		else:
+			with open('setting.json', 'r', encoding='utf-8') as setting:
+				data = json.load(setting)
+				self.defpath = data['filedir']
+
 
 		self.header = "時間割番号,科目区分,時間割名,曜日時限,教員名,対象学生,適正人数,全登録数,優先指定,第１希望,第２希望,第３希望,第４希望,第５希望"
 		self.name = ''
@@ -28,7 +39,6 @@ class Application(tk.Frame):
 		self.create_widgets()
 
 		self.content = '\n'.join(sorted(self.content.split('\n'), key=lambda x: x.split(',')[0]))
-
 
 	def generate_buttons_info(self):
 		days = ["月", "火", "水", "木", "金"]
@@ -53,16 +63,11 @@ class Application(tk.Frame):
 		self.label3.grid(row=2, column=0, columnspan=3, sticky="w")
 
 		self.chk_vars = tk.BooleanVar()
+		self.chk_vars.set(True) 
 		self.chk1 = tk.Checkbutton(self, text="入力したパスを保存する", variable=self.chk_vars)
 		self.chk1.grid(row=3, column=0, columnspan=2, pady=10)
 
-		self.chk_varr = tk.BooleanVar()
-		self.chk2 = tk.Checkbutton(self, text="新しいパスに更新", variable=self.chk_varr)
-		self.chk2.grid(row=3, column=2, columnspan=1, pady=10)
-
-		self.labelw = tk.Label(self, text="ファイルが見つかりません")
-		self.labelw.grid(row=0, column=0)
-		self.labelw.grid_forget()
+		self.labelw = tk.Label(self, text="ファイルが見つかりません", fg="red")
 
 		self.labels = tk.Label(self, text="保存しました[ファイル名]")
 		self.labels.grid(row=0, column=0)
@@ -85,51 +90,26 @@ class Application(tk.Frame):
 			#btn.grid(row=row, column=col, pady=10, padx=10)
 			self.buttons[(row, col)] = btn  # ボタンを辞書に追加
 
-
-	def go_next(self):
-		pwd = '.'
-		ls = os.listdir(pwd)
-		newls = [ls for ls in ls if re.search("risyu", ls)]
-		newestls = [newls for newls in newls if re.search("csv", newls)]
-
-		numlist = [re.findall(r'\d+', fname)[0] for fname in newestls if re.findall(r'\d+', fname)]
-		openfile = max(numlist)
-		openfile = re.sub(r'^', 'risyu', openfile)
-		openfile = re.sub(r'$', '.csv', openfile)
-		with open(openfile,'r', encoding='utf-8') as ofile:
-			line = ofile.readline()
-			while line:
-				self.content += line
-				line = ofile.readline()
-			self.content = re.sub(r'^時間割番号,.*+$\n', '', self.content)
-
-		
-		for widget in self.winfo_children():
-			widget.destroy()
-
-		self.asof = self.name + openfile
-		self.asof = re.sub(r'^risyu\d{4}', '', self.asof)
-		self.asof = re.sub(r'.{4}$', '', self.asof)
-		patt = r"(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})"
-		repl = r"\1月\2日\3:\4:\5現在"	
-		self.asof = re.sub(patt, repl, self.asof)
-
-		self.show_buttons()
-
 	def csvmaker(self):
+		self.content = ''
+		self.name = ''
+
 		inp = self.text_box.get()
 		if inp:
-			defpath = inp
+			filepath = inp
 		if not inp:
 			filename = os.path.join(os.environ["HOME"], "金沢大学教務システム - 抽選科目登録状況.htm") #なしありbrank
 		else: #あり
-			filename = os.path.join(defpath, "金沢大学教務システム - 抽選科目登録状況.htm")
+			filename = os.path.join(filepath, "金沢大学教務システム - 抽選科目登録状況.htm")
 			if self.chk_vars.get():
-				with open('dir.csv', 'w', encoding='utf-8') as file:
-					file.write(defpath)
+				with open('setting.json', 'r') as file:
+					data = json.load(file)
+				data['filedir'] = filepath
+				with open('setting.json', 'w') as file:
+					json.dump(data, file, indent=4)
 		if not os.path.exists(filename):
-			self.labels.config(text='')
-			self.labelw.config(text='ファイルが見つかりません')
+			self.labels.grid_forget()
+			self.labelw.grid(row=6, column=0)
 
 		with open(filename, 'r', encoding='utf-8') as f:
 			line = f.readline()
@@ -176,9 +156,166 @@ class Application(tk.Frame):
 
 		self.name = '保存しました' + self.name
 		self.labels.config(text=self.name)
-		self.labelw.config(text='')
+		self.labels.grid(row=6, column=0)
+		self.labelw.grid_forget()
+
+
+	def go_next(self):
+		pwd = '.'
+		ls = os.listdir(pwd)
+		newls = [ls for ls in ls if re.search("risyu", ls)]
+		newestls = [newls for newls in newls if re.search("csv", newls)]
+
+		numlist = [re.findall(r'\d+', fname)[0] for fname in newestls if re.findall(r'\d+', fname)]
+		openfile = max(numlist)
+		openfile = re.sub(r'^', 'risyu', openfile)
+		openfile = re.sub(r'$', '.csv', openfile)
+		with open(openfile,'r', encoding='utf-8') as ofile:
+			line = ofile.readline()
+			while line:
+				self.content += line
+				line = ofile.readline()
+			self.content = '\n'.join(line for line in self.content.splitlines() if not "時間割番号,科目区分" in line)
+
+		for widget in self.winfo_children():
+			widget.destroy()
+
+		self.asof = self.name + openfile
+		self.asof = re.sub(r'^risyu\d{4}', '', self.asof)
+		self.asof = re.sub(r'.{4}$', '', self.asof)
+		patt = r"(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})"
+		repl = r"\1月\2日\3:\4:\5現在"	
+		self.asof = re.sub(patt, repl, self.asof)
+
+		lines = self.content.strip().split('\n')
+		sixth_items = [line.split(',')[5] for line in lines if len(line.split(',')) >= 6]
+		self.nowyuusen = sorted(list(set(sixth_items)))
+
+		self.areyounew()
+
+	def areyounew(self):
+
+		with open('setting.json', 'r', encoding='utf-8') as f:
+			data = json.load(f)
+		np = data['newparson']
+		altyuusen = data['yuusen']
+		keys_list = list(altyuusen.keys())
+
+		if np:
+			pass
+		else:
+			if keys_list == self.nowyuusen:
+				print('OK')
+				self.show_buttons()
+			else:
+				pass
+
+			
+
+
+
+		self.regroll()
+
+	def update_combobox_options(self, *args):
+		selected_value = self.radio_var.get()
+
+		if selected_value == 1:
+			self.combobox['values'] = ["総教文", "人文学類", "法学類", "経済学類", "学校教育学類", "地域創造学類", "国際学類"]
+		elif selected_value == 2:
+			self.combobox['values'] = ["総教理", "数物科学類", "物質科学類" ,"理工３学類", "機械工学類", "フロンティア工学類", "電子情報通信学類", "地球社会基盤学類", "生命理工学類"]
+		elif selected_value == 3:
+			self.combobox['values'] = ["医学類", "薬学類", "医薬科学類", "保健学類"]
+		elif selected_value == 4:
+			self.combobox['values'] = ["先導学類", "観光デザイン学類", "スマート創成科学類"]
+		else:
+			self.combobox['values'] = []
+
+		self.combobox.set('')  # Clear current selection
+
+
+	def regroll(self):
+		for widget in self.winfo_children():
+			widget.destroy()
+
+		self.labelr = tk.Label(self, text="あてはまる所属にチェック\n履修登録期間の初めに再度表示されることがあります\n(この画面は再度表示できます)")
+		self.labelr.grid(row=0, column=0, columnspan=4, sticky="w")
+
+		self.radio_var = tk.IntVar()
+		self.radio_var.trace("w", self.update_combobox_options)
+		radio1 = tk.Radiobutton(self, text="人社", variable=self.radio_var, value=1, font=("Arial", 14))
+		radio2 = tk.Radiobutton(self, text="理工", variable=self.radio_var, value=2, font=("Arial", 14))
+		radio3 = tk.Radiobutton(self, text="医薬保", variable=self.radio_var, value=3, font=("Arial", 14))
+		radio4 = tk.Radiobutton(self, text="融合", variable=self.radio_var, value=4, font=("Arial", 14))
+		radio1.grid(row=1, column=0, sticky="w")
+		radio2.grid(row=1, column=1, sticky="w")
+		radio3.grid(row=1, column=2, sticky="w")
+		radio4.grid(row=1, column=3, sticky="w")
+
+		style = ttk.Style()
+		style.configure('Large.TCombobox', font=('Arial', 19))
+		style.configure('Large.TCombobox*Listbox', font=('Arial', 19))  # この行で選択肢の文字の大きさを変更
+		self.combobox = ttk.Combobox(self, style='Large.TCombobox', values=[] ,font=("Arial", 14))
+		self.combobox.grid(row=2, column=0, columnspan=4, sticky='w')
+
+
+
+		self.rkubun = tk.Label(self, text="区分")
+		self.rkubun.grid(row=3, column=0, columnspan=1, sticky="w")
+		self.rgentei = tk.Label(self, text="限定")
+		self.rgentei.grid(row=3, column=4, columnspan=1, sticky="w")
+		self.ryuusen = tk.Label(self, text="優先")
+		self.ryuusen.grid(row=3, column=5, columnspan=1, sticky="w")
+		self.ryuusen = tk.Label(self, text="以外")
+		self.ryuusen.grid(row=3, column=6, columnspan=1, sticky="w")
+
+		yuul = len(self.nowyuusen)
+
+		for i in range(1,yuul):
+			attr_name = 'kubunname' + str(i)
+			setattr(self, attr_name, tk.Label(self, text=self.nowyuusen[i]))
+			getattr(self, attr_name).grid(row=3+i, column=0, columnspan=4, sticky="w")
+
+			attr_gen = 'gen' + str(i)
+			setattr(self, attr_gen, tk.BooleanVar())
+			getattr(self, attr_gen).set(True)  # BooleanVarの初期値をTrueに設定
+
+			chk_attr_name = 'genv' + str(i)
+			setattr(self, chk_attr_name, tk.Checkbutton(self, text="", variable=getattr(self, attr_gen)))
+			getattr(self, chk_attr_name).grid(row=3+i, column=4, columnspan=1, sticky="w")
+		
+			attr_gen = 'yuu' + str(i)
+			setattr(self, attr_gen, tk.BooleanVar())
+			getattr(self, attr_gen).set(True)  # BooleanVarの初期値をTrueに設定
+
+			chk_attr_name = 'yuuv' + str(i)
+			setattr(self, chk_attr_name, tk.Checkbutton(self, text="", variable=getattr(self, attr_gen)))
+			getattr(self, chk_attr_name).grid(row=3+i, column=5, columnspan=1, sticky="w")
+
+			attr_gen = 'iga' + str(i)
+			setattr(self, attr_gen, tk.BooleanVar())
+			getattr(self, attr_gen).set(False)  # BooleanVarの初期値をTrueに設定
+
+			chk_attr_name = 'igav' + str(i)
+			setattr(self, chk_attr_name, tk.Checkbutton(self, text="", variable=getattr(self, attr_gen)))
+			getattr(self, chk_attr_name).grid(row=3+i, column=6, columnspan=1, sticky="w")
+
+
+
+		back_btn = tk.Button(self, text='完了', command=self.backtothelist)
+		back_btn.grid(row=i+4, column=0, pady=10)
+
+
+	def backtothelist(self):
+		for widget in self.winfo_children():
+			widget.destroy()
+		self.show_buttons()
+
 
 	def show_buttons(self):
+		if not hasattr(self, 'tree') or not self.tree.winfo_exists():
+			self.tree = ttk.Treeview(self, columns=self.headers_list, height=400)
+
+
 		btn = tk.Button(self, text="高度な設定", command=lambda k="sett": self.display_key(k))
 		btn.grid(row=0, column=0, pady=1, padx=1, columnspan=3)
 		self.buttons[(0, 0)] = btn
@@ -267,9 +404,10 @@ class Application(tk.Frame):
 
 		self.tree.grid(row=10, column=0, columnspan=6)
 
-
 	def display_key(self, key):
 		thelines = self.content
+		if key == 'aff':
+			self.regroll()
 
 		#トグル系スクリーニング/書き換え
 		print('こんにちは')
@@ -328,6 +466,6 @@ class Application(tk.Frame):
 
 root = tk.Tk()
 root.title('risyu')
-root.geometry('530x900')
+root.geometry('720x900')
 app = Application(root=root)
 root.mainloop()
