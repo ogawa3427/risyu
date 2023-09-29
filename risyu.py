@@ -378,6 +378,8 @@ class Application(tk.Frame):
 
 
 	def show_buttons(self):
+		self.headers_list = self.header.split(',')
+
 		if not hasattr(self, 'tree') or not self.tree.winfo_exists():
 			self.tree = ttk.Treeview(self, columns=self.headers_list, height=400)
 
@@ -453,12 +455,11 @@ class Application(tk.Frame):
 		table_frame.grid_propagate(False)
 
 
-		headers_list = self.header.split(',')
 
 		if not hasattr(self, 'tree') or not self.tree:
-			self.tree = ttk.Treeview(self, columns=headers_list, height=400)
+			self.tree = ttk.Treeview(self, columns=self.headers_list, height=400)
 	
-		for header in headers_list:
+		for header in self.headers_list:
 			self.tree.column(header, width=80)  # こちらの横幅は適切に調整してください
 			self.tree.heading(header, text=header)
 
@@ -468,7 +469,10 @@ class Application(tk.Frame):
 		for col, width in column_widths.items():
 			self.tree.column(col, width=width)
 
+
 		self.tree.grid(row=10, column=0, columnspan=6)
+
+
 
 	def display_key(self, key):
 		thelines = self.content
@@ -523,7 +527,11 @@ class Application(tk.Frame):
 	# データの挿入
 		lines_list = [line.split(",") for line in thelines.split("\n") if line]
 		for item in lines_list:
-			self.tree.insert("", "end", values=item)
+			if "グロ" in item[2]:
+				self.tree.insert("", "end", values=item, tags=('high',))
+			else:
+				self.tree.insert("", "end", values=item)
+		self.tree.tag_configure('high', foreground='red')
 
 	# 再描画のトリガー
 		self.tree["show"] = "headings"
