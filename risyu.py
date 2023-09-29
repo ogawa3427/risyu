@@ -380,8 +380,6 @@ class Application(tk.Frame):
 	def show_buttons(self):
 		self.headers_list = self.header.split(',')
 
-		if not hasattr(self, 'tree') or not self.tree.winfo_exists():
-			self.tree = ttk.Treeview(self, columns=self.headers_list, height=400)
 
 
 		btn = tk.Button(self, text="高度な設定", command=lambda k="sett": self.display_key(k))
@@ -449,28 +447,8 @@ class Application(tk.Frame):
 		self.buttons[(9, 5)] = btn
 
 
-		table_frame = ttk.Frame(self)
-		table_frame = ttk.Frame(self, width=200, height=900)
-		table_frame.grid(row=10, column=0, columnspan=6, pady=1, padx=1)
-		table_frame.grid_propagate(False)
 
 
-
-		if not hasattr(self, 'tree') or not self.tree:
-			self.tree = ttk.Treeview(self, columns=self.headers_list, height=400)
-	
-		for header in self.headers_list:
-			self.tree.column(header, width=80)  # こちらの横幅は適切に調整してください
-			self.tree.heading(header, text=header)
-
-		# はいじめての列幅
-		column_widths = {"時間割番号": 45, "科目区分":70, "時間割名":100, "教員名":80, "曜日時限": 35, "適正人数": 35, "全登録数": 35, "優先指定":35, "第１希望":35 ,"第２希望":35 ,"第３希望":30 ,"第４希望":30 ,"第５希望":30}
-
-		for col, width in column_widths.items():
-			self.tree.column(col, width=width)
-
-
-		self.tree.grid(row=10, column=0, columnspan=6)
 
 
 
@@ -519,24 +497,8 @@ class Application(tk.Frame):
 				thelines = '\n'.join(line for line in thelines.splitlines() if re.search(key, line))
 		print(key)
 
-		
-		# 既存のエントリをクリア
-		for item in self.tree.get_children():
-			self.tree.delete(item)
+	
 
-	# データの挿入
-		lines_list = [line.split(",") for line in thelines.split("\n") if line]
-		for item in lines_list:
-			if "グロ" in item[2]:
-				self.tree.insert("", "end", values=item, tags=('high',))
-			else:
-				self.tree.insert("", "end", values=item)
-		self.tree.tag_configure('high', foreground='red')
-
-	# 再描画のトリガー
-		self.tree["show"] = "headings"
-
-		self.tree.update_idletasks()
 
 root = tk.Tk()
 root.title('risyu')
