@@ -12,8 +12,9 @@ class Application(tk.Frame):
 		self.name = ''
 		self.content = ''
 		self.guns = ["全群", "1", "2", "3", "4", "5", "6"]
+		self.buttons = {} 
 
-		super().__init__(root, width=700, height=900, borderwidth=4, relief='groove')
+		super().__init__(root, width=1000, height=2000, borderwidth=4, relief='groove')
 		self.root = root
 		self.pack()
 
@@ -316,62 +317,66 @@ class Application(tk.Frame):
 
 
 
-		outer_frame = tk.Frame(self)
+		outer_frame = tk.Frame(self, width=400, height=400)
 		outer_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
 		self.rkubun = tk.Label(outer_frame, text="区分")
 		self.rkubun.pack(anchor=tk.W, side=tk.LEFT)
 
-		rframe = tk.Frame(outer_frame)
-		rframe.pack(padx=10, anchor=tk.E, side=tk.LEFT, fill=tk.X)
+		rframe = tk.Frame(outer_frame, width=700, height=650)
+		rframe.pack(padx=10, side=tk.RIGHT)
 
-		self.rgentei = tk.Label(rframe, text="限定")
-		self.rgentei.pack(anchor=tk.NE, side=tk.RIGHT, fill=tk.X, expand=True)
-		self.ryuusen = tk.Label(rframe, text="優先")
+		self.ryuusen = tk.Label(rframe, text="以外 ", font=('Arial, 16'))
 		self.ryuusen.pack(side=tk.LEFT)
-		self.ryuusen = tk.Label(rframe, text="以外")
-		self.ryuusen.pack(side=tk.LEFT)
+		self.ryuusen2 = tk.Label(rframe, text="優先 ", font=('Arial, 16'))
+		self.ryuusen2.pack(side=tk.LEFT)
+		self.rgentei = tk.Label(rframe, text="限定 ", font=('Arial, 16'))
+		self.rgentei.pack(anchor=tk.NE, side=tk.LEFT, fill=tk.X, expand=True)
 
+
+
+		# main_frameを作成
+		main_frame = tk.Frame(self, width=700, height=650)
+		main_frame.pack(fill=tk.BOTH, expand=True)
+
+# スクロールバーを追加
+		canvas = tk.Canvas(main_frame, width=800, height=690)
+		canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+		scrollbar = tk.Scrollbar(main_frame, command=canvas.yview)
+		canvas.configure(yscrollcommand=scrollbar.set)
+		scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+		content_frame = tk.Frame(canvas, width=400, height=700)
+		canvas.create_window((0, 0), window=content_frame, anchor='nw')
+		content_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
 
 		with open('role.json', 'r', encoding='utf-8') as f:
 			data = json.load(f)
 		print(data)
 
-		for i in range(1,self.yuul):
+		for i in range(1, self.yuul):
+	# 各セット用のフレームを作成
+			set_frame = tk.Frame(content_frame, borderwidth=1, relief="solid")
+			set_frame.pack(fill=tk.X, padx=5, pady=5, expand=True)
 
 			attr_name = 'kubunname' + str(i)
-			setattr(self, attr_name, tk.Label(self, text=self.nowyuusen[i]))
-			getattr(self, attr_name).pack()
+			setattr(self, attr_name, tk.Label(set_frame, text=self.nowyuusen[i]))
+			getattr(self, attr_name).pack(side=tk.LEFT)
 
 			block = data.get(str(self.nowyuusen[i]), [])
 			vgen = block[0]
 			vyuu = block[1]
 			viga = block[2]
 
+			for attr_base_name, value in [('gen', vgen), ('yuu', vyuu), ('iga', viga)]:
+				attr_name = attr_base_name + str(i)
+				setattr(self, attr_name, tk.BooleanVar(value=value))
 
-			attr_gen = 'gen' + str(i)
-			setattr(self, attr_gen, tk.BooleanVar())
-			getattr(self, attr_gen).set(vgen)  # BooleanVarの初期値をTrueに設定
+				chk_attr_name = attr_base_name + 'v' + str(i)
+				setattr(self, chk_attr_name, tk.Checkbutton(set_frame, text="", variable=getattr(self, attr_name)))
+				getattr(self, chk_attr_name).pack(side=tk.RIGHT, padx=5)
 
-			chk_attr_name = 'genv' + str(i)
-			setattr(self, chk_attr_name, tk.Checkbutton(self, text="", variable=getattr(self, attr_gen)))
-			getattr(self, chk_attr_name).pack()
-		
-			attr_gen = 'yuu' + str(i)
-			setattr(self, attr_gen, tk.BooleanVar())
-			getattr(self, attr_gen).set(vyuu)  # BooleanVarの初期値をTrueに設定
-
-			chk_attr_name = 'yuuv' + str(i)
-			setattr(self, chk_attr_name, tk.Checkbutton(self, text="", variable=getattr(self, attr_gen)))
-			getattr(self, chk_attr_name).pack()
-
-			attr_gen = 'iga' + str(i)
-			setattr(self, attr_gen, tk.BooleanVar())
-			getattr(self, attr_gen).set(viga)  # BooleanVarの初期値をTrueに設定
-
-			chk_attr_name = 'igav' + str(i)
-			setattr(self, chk_attr_name, tk.Checkbutton(self, text="", variable=getattr(self, attr_gen)))
-			getattr(self, chk_attr_name).pack()
 
 
 
@@ -386,71 +391,96 @@ class Application(tk.Frame):
 
 
 	def show_buttons(self):
+
+
+
 		self.headers_list = self.header.split(',')
 
-		btn = tk.Button(self, text="高度な設定", command=lambda k="sett": self.display_key(k))
-		btn.pack()
+		contf = tk.Frame(self, width=700, height=650)
+
+		frame1 = tk.Frame(contf, width=700, height=650)
+		frame1.pack(padx=20,pady=20, side=tk.TOP)
+
+		self.labelasof = tk.Label(frame1, text=self.asof)
+		self.labelasof.pack(side=tk.LEFT, padx=20)
+
+		btn = tk.Button(frame1, text="高度な設定", command=lambda k="sett": self.display_key(k))
+		btn.pack(side=tk.LEFT, padx=20)
 		self.buttons[(0, 0)] = btn
 
-		btn = tk.Button(self, text="所属設定", command=lambda k="aff": self.display_key(k))
-		btn.pack()
+		btn = tk.Button(frame1, text="所属設定", command=lambda k="aff": self.display_key(k))
+		btn.pack(side=tk.LEFT, padx=20)
 		self.buttons[(0, 4)] = btn
 
-		self.labelasof = tk.Label(self, text=self.asof)
-		self.labelasof.pack()
+		lframe = tk.Frame(contf, width=700, height=700)
+
+		frame2 = tk.Frame(lframe, width=700, height=650)
+		frame2.pack(padx=10, side=tk.TOP)
 
 		for (row, col), btn_text in self.buttons_info.items():
-			# ここで新しいボタンを作成しています。
-			btn = tk.Button(self, text=btn_text, command=lambda k=btn_text: self.display_key(k))
-			btn.pack()
+	# ここで新しいボタンを作成しています。
+			btn = tk.Button(frame2, text=btn_text, command=lambda k=btn_text: self.display_key(k))  # parent引数をframe2に変更
+			btn.grid(row=row, column=col, pady=5, padx=5)  # gridメソッドを使用してボタンを配置
 			self.buttons[(row+1, col)] = btn
 
-		btn = tk.Button(self, text="6限", command=lambda k="6限": self.display_key(k))
-		btn.pack()
+		frame3 = tk.Frame(lframe, width=700, height=650)
+		frame3.pack(padx=1,pady=1, side=tk.TOP)
+
+		btn = tk.Button(frame3, text="6限", command=lambda k="6限": self.display_key(k))
+		btn.pack(side=tk.LEFT, padx=5)
 		self.buttons[(8, 0)] = btn
 
-		btn = tk.Button(self, text="7限", command=lambda k="7限": self.display_key(k))
-		btn.pack()
+		btn = tk.Button(frame3, text="7限", command=lambda k="7限": self.display_key(k))
+		btn.pack(side=tk.LEFT, padx=5)
 		self.buttons[(8, 1)] = btn
 
-		btn = tk.Button(self, text="8限", command=lambda k="8限": self.display_key(k))
-		btn.pack()
+		btn = tk.Button(frame3, text="8限", command=lambda k="8限": self.display_key(k))
+		btn.pack(side=tk.LEFT, padx=5)
 		self.buttons[(8, 2)] = btn
 
-		btn = tk.Button(self, text="集中", command=lambda k="集中": self.display_key(k))
-		btn.pack()
+		btn = tk.Button(frame3, text="集中", command=lambda k="集中": self.display_key(k))
+		btn.pack(side=tk.LEFT, padx=5)
 		self.buttons[(8, 3)] = btn
+
+		lframe.pack(side=tk.LEFT)
+
+
+
+		frame4 = tk.Frame(contf, width=700, height=650)
+		frame4.pack(padx=1,pady=1, side=tk.RIGHT, after=frame1)
 
 		self.onlygs_var = tk.BooleanVar()
 		self.onlygs_var.set(True)
-		self.onlygs_chk = tk.Checkbutton(self, text="GSのみ", variable=self.onlygs_var)  # こちらも変数名を変更
-		self.onlygs_chk.pack()
+		self.onlygs_chk = tk.Checkbutton(frame4, text="GSのみ", variable=self.onlygs_var)  # こちらも変数名を変更
+		self.onlygs_chk.pack(anchor=tk.W)
 
 		self.tea_var = tk.BooleanVar()
-		self.tea_chk = tk.Checkbutton(self, text="教員名を省略", variable=self.tea_var)  # こちらも変数名を変更
-		self.tea_chk.pack()
+		self.tea_chk = tk.Checkbutton(frame4, text="教員名を省略", variable=self.tea_var)  # こちらも変数名を変更
+		self.tea_chk.pack(anchor=tk.W)
 
 		self.numo_var = tk.BooleanVar()
 		self.numo_var.set(True)
-		self.numo_chk = tk.Checkbutton(self, text="時間割番号を省略", variable=self.numo_var)  # こちらも変数名を変更
-		self.numo_chk.pack()
+		self.numo_chk = tk.Checkbutton(frame4, text="時間割番号を省略", variable=self.numo_var)  # こちらも変数名を変更
+		self.numo_chk.pack(anchor=tk.W)
 
 		self.ryaku_var = tk.BooleanVar()
 		self.ryaku_var.set(True)
-		self.ryaku_chk = tk.Checkbutton(self, text="優先/限定を簡略化", variable=self.ryaku_var)  # こちらも変数名を変更
-		self.ryaku_chk.pack()
+		self.ryaku_chk = tk.Checkbutton(frame4, text="優先/限定を簡略化", variable=self.ryaku_var)  # こちらも変数名を変更
+		self.ryaku_chk.pack(anchor=tk.W)
 
 		self.dropdown_var = tk.StringVar(self)
 		self.dropdown_var.set(self.guns[0])
-		self.dropdown_menu = tk.OptionMenu(self, self.dropdown_var, *self.guns)
-		self.dropdown_menu.pack()
+		self.dropdown_menu = tk.OptionMenu(frame4, self.dropdown_var, *self.guns)
+		self.dropdown_menu.pack(anchor=tk.W)
 
-		self.ser_box = tk.Entry(self, width=30)
-		self.ser_box.pack()
+		self.ser_box = tk.Entry(frame4, width=30)
+		self.ser_box.pack(anchor=tk.W)
 
-		btn = tk.Button(self, text="フリーワード検索", command=lambda k="search": self.display_key(k))
-		btn.pack()
+		btn = tk.Button(frame4, text="フリーワード検索", command=lambda k="search": self.display_key(k))
+		btn.pack(anchor=tk.W)
 		self.buttons[(9, 5)] = btn
+
+		contf.pack(padx=20,pady=20, side=tk.TOP)
 
 
 	def display_key(self, key):
@@ -506,17 +536,17 @@ class Application(tk.Frame):
 		lines = self.oklines.strip().split('\n')
 		oklist = [line.split(',') for line in lines]
 
-		cols = self.oklines.count(',')
-		rows = self.oklines.count('\n')
-		for r in range(10):  # この値は適切に変更する必要があるかもしれません
-			for c in range(10):  # この値も適切に変更する必要があるかもしれません
+		cols = self.oklines.count(',') + 1
+		rows = self.oklines.count('\n') + 1
+		for r in range(rows):  # この値は適切に変更する必要があるかもしれません
+			for c in range(cols):  # この値も適切に変更する必要があるかもしれません
 				frame = tk.Frame(
 					self,  # ここを変更します
 					relief="solid",
 					bd=1
 				)
 				frame.pack()
-				label = tk.Label(frame, text=oklist[r][c])
+				label = tk.Label(frame, text=oklist[c][r])
 				label.pack(fill='both', expand=True)
 				print('aho')
 
@@ -525,6 +555,6 @@ root = tk.Tk()
 	
 
 root.title('risyu')
-root.geometry('720x900')
+root.geometry('900x1300')
 app = Application(root=root)
 root.mainloop()
