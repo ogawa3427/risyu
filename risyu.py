@@ -552,6 +552,14 @@ class Application(tk.Frame):
 				else:
 					thelines = re.sub(mykey, ', ,', thelines)
 
+		lines = thelines.strip().split('\n')
+		for i, line in enumerate(lines):
+	# ',外,'が含まれる行を見つける
+			if ',外,' in line:
+		# その行の各要素の末尾に"GRAY"を追加
+				lines[i] = ','.join([item + 'GRAY' for item in line.split(',')])
+		thelines = '\n'.join(lines)
+
 		if self.dropdown_var.get() == '全群':
 			pass
 		else:
@@ -618,6 +626,10 @@ class Application(tk.Frame):
 		print(atama)
 		if self.onlygs_var:
 			atama = re.sub('科目区分,', '', atama)
+
+		atama = re.sub('対象学生,適正人数,全登録数,優先指定,第１希望,第２希望,第３希望,第４希望,第５希望','対象,適,全,優先,[１,２,３,４,５]',atama)
+		atama = re.sub('時間割番号','No.',atama)
+		atama = re.sub('曜日時限', '', atama)
 		if self.outframe is not None:
 			self.outframe.destroy()
 		#print(self.oklines)
@@ -640,6 +652,9 @@ class Application(tk.Frame):
 				if "OBER" in text:
 					fg_color = "red"
 					text = re.sub('OBER', '', text)
+				if "GRAY" in text:
+					fg_color = 'LightSlateGray'
+					text = re.sub('GRAY', '', text)
 				else:
 					fg_color = "black"
 
