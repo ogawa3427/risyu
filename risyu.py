@@ -23,6 +23,8 @@ class Application(tk.Frame):
 
 		self.content = '\n'.join(sorted(self.content.split('\n'), key=lambda x: x.split(',')[0]))
 
+		self.outframe = None
+
 	def generate_buttons_info(self):
 		days = ["月", "火", "水", "木", "金"]
 		info = {}
@@ -45,7 +47,7 @@ class Application(tk.Frame):
 	}
 			gotojson = json.dumps(initdate,  indent=4)
 			with open('setting.json', "w", encoding='utf-8') as set:
-				set.write(gotojson) #あったら代入
+				set.write(gotojson)
 			self.defpath = ''
 		else:
 			with open('setting.json', 'r', encoding='utf-8') as setting:
@@ -532,23 +534,34 @@ class Application(tk.Frame):
 		self.make_table()
 
 	def make_table(self):
-		print(self.oklines)
+		if self.outframe is not None:
+			self.outframe.destroy()
+
 		lines = self.oklines.strip().split('\n')
 		oklist = [line.split(',') for line in lines]
 
-		cols = self.oklines.count(',') + 1
-		rows = self.oklines.count('\n') + 1
-		for r in range(rows):  # この値は適切に変更する必要があるかもしれません
-			for c in range(cols):  # この値も適切に変更する必要があるかもしれません
-				frame = tk.Frame(
-					self,  # ここを変更します
-					relief="solid",
-					bd=1
-				)
-				frame.pack()
-				label = tk.Label(frame, text=oklist[c][r])
+		rows = len(oklist)
+		cols = len(oklist[0])
+
+		self.outframe = tk.Frame(self, width=700, height=700)
+		frames = []
+
+		for c in range(cols):
+			frame = tk.Frame(self.outframe, width=700, height=700)  # 親フレームをself.outframeに設定
+			frame.pack(side=tk.LEFT, padx=5, pady=5)  # 左から順に配置
+			frames.append(frame)
+
+		for r in range(rows):
+			#setattr(outframe, f"infra{r}", tk.Frame(outframe, width=700, height=700, relief='groove'))
+			#currentf = getattr(outframe, f"infra{r}")
+			
+
+			for c in range(cols): 
+				label = tk.Label(frames[c], text=oklist[r][c])
 				label.pack(fill='both', expand=True)
-				print('aho')
+			
+
+		self.outframe.pack()
 
 root = tk.Tk()
 
