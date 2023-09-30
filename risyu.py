@@ -394,6 +394,18 @@ class Application(tk.Frame):
 
 	def show_buttons(self):
 
+				#厄介な書き替え
+
+		english_class_lines = '\n'.join([line for line in self.content.split('\n') if '（英語クラス）' in line])
+
+		english_class_lines = re.sub(r'（英語クラス）', '', english_class_lines)
+		english_class_lines = '\n'.join([re.sub(r'(^[^,]*,[^,]*),', r'\1,[英]', line) for line in english_class_lines.split('\n')])
+
+		non_english_class_lines = '\n'.join([line for line in self.content.split('\n') if '（英語クラス）' not in line])
+
+		self.content = english_class_lines + non_english_class_lines
+		self.content = '\n'.join(sorted(self.content.split('\n'), key=lambda x: x.split(',')[0]))
+
 
 
 		self.headers_list = self.header.split(',')
@@ -470,6 +482,11 @@ class Application(tk.Frame):
 		self.ryaku_chk = tk.Checkbutton(frame4, text="優先/限定を簡略化", variable=self.ryaku_var)  # こちらも変数名を変更
 		self.ryaku_chk.pack(anchor=tk.W)
 
+		self.eng_var = tk.BooleanVar()
+		self.eng_var.set(True)
+		self.eng_chk = tk.Checkbutton(frame4, text="科目名を省略", variable=self.eng_var)  # こちらも変数名を変更
+		self.eng_chk.pack(anchor=tk.W)
+
 		self.dropdown_var = tk.StringVar(self)
 		self.dropdown_var.set(self.guns[0])
 		self.dropdown_menu = tk.OptionMenu(frame4, self.dropdown_var, *self.guns)
@@ -485,13 +502,36 @@ class Application(tk.Frame):
 		contf.pack(padx=20,pady=20, side=tk.TOP)
 
 
-	def display_key(self, key):
+	def display_key(self, bkey):
 		thelines = self.content
-		if key == 'aff':
+		if bkey == 'aff':
 			self.regroll()
 
+
+
 		#トグル系スクリーニング/書き換え
-		print('こんにちは')
+		
+
+		with open('role.json', 'r', encoding='utf-8') as f:
+			data = json.load(f)
+
+
+		if self.ryaku_var.get():
+			for key, values in data.items():
+				mykey = ',' + key + ','
+				
+				if values[0]:
+					print(mykey)
+					thelines = re.sub(mykey, ',優,', thelines)
+				elif values[1]:
+					thelines = re.sub(mykey, ',限,', thelines)
+					print(key)
+				elif values[2]:
+					thelines = re.sub(mykey, ',外,', thelines)
+					print('aho')
+		print(thelines)
+
+
 
 		if self.dropdown_var.get() == '全群':
 			pass
@@ -500,10 +540,15 @@ class Application(tk.Frame):
 			thelines = re.sub(thegun, '', thelines)
 			print(thegun)
 
+		if self.tea_var.get():
+			thelines = "\n".join([",".join(re.split(',', line)[:4] + re.split(',', line)[5:]) for line in thelines.strip().split("\n")])
+		print(thelines)
+
 		if self.onlygs_var.get():
-			print('OK')
 			thelines = '\n'.join(line for line in thelines.splitlines() if "ＧＳ" in line)
 			thelines = '\n'.join(line for line in thelines.splitlines() if not "ＧＳ言語" in line)
+			thelines = re.sub(',ＧＳ科目', '', thelines)
+
 
 		if self.numo_var.get():
 			thelines = re.sub(r'^7', '', thelines, flags=re.MULTILINE)
@@ -516,20 +561,41 @@ class Application(tk.Frame):
 				gunkey = "^7" +  self.dropdown_var.get() + "[A-F]"
 			thelines = '\n'.join(line for line in thelines.splitlines() if re.search(gunkey, line))
 
-	
+
 		buttontext = self.ser_box.get()
 		if buttontext:
 			thelines = '\n'.join(line for line in thelines.splitlines() if buttontext in line)
 		else:
-			if key == 'search':
+			if bkey == 'search':
 				pass
 			else:
-				if key == '6限' or key == '7限' or key == '8限':
-					key = re.sub(r'限', '', key)
-					key = '(月|火|水|木|金)' + key
-				thelines = '\n'.join(line for line in thelines.splitlines() if re.search(key, line))
+				if bkey == '6限' or bkey == '7限' or bkey == '8限':
+					bkey = re.sub(r'限', '', bkey)
+					bkey = '(月|火|水|木|金)' + bkey
+				thelines = '\n'.join(line for line in thelines.splitlines() if re.search(bkey, line))
+		print('=====')
+		print(thelines)
+		print('=====')
+
+		engdic = {
+		'グローバル時代の': 'ｸﾞﾛｰﾊﾞﾙ時代の',
+		'エクササイズ&スポーツ': 'E&S',
+		'インテグレーテッド': 'インテグ',
+		'論理学から': '',
+		'異文化間コミュニケーション': '異コミュ',
+		'グローバル': 'ｸﾞﾛｰﾊﾞﾙ',
+		'ケーススタディ': 'ｹｰｽｽﾀﾃﾞｨ',
+		'PHILLIPPSJEREMYDAVID': 'PHILLIPPS',
+		'GRUENEBERGPATRICK': 'GRUENEBERG',
+		'アプローチ': 'ｱﾌﾟﾛｰﾁ'
+		}
+
+		if self.eng_var.get():
+			for i, j in engdic.items():
+				thelines = re.sub(i, j, thelines)
+
 		self.oklines = thelines
-		print(key)
+
 
 		self.make_table()
 
@@ -537,8 +603,17 @@ class Application(tk.Frame):
 		if self.outframe is not None:
 			self.outframe.destroy()
 
-		lines = self.oklines.strip().split('\n')
-		oklist = [line.split(',') for line in lines]
+
+
+		print(self.oklines)
+		mylist = self.oklines
+
+
+
+		ogawa = mylist.strip().split('\n')
+		
+		print(ogawa)
+		oklist = [line.split(',') for line in ogawa]
 
 		rows = len(oklist)
 		cols = len(oklist[0])
@@ -557,7 +632,7 @@ class Application(tk.Frame):
 			
 
 			for c in range(cols): 
-				label = tk.Label(frames[c], text=oklist[r][c])
+				label = tk.Label(frames[c], text=oklist[r][c], anchor=tk.W)
 				label.pack(fill='both', expand=True)
 			
 
