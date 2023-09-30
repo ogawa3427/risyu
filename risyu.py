@@ -397,8 +397,6 @@ class Application(tk.Frame):
 		content = english_class_lines + non_english_class_lines
 		content = '\n'.join(sorted(content.split('\n'), key=lambda x: x.split(',')[0]))
 
-		#print(content)
-
 		lines = content.split('\n')
 		thelines = ''
 		for line in lines:
@@ -510,8 +508,7 @@ class Application(tk.Frame):
 
 
 	def display_key(self, bkey):
-		content = self.sender
-		thelines = content
+		thelines = self.sender
 		if bkey == 'aff':
 			for widget in self.winfo_children():
 				widget.destroy()
