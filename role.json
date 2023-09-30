@@ -2,37 +2,37 @@
     "3年生以上優先": [
         false,
         false,
-        true
+        false
     ],
     "人文・法・国際限定，1年生優先": [
         false,
-        false,
-        true
+        true,
+        false
     ],
     "全学生": [
         false,
         false,
-        true
+        false
     ],
     "全学生（2019年度以前入学者履修登録用）": [
         false,
         false,
-        true
+        false
     ],
     "全学生（2020年度以降入学者履修登録用）": [
         false,
         false,
-        true
+        false
     ],
     "全学生（「超然文学賞」受賞者優先）": [
         false,
         false,
-        true
+        false
     ],
     "全学生（国際学類をのぞく）": [
         false,
         false,
-        true
+        false
     ],
     "全学生（地域創造学類以外）（2021年度以前入学者履修登録用）": [
         false,
@@ -121,7 +121,7 @@
     ],
     "１年生優先": [
         false,
-        false,
+        true,
         false
     ],
     "１年生優先（2016年度以前入学生履修登録用）": [

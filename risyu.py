@@ -4,15 +4,19 @@ import re
 import json
 import tkinter as tk
 from tkinter import ttk
-from tkinter import messagebox
+
+
 
 class Application(tk.Frame):
 	def __init__(self, root):
-		self.header = "時間割番号,科目区分,時間割名,曜日時限,教員名,対象学生,適正人数,全登録数,優先指定,第１希望,第２希望,第３希望,第４希望,第５希望"
-		self.name = ''
-		self.content = ''
+		import pretty_errors
+		pretty_errors.activate()
+		name = ''
+		content = ''
 		self.guns = ["全群", "1", "2", "3", "4", "5", "6"]
 		self.buttons = {} 
+		self.outframe = None
+		self.whenew = ''
 
 		super().__init__(root, width=1000, height=2000, borderwidth=4, relief='groove')
 		self.root = root
@@ -20,16 +24,9 @@ class Application(tk.Frame):
 
 		self.buttons_info = self.generate_buttons_info()
 		self.create_widgets()
-
-		self.content = '\n'.join(sorted(self.content.split('\n'), key=lambda x: x.split(',')[0]))
-
-		self.outframe = None
-		self.whenew = ''
-
 	def generate_buttons_info(self):
 		days = ["月", "火", "水", "木", "金"]
 		info = {}
-
 		for row in range(1, 6):  # 1から5までのループ
 			for col, day in enumerate(days):
 				key = (row, col)
@@ -37,18 +34,16 @@ class Application(tk.Frame):
 				info[key] = value
 		return info
 
-
 	def create_widgets(self):
-		if not os.path.exists("setting.json"):
+		if not os.path.exists("setting.json"): #初回起動かどうか
 			initdate = {
 			'filedir': '',
 			'newparson': True,
 			'iki': '',
 			'rui': ''
 	}
-			gotojson = json.dumps(initdate,  indent=4)
-			with open('setting.json', "w", encoding='utf-8') as set:
-				set.write(gotojson)
+			with open('setting.json', "w", encoding='utf-8') as f:
+				json.dump(initdate, f)
 			self.defpath = ''
 		else:
 			with open('setting.json', 'r', encoding='utf-8') as setting:
@@ -56,62 +51,58 @@ class Application(tk.Frame):
 				self.defpath = data['filedir']
 
 
+		label1 = tk.Label(self, text="金沢大学教務システム - 抽選科目登録状況.htmが")
+		label1.pack(anchor=tk.N)
+		label2 = tk.Label(self, text="入っているディレクトリのフルパスを入力")
+		label2.pack()
+		label3 = tk.Label(self, text="パスを保存しておらず未入力の場合は$HOMEを見ます")
+		label3.pack()
 
-		self.label1 = tk.Label(self, text="金沢大学教務システム - 抽選科目登録状況.htmが")
-		self.label1.pack(anchor=tk.N)
-
-		self.label2 = tk.Label(self, text="入っているディレクトリのフルパスを入力")
-		self.label2.pack()
-
-		self.label3 = tk.Label(self, text="パスを保存しておらず未入力の場合は$HOMEを見ます")
-		self.label3.pack()
-
-		self.chk_vars = tk.BooleanVar()
-		self.chk_vars.set(True) 
-		self.chk1 = tk.Checkbutton(self, text="入力したパスを保存する", variable=self.chk_vars)
-		self.chk1.pack()
-
-		quit_btn = tk.Button(self, text='最新版を表示', command=self.go_next, width=10)
-		quit_btn.pack(side=tk.RIGHT)
-
-
-		self.text_box = tk.Entry(self, width=30)
+		start1 = tk.Frame(self, width=100, height=200)
+		start1.pack()
+		self.text_box = tk.Entry(start1, width=40)
 		self.text_box.insert(0, self.defpath)
-		self.text_box.pack()
-
-		quit_btn = tk.Button(self, text='実行', command=self.csvmaker)
+		self.text_box.pack(side=tk.LEFT)
+		quit_btn = tk.Button(start1, text='実行', command=self.csvmaker)
 		quit_btn.pack(side=tk.LEFT)
 
-		self.labelw = tk.Label(self, text="ファイルが見つかりません", fg="red")
+		start2 = tk.Frame(self, width=100, height=200)
+		start2.pack(side=tk.RIGHT, pady=8)
+		self.save_chk = tk.BooleanVar()
+		self.save_chk.set(True) 
+		self.chk1 = tk.Checkbutton(start2, text="入力したパスを保存する", variable=self.save_chk)
+		self.chk1.pack(side=tk.LEFT, anchor=tk.W, padx=(0,50))
+		quit_btn = tk.Button(start2, text='(最新版を)表示', command=self.go_next, width=10)
+		quit_btn.pack(side=tk.RIGHT, padx=(10,0))
 
+		start3 = tk.Frame(self, width=50, height=50)
+		start3.pack()
+		self.labelw = tk.Label(self, text="ファイルが見つかりません", fg="red")
 		self.labels = tk.Label(self, text="保存しました[ファイル名]")
 
 
 	def csvmaker(self):
-		self.content = ''
-		self.name = ''
+		if self.text_box.get(): #空ならHOME
+			filepath = os.path.join(self.text_box.get(), "金沢大学教務システム - 抽選科目登録状況.htm")
+		else:
+			filepath = os.path.join(os.environ["HOME"], "金沢大学教務システム - 抽選科目登録状況.htm") #なしありbrank
 
-		inp = self.text_box.get()
-		if inp:
-			filepath = inp
-		if not inp:
-			filename = os.path.join(os.environ["HOME"], "金沢大学教務システム - 抽選科目登録状況.htm") #なしありbrank
-		else: #あり
-			filename = os.path.join(filepath, "金沢大学教務システム - 抽選科目登録状況.htm")
-			if self.chk_vars.get():
-				with open('setting.json', 'r') as file:
-					data = json.load(file)
-				data['filedir'] = filepath
-				with open('setting.json', 'w') as file:
-					json.dump(data, file, indent=4)
-		if not os.path.exists(filename):
+		if self.save_chk.get():
+			with open('setting.json', 'r') as f:
+				data = json.load(f)
+			data['filedir'] = self.text_box.get()
+			with open('setting.json', 'w') as f:
+				json.dump(data, f, indent=4)
+
+		if not os.path.exists(filepath):
 			self.labels.pack_forget()
-			self.labelw.pack()
+			self.labelw.pack(anchor=tk.CENTER, side=tk.TOP)
 
-		with open(filename, 'r', encoding='utf-8') as f:
+		with open(filepath, 'r', encoding='utf-8') as f:
 			line = f.readline()
 			mode = 0
-			#turn = 1
+			content=''
+			name = ''
 			while line:
 				if "ctl00_phContents_ucRegistrationStatus_lb" in line:
 					name = line
@@ -120,82 +111,78 @@ class Application(tk.Frame):
 				if mode == 1:
 					if "</tr><tr" in line:
 						line = "eskape"
-					self.content += line
+					content += line
 				if 'th align' in line:
 					mode = 1
 				line = f.readline()
 
-		self.content = self.content.replace(" ", "")
-		self.content = self.content.replace("\t", "")
-		self.content = self.content.replace("\n", "")
-		self.content = self.content.replace("</span>", "")
-		self.content = re.sub(r'<span.*?>', '', self.content)
-		self.content = re.sub(r'<td.*?>', '<td>', self.content)
-		self.content = self.content.replace("</td><td>", ",")
-		self.content = self.content.replace("<td>", "")
-		self.content = self.content.replace("</td>", "")
-		self.content = self.content.replace("&amp;", "&")
-		self.content = re.sub(r'<\/tr>.*', '', self.content)
+		content = content.replace(" ", "")
+		content = content.replace("\t", "")
+		content = content.replace("\n", "")
+		content = content.replace("</span>", "")
+		content = re.sub(r'<span.*?>', '', content)
+		content = re.sub(r'<td.*?>', '<td>', content)
+		content = content.replace("</td><td>", ",")
+		content = content.replace("<td>", "")
+		content = content.replace("</td>", "")
+		content = content.replace("&amp;", "&")
+		content = re.sub(r'<\/tr>.*', '', content)
 
-		self.content = re.sub(r'^\n', '', self.content)
-		self.content = self.content.replace("eskape", "\n")
-		self.contents = self.header + self.content
+		content = re.sub(r'^\n', '', content)
+		content = content.replace("eskape", "\n")
+		header = "時間割番号,科目区分,時間割名,曜日時限,教員名,対象学生,適正人数,全登録数,優先指定,第１希望,第２希望,第３希望,第４希望,第５希望"
+		contents = header + '\n' + content
 
-		self.name = re.sub(r'<.*?>', '', self.name)
-		self.name = re.sub(r'\t', '', self.name)
-		self.name = re.sub(r'[ :\/]', '', self.name)
-		self.name = re.sub(r'\n', '', self.name)
-		self.name = "risyu" + self.name
-		self.name = self.name + ".csv"
+		name = re.sub(r'<.*?>', '', name)
+		name = re.sub(r'\t', '', name)
+		name = re.sub(r'[ :\/]', '', name)
+		name = re.sub(r'\n', '', name)
+		name = "risyu" + name
+		name = name + ".csv"
+		
+		with open(name, 'w', encoding='utf-8') as file:
+			file.write(contents)
 
-		with open(self.name, 'w', encoding='utf-8') as file:
-			file.write(self.contents)
-
-		self.name = '保存しました' + self.name
-		self.labels.config(text=self.name)
-		self.labels.pack()
+		name = '保存しました' + name
+		self.labels.config(text=name)
+		self.labels.pack(anchor=tk.CENTER, side=tk.TOP)
 		self.labelw.pack_forget()
 
 
 	def go_next(self):
-		pwd = '.'
-		ls = os.listdir(pwd)
-		newls = [ls for ls in ls if re.search("risyu", ls)]
-		newestls = [newls for newls in newls if re.search("csv", newls)]
+		ls = os.listdir('.')
+		ls = [ls for ls in ls if re.search("risyu", ls)]
+		ls = [ls for ls in ls if re.search("csv", ls)]
 
-		numlist = [re.findall(r'\d+', fname)[0] for fname in newestls if re.findall(r'\d+', fname)]
+		numlist = [re.findall(r'\d+', fname)[0] for fname in ls if re.findall(r'\d+', fname)]
 		openfile = max(numlist)
 		openfile = re.sub(r'^', 'risyu', openfile)
 		openfile = re.sub(r'$', '.csv', openfile)
-		with open(openfile,'r', encoding='utf-8') as ofile:
-			line = ofile.readline()
-			while line:
-				self.content += line
-				line = ofile.readline()
-			self.content = '\n'.join(line for line in self.content.splitlines() if not "時間割番号,科目区分" in line)
-
+		content = ''
+		with open(openfile, 'r', encoding='utf-8') as f:
+			content = ''.join(line for line in f if "時間割番号,科目区分" not in line)
 		for widget in self.winfo_children():
 			widget.destroy()
+		print(content)
 
-		self.asof = self.name + openfile
+		self.asof = openfile
 		self.asof = re.sub(r'^risyu\d{4}', '', self.asof)
 		self.asof = re.sub(r'.{4}$', '', self.asof)
 		patt = r"(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})"
 		repl = r"\1月\2日\3:\4:\5現在"	
 		self.asof = re.sub(patt, repl, self.asof)
 
-		lines = self.content.strip().split('\n')
+		lines = content.strip().split('\n')
 		sixth_items = [line.split(',')[5] for line in lines if len(line.split(',')) >= 6]
 		self.nowyuusen = sorted(list(set(sixth_items)))
 
+		self.content = content
 		self.areyounew()
 
 	def areyounew(self):
 		with open('setting.json', 'r', encoding='utf-8') as f:
 			data = json.load(f)
-		np = data['newparson']
-		
-		if np:
+		if data['newparson']:
 			self.regroll()
 		else:
 			self.show_buttons()
@@ -400,19 +387,19 @@ class Application(tk.Frame):
 
 
 	def show_buttons(self):
-				#厄介な書き替え
-		english_class_lines = '\n'.join([line for line in self.content.split('\n') if '（英語クラス）' in line])
-
+		content = self.content
+		#厄介な書き替え
+		#print(content)
+		english_class_lines = '\n'.join([line for line in content.split('\n') if '（英語クラス）' in line])
 		english_class_lines = re.sub(r'（英語クラス）', '', english_class_lines)
 		english_class_lines = '\n'.join([re.sub(r'(^[^,]*,[^,]*),', r'\1,[英]', line) for line in english_class_lines.split('\n')])
+		non_english_class_lines = '\n'.join([line for line in content.split('\n') if '（英語クラス）' not in line])
+		content = english_class_lines + non_english_class_lines
+		content = '\n'.join(sorted(content.split('\n'), key=lambda x: x.split(',')[0]))
 
-		non_english_class_lines = '\n'.join([line for line in self.content.split('\n') if '（英語クラス）' not in line])
+		#print(content)
 
-		self.content = english_class_lines + non_english_class_lines
-		self.content = '\n'.join(sorted(self.content.split('\n'), key=lambda x: x.split(',')[0]))
-
-
-		lines = self.content.split('\n')
+		lines = content.split('\n')
 		thelines = ''
 		for line in lines:
 			elements = line.split(',')
@@ -427,11 +414,7 @@ class Application(tk.Frame):
 			jele = ",".join(map(str, elements))
 			thelines = thelines + jele + '\n'
 
-		print(thelines)
 				
-
-		self.headers_list = self.header.split(',')
-
 		contf = tk.Frame(self, width=700, height=650)
 
 		frame1 = tk.Frame(contf, width=700, height=650)
@@ -527,8 +510,8 @@ class Application(tk.Frame):
 
 
 	def display_key(self, bkey):
-		self.content = self.sender
-		thelines = self.content
+		content = self.sender
+		thelines = content
 		if bkey == 'aff':
 			for widget in self.winfo_children():
 				widget.destroy()
@@ -622,10 +605,14 @@ class Application(tk.Frame):
 		self.make_table()
 
 	def make_table(self):
-		atama = self.header
+		atama = "時間割番号,科目区分,時間割名,曜日時限,教員名,対象学生,適正人数,全登録数,優先指定,第１希望,第２希望,第３希望,第４希望,第５希望"
+
 		print(atama)
 		if self.onlygs_var:
 			atama = re.sub('科目区分,', '', atama)
+
+		if self.tea_var:
+			atama = re.sub('教員名,','',atama)
 
 		atama = re.sub('対象学生,適正人数,全登録数,優先指定,第１希望,第２希望,第３希望,第４希望,第５希望','対象,適,全,優先,[１,２,３,４,５]',atama)
 		atama = re.sub('時間割番号','No.',atama)
@@ -637,6 +624,7 @@ class Application(tk.Frame):
 		ogawa = mylist.strip().split('\n')
 		ogawa.insert(0, atama)
 		oklist = [line.split(',') for line in ogawa]
+
 		rows = len(oklist)
 		cols = len(oklist[0])
 		self.outframe = tk.Frame(self, width=700, height=700)
