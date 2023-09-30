@@ -412,6 +412,23 @@ class Application(tk.Frame):
 		self.content = '\n'.join(sorted(self.content.split('\n'), key=lambda x: x.split(',')[0]))
 
 
+		lines = self.content.split('\n')
+		thelines = ''
+		for line in lines:
+			elements = line.split(',')
+
+			maxer = elements[6]
+			ruiseki = 0
+			elements[9] = int(elements[9]) - int(elements[8])
+			for i in range(8,13):
+				ruiseki = ruiseki + int(elements[i])
+				if ruiseki >= int(maxer):
+					elements[i] = str(elements[i]) + 'OBER'
+			jele = ",".join(map(str, elements))
+			thelines = thelines + jele + '\n'
+
+		print(thelines)
+				
 
 		self.headers_list = self.header.split(',')
 
@@ -506,8 +523,11 @@ class Application(tk.Frame):
 
 		contf.pack(padx=20,pady=20, side=tk.TOP)
 
+		self.sender = thelines
+
 
 	def display_key(self, bkey):
+		self.content = self.sender
 		thelines = self.content
 		if bkey == 'aff':
 			for widget in self.winfo_children():
@@ -594,11 +614,16 @@ class Application(tk.Frame):
 		self.make_table()
 
 	def make_table(self):
+		atama = self.header
+		print(atama)
+		if self.onlygs_var:
+			atama = re.sub('科目区分,', '', atama)
 		if self.outframe is not None:
 			self.outframe.destroy()
 		#print(self.oklines)
 		mylist = self.oklines
 		ogawa = mylist.strip().split('\n')
+		ogawa.insert(0, atama)
 		oklist = [line.split(',') for line in ogawa]
 		rows = len(oklist)
 		cols = len(oklist[0])
@@ -610,7 +635,15 @@ class Application(tk.Frame):
 			frames.append(frame)
 		for r in range(rows):
 			for c in range(cols): 
-				label = tk.Label(frames[c], text=oklist[r][c], anchor=tk.W)
+				text = oklist[r][c]
+
+				if "OBER" in text:
+					fg_color = "red"
+					text = re.sub('OBER', '', text)
+				else:
+					fg_color = "black"
+
+				label = tk.Label(frames[c], text=text, anchor=tk.W, fg=fg_color)
 				label.pack(fill='both', expand=True)
 		self.outframe.pack()
 root = tk.Tk()
