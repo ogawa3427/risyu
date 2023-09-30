@@ -17,7 +17,7 @@ dir.csvにフルパスを書いとくとそこからHTMLを探します
 私はDownloadにしてる
 
 python3.11.5  
-PySimpleGUI  
+~~PySimpleGUI~~  
 tknter  
 
 商用利用不可
