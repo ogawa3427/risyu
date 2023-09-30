@@ -518,6 +518,14 @@ class Application(tk.Frame):
 		with open('role.json', 'r', encoding='utf-8') as f:
 			data = json.load(f)
 
+		if self.tea_var.get():
+			thelines = "\n".join([",".join(re.split(',', line)[:4] + re.split(',', line)[5:]) for line in thelines.strip().split("\n")])
+		#print(thelines)
+
+		if self.onlygs_var.get():
+			thelines = '\n'.join(line for line in thelines.splitlines() if "ＧＳ" in line)
+			thelines = '\n'.join(line for line in thelines.splitlines() if not "ＧＳ言語" in line)
+			thelines = re.sub(',ＧＳ科目', '', thelines)
 
 		if self.ryaku_var.get():
 			for key, values in data.items():
@@ -547,14 +555,6 @@ class Application(tk.Frame):
 			thelines = re.sub(thegun, '', thelines)
 			#print(thegun)
 
-		if self.tea_var.get():
-			thelines = "\n".join([",".join(re.split(',', line)[:4] + re.split(',', line)[5:]) for line in thelines.strip().split("\n")])
-		#print(thelines)
-
-		if self.onlygs_var.get():
-			thelines = '\n'.join(line for line in thelines.splitlines() if "ＧＳ" in line)
-			thelines = '\n'.join(line for line in thelines.splitlines() if not "ＧＳ言語" in line)
-			thelines = re.sub(',ＧＳ科目', '', thelines)
 
 
 		if self.numo_var.get():
