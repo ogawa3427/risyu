@@ -87,10 +87,6 @@ class Application(tk.Frame):
 		self.labels = tk.Label(self, text="保存しました[ファイル名]")
 
 
-
-
-
-
 	def csvmaker(self):
 		self.content = ''
 		self.name = ''
@@ -242,13 +238,10 @@ class Application(tk.Frame):
 		radio3 = tk.Radiobutton(radio_f, text="医薬保", variable=self.radio_var, value=3, font=("Arial", 14))
 		radio4 = tk.Radiobutton(radio_f, text="融合", variable=self.radio_var, value=4, font=("Arial", 14))
 
-		
-
 		style = ttk.Style()
 		style.configure('Large.TCombobox', font=('Arial', 19))
 		style.configure('Large.TCombobox*Listbox', font=('Arial', 19))  # この行で選択肢の文字の大きさを変更
 		self.combobox = ttk.Combobox(self, style='Large.TCombobox', values=[] ,font=("Arial", 14))
-
 
 
 		if not data['newparson']:
@@ -290,6 +283,7 @@ class Application(tk.Frame):
 			data = json.load(f)
 		data['iki'] = iki
 		data['rui'] = rui
+		data['newparson'] = False
 		with open('setting.json', 'w', encoding='utf-8') as f:
 			data = json.dump(data, f, indent=4)
 
@@ -299,7 +293,7 @@ class Application(tk.Frame):
 			data = json.load(f)
 		iki = data['iki']
 		rui = data['rui']
-		if os.path.exists("role.json"):
+		if not os.path.exists("role.json"):
 			initdict = {}
 			for i in range(1, self.yuul):
 
@@ -323,7 +317,6 @@ class Application(tk.Frame):
 				f.write(gotoinit)
 
 
-
 		outer_frame = tk.Frame(self, width=400, height=400)
 		outer_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
@@ -339,9 +332,6 @@ class Application(tk.Frame):
 		self.ryuusen2.pack(side=tk.LEFT)
 		self.rgentei = tk.Label(rframe, text="限定 ", font=('Arial, 16'))
 		self.rgentei.pack(anchor=tk.NE, side=tk.LEFT, fill=tk.X, expand=True)
-
-
-
 		# main_frameを作成
 		main_frame = tk.Frame(self, width=700, height=650)
 		main_frame.pack(fill=tk.BOTH, expand=True)
@@ -384,23 +374,33 @@ class Application(tk.Frame):
 				setattr(self, chk_attr_name, tk.Checkbutton(set_frame, text="", variable=getattr(self, attr_name)))
 				getattr(self, chk_attr_name).pack(side=tk.RIGHT, padx=5)
 
-
-
-
 		back_btn = tk.Button(self, text='完了', command=self.backtothelist)
 		back_btn.pack()
 
 
 	def backtothelist(self):
+
+
+		with open('role.json', 'r', encoding='utf-8') as f:
+			data = json.load(f)
+
+		with open('role.json', 'w', encoding='utf-8') as f:
+			for i in range(1, self.yuul):
+				key = str(self.nowyuusen[i])
+				vgen = getattr(self, 'gen' + str(i)).get()
+				vyuu = getattr(self, 'yuu' + str(i)).get()
+				viga = getattr(self, 'iga' + str(i)).get()
+				data[key] = [vgen, vyuu, viga]
+		
+			json.dump(data, f, ensure_ascii=False, indent=4)
+
 		for widget in self.winfo_children():
 			widget.destroy()
 		self.show_buttons()
 
 
 	def show_buttons(self):
-
 				#厄介な書き替え
-
 		english_class_lines = '\n'.join([line for line in self.content.split('\n') if '（英語クラス）' in line])
 
 		english_class_lines = re.sub(r'（英語クラス）', '', english_class_lines)
@@ -515,21 +515,22 @@ class Application(tk.Frame):
 			self.whenew = 'Yes'
 			self.regroll()
 
-
 		with open('role.json', 'r', encoding='utf-8') as f:
 			data = json.load(f)
 
 
 		if self.ryaku_var.get():
 			for key, values in data.items():
-				mykey = ',' + key + ','
-				
+				mykey = ',' + key + ','		
 				if values[0]:
+					print('oho')
 					thelines = re.sub(mykey, ',優,', thelines)
 				elif values[1]:
 					thelines = re.sub(mykey, ',限,', thelines)
 				elif values[2]:
 					thelines = re.sub(mykey, ',外,', thelines)
+				else:
+					thelines = re.sub(mykey, ', ,', thelines)
 
 		if self.dropdown_var.get() == '全群':
 			pass
@@ -571,9 +572,6 @@ class Application(tk.Frame):
 					bkey = re.sub(r'限', '', bkey)
 					bkey = '(月|火|水|木|金)' + bkey
 				thelines = '\n'.join(line for line in thelines.splitlines() if re.search(bkey, line))
-		#print('=====')
-		#print(thelines)
-		#print('=====')
 
 		engdic = {
 		'グローバル時代の': 'ｸﾞﾛｰﾊﾞﾙ時代の',
