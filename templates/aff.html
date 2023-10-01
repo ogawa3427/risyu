@@ -60,33 +60,23 @@
         }
 
         window.onload = function() {
-    // 初めての訪問を確認するためのCookieの名前
-    const VISITED_COOKIE_NAME = "visited";
+    // Cookieから値を取得
+            function getCookie(name) {
+                var cookies = {};
+                var allCoolies = document.cookie.split('; ');
 
-    // Cookieから値を取得する関数
-    function getCookie(name) {
-        var value = "; " + document.cookie;
-        var parts = value.split("; " + name + "=");
-        if (parts.length == 2) return parts.pop().split(";").shift();
-    }
+                for (var i = 0; i < allCookies.length; i++) {
+                    var cookiePair = allCookies[i].split('='); // "="で分割して名前と値のペアを取得
+                    var cookieName = decodeURIComponent(cookiePair[0]); // Cookieの名前をデコード
+                    var cookieValue = decodeURIComponent(cookiePair[1]); // Cookieの値をデコード
+                    cookies[cookieName] = cookieValue; // オブジェクトに追加
+                }
+                return cookies;
+            }
+            var cookiesObj = getCookie();
 
-    // 初めての訪問かどうかを確認
-    var visited = getCookie(VISITED_COOKIE_NAME);
 
-    if (!visited) {
-        // 初めての訪問の場合、Cookieからデータを読み取る処理を行う
-        // 例: チェックボックスの初期値を設定
-        var checkboxValue = getCookie("checkboxValue");
-        if (checkboxValue === "true") {
-            document.getElementById("check1").checked = true;
-        }
 
-        // 他のCookieからのデータ読み取りや初期値の設定もここに追加できます。
-
-        // visited Cookieを設定して、ユーザーがページを訪れたことを記録
-        document.cookie = VISITED_COOKIE_NAME + "=true;path=/";
-    }
-}
 
 
 
@@ -101,8 +91,7 @@
         var theline = `{{ theline }}`;
 
         // 改行とコンマで区切って二次元リストに変換
-        var rows = theline.split('\n');
-
+        var thelinesArray = theline.split('\n');
         thelines = thelinesArray.filter(function(line) {
             return line.match(buttonText);
         }).join('\n');
