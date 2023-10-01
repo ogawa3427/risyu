@@ -599,6 +599,11 @@ class Application(tk.Frame):
 			thelines = re.sub(r'(?<=^.{2})[^,]+,', ',', thelines, flags=re.MULTILINE)
 			atama = re.sub('時間割番号,','No.,',atama)
 
+	#科目名
+		if self.eng_var.get():
+			for i, j in engdic.items():
+				thelines = re.sub(i, j, thelines)
+
 		"""
 
 		if self.dropdown_var.get() == '全群':
@@ -635,9 +640,7 @@ class Application(tk.Frame):
 
 		engdic = 
 
-		if self.eng_var.get():
-			for i, j in engdic.items():
-				thelines = re.sub(i, j, thelines)
+
 		"""
 		self.oklines = thelines + '\n' + atama
 		print(self.oklines)
@@ -688,6 +691,9 @@ class Application(tk.Frame):
 
 	def deepsetting(self):
 		print('おはよう')
+		with open('setting.json', 'r', encoding='utf-8') as f:
+			data = json.load(f)
+		
 		set1 = tk.Frame(self, width=300, height=300)
 		set1.pack()
 		kamokumei = tk.Label(set1, text='科目名の省略度')
@@ -699,12 +705,18 @@ class Application(tk.Frame):
 		kdoai1.pack()
 		kdoai2.pack()
 		kdoai3.pack()
+		self.kdoai.set(data['kdoai'])
 
 		goback = tk.Button(self,text='戻る',command=self.goback)
 		goback.pack()
 
 	def goback(self):
 		print('GOBACK')
+		with open('setting.json', 'r', encoding='utf-8') as f:
+			data = json.load(f)
+		data['kdoai'] = self.kdoai.get()
+		with open('setting.json', 'w', encoding='utf-8') as f:
+			json.dump(data, f, indent=4)
 		for widget in self.winfo_children():
 				widget.destroy()
 		self.show_buttons()
