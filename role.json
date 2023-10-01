@@ -6,8 +6,8 @@
     ],
     "人文・法・国際限定，1年生優先": [
         false,
-        true,
-        false
+        false,
+        true
     ],
     "全学生": [
         false,
@@ -46,7 +46,7 @@
     ],
     "全学生（地域創造学類優先，次いで融合学域・人文学類・法学類・経済学類・国際学類優先）": [
         false,
-        true,
+        false,
         false
     ],
     "全学生（総合教育部学生優先）": [
@@ -57,7 +57,7 @@
     "全学生（総合教育部学生優先）（英語のみで受講可能な学生限定）": [
         false,
         false,
-        false
+        true
     ],
     "履修条件あり（ピアノ経験者）": [
         false,
@@ -67,22 +67,22 @@
     "未履修または「放棄」の２年生以上限定": [
         false,
         false,
-        false
+        true
     ],
     "法学類の1年次以外限定": [
         false,
         false,
-        false
+        true
     ],
     "理工学域優先": [
         false,
-        false,
+        true,
         false
     ],
     "経済・地域・総合（文）限定，1年生優先": [
         false,
         false,
-        false
+        true
     ],
     "１年人文，国際優先": [
         false,
@@ -121,7 +121,7 @@
     ],
     "１年生優先": [
         false,
-        true,
+        false,
         false
     ],
     "１年生優先（2016年度以前入学生履修登録用）": [
@@ -137,17 +137,17 @@
     "２年以上限定": [
         false,
         false,
-        false
+        true
     ],
     "２年次以上限定": [
         false,
         false,
-        false
+        true
     ],
     "２年生以上限定・未修得者のみ・３～４年生優先": [
         false,
         false,
-        false
+        true
     ],
     "３年以上優先": [
         false,
@@ -157,11 +157,11 @@
     "３年以上限定": [
         false,
         false,
-        false
+        true
     ],
     "４年次以上限定（2019年度以前入学者履修登録用）": [
         false,
         false,
-        false
+        true
     ]
 }
