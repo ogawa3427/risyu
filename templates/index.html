@@ -3,38 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <title>risyu</title>
+    <style>
+        /* ボタンに5ピクセルのマージンを追加 */
+        #buttons button {
+            margin: 5px;
+        }
+    </style>
 </head>
 <body>
     <h1> </h1>
 
-    <!-- 表を追加 -->
+    <!-- 月1から金5までのボタンを配置 -->
+    <div id="buttons">
+        <div><button class="day-button">月1</button><button class="day-button">火1</button><button class="day-button">水1</button><button class="day-button">木1</button><button class="day-button">金1</button></div>
+        <div><button class="day-button">月2</button><button class="day-button">火2</button><button class="day-button">水2</button><button class="day-button">木2</button><button class="day-button">金2</button></div>
+        <div><button class="day-button">月3</button><button class="day-button">火3</button><button class="day-button">水3</button><button class="day-button">木3</button><button class="day-button">金3</button></div>
+        <div><button class="day-button">月4</button><button class="day-button">火4</button><button class="day-button">水4</button><button class="day-button">木4</button><button class="day-button">金4</button></div>
+        <div><button class="day-button">月5</button><button class="day-button">火5</button><button class="day-button">水5</button><button class="day-button">木5</button><button class="day-button">金5</button></div>
+    </div>
 
+    <!-- 表を追加 -->
     <table id="myTable"></table>
 
     <script>
+    	function handleButtonClick(event) {
+    		var buttonText = event.target.innerText;
+
+    // Filter the lines based on the button text
+    		var filteredLines = theline.split('\n').filter(function(line) {
+        		return line.match(buttonText);
+    		});
+
+    		var matrix = filteredLines.map(function(row) {
+        		return row.split(',');
+    		});
+
+    // Clear the existing table contents
+    		var table = document.getElementById('myTable');
+    		while (table.firstChild) {
+    		    table.removeChild(table.firstChild);
+    		}
+
+    // Dynamically generate the table based on the new data
+    		for (var i = 0; i < matrix.length; i++) {
+        		var tr = document.createElement('tr');
+        		for (var j = 0; j < matrix[i].length; j++) {
+            		var td = document.createElement('td');
+            		var cellText = matrix[i][j].replace('OBER', '');
+            		td.textContent = cellText;
+            		if (matrix[i][j].includes('OBER')) {
+            		    td.style.color = 'red';
+            		}
+            		tr.appendChild(td);
+        		}
+        		table.appendChild(tr);
+    		}
+		}
+
+
+
+        // Attach event listeners to all buttons with the class "day-button"
+        var buttons = document.querySelectorAll('.day-button');
+        buttons.forEach(function(button) {
+            button.addEventListener('click', handleButtonClick);
+        });
+
         // Jinja2を使用して変数をJavaScriptに埋め込む
         var theline = `{{ theline }}`;
 
         // 改行とコンマで区切って二次元リストに変換
         var rows = theline.split('\n');
+
+        thelines = thelinesArray.filter(function(line) {
+    		return line.match(buttonText);
+		}).join('\n');
+
         var matrix = rows.map(function(row) {
             return row.split(',');
         });
 
-        // 表を動的に生成
+        // PythonのコードをJavaScriptに変換した部分
+        for (var i = 0; i < matrix.length; i++) {
+            var elements = matrix[i];
+
+            var maxer = elements[6];
+            var ruiseki = 0;
+            var kyu = elements[9];
+            elements[9] = parseInt(elements[9]) - parseInt(elements[8]);
+            for (var j = 8; j <= 12; j++) {
+                ruiseki = ruiseki + parseInt(elements[j]);
+                if (ruiseki >= parseInt(maxer)) {
+                    elements[j] = elements[j] + 'OBER';
+                }
+            }
+            elements[9] = kyu;
+        }
+
+// 表を動的に生成
         var table = document.getElementById('myTable');
         for (var i = 0; i < matrix.length; i++) {
             var tr = document.createElement('tr');
             for (var j = 0; j < matrix[i].length; j++) {
                 var td = document.createElement('td');
-                td.textContent = matrix[i][j];
-                if (matrix[i][j].includes('科目')) {
+        
+        // OBERを削除してからテキストを設定
+                var cellText = matrix[i][j].replace('OBER', '');
+                td.textContent = cellText;
+        
+                if (matrix[i][j].includes('OBER')) {
                     td.style.color = 'red';
                 }
                 tr.appendChild(td);
             }
             table.appendChild(tr);
         }
+    </script>
+</body>
+</html>
     </script>
 </body>
 </html>
