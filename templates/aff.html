@@ -16,10 +16,6 @@
     <!-- 月1から金5までのボタンを配置 -->
     <div id="buttons">
         <div><button class="day-button">月1</button><button class="day-button">火1</button><button class="day-button">水1</button><button class="day-button">木1</button><button class="day-button">金1</button><label><input type="checkbox" id="check1">GSのみ</label></div>
-        <div><button class="day-button">月2</button><button class="day-button">火2</button><button class="day-button">水2</button><button class="day-button">木2</button><button class="day-button">金2</button><label><input type="checkbox" id="check2">教員名を省略</label></div>
-        <div><button class="day-button">月3</button><button class="day-button">火3</button><button class="day-button">水3</button><button class="day-button">木3</button><button class="day-button">金3</button><label><input type="checkbox" id="check3">時間割番号を省略</label></div>
-        <div><button class="day-button">月4</button><button class="day-button">火4</button><button class="day-button">水4</button><button class="day-button">木4</button><button class="day-button">金4</button><label><input type="checkbox" id="check4">優先・限定を簡略化</label></div>
-        <div><button class="day-button">月5</button><button class="day-button">火5</button><button class="day-button">水5</button><button class="day-button">木5</button><button class="day-button">金5</button><label><input type="checkbox" id="check5">時間割名を省略</label></div>
         <div><button class="day-button">6限</button><button class="day-button">7限</button><button class="day-button">8限</button><button class="day-button">集中</button><select id="dropdown"><option value="0">全群</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option></select></div>
         <div><input type="text" id="freeword"><button class="day-button">ﾌﾘｰﾜｰﾄﾞ検索</button></div>
     </div></div>
@@ -29,39 +25,69 @@
     <table id="myTable"></table>
 
     <script>
-    	function calbut(event) {
-    		var buttonText = event.target.innerText;
+        function calbut(event) {
+            var buttonText = event.target.innerText;
 
     // Filter the lines based on the button text
-    		var filteredLines = theline.split('\n').filter(function(line) {
-        		return line.match(buttonText);
-    		});
+            var filteredLines = theline.split('\n').filter(function(line) {
+                return line.match(buttonText);
+            });
 
-    		var matrix = filteredLines.map(function(row) {
-        		return row.split(',');
-    		});
+            var matrix = filteredLines.map(function(row) {
+                return row.split(',');
+            });
 
     // Clear the existing table contents
-    		var table = document.getElementById('myTable');
-    		while (table.firstChild) {
-    		    table.removeChild(table.firstChild);
-    		}
+            var table = document.getElementById('myTable');
+            while (table.firstChild) {
+                table.removeChild(table.firstChild);
+            }
 
     // Dynamically generate the table based on the new data
-    		for (var i = 0; i < matrix.length; i++) {
-        		var tr = document.createElement('tr');
-        		for (var j = 0; j < matrix[i].length; j++) {
-            		var td = document.createElement('td');
-            		var cellText = matrix[i][j].replace('OBER', '');
-            		td.textContent = cellText;
-            		if (matrix[i][j].includes('OBER')) {
-            		    td.style.color = 'red';
-            		}
-            		tr.appendChild(td);
-        		}
-        		table.appendChild(tr);
-    		}
-		}
+            for (var i = 0; i < matrix.length; i++) {
+                var tr = document.createElement('tr');
+                for (var j = 0; j < matrix[i].length; j++) {
+                    var td = document.createElement('td');
+                    var cellText = matrix[i][j].replace('OBER', '');
+                    td.textContent = cellText;
+                    if (matrix[i][j].includes('OBER')) {
+                        td.style.color = 'red';
+                    }
+                    tr.appendChild(td);
+                }
+                table.appendChild(tr);
+            }
+        }
+
+        window.onload = function() {
+    // 初めての訪問を確認するためのCookieの名前
+    const VISITED_COOKIE_NAME = "visited";
+
+    // Cookieから値を取得する関数
+    function getCookie(name) {
+        var value = "; " + document.cookie;
+        var parts = value.split("; " + name + "=");
+        if (parts.length == 2) return parts.pop().split(";").shift();
+    }
+
+    // 初めての訪問かどうかを確認
+    var visited = getCookie(VISITED_COOKIE_NAME);
+
+    if (!visited) {
+        // 初めての訪問の場合、Cookieからデータを読み取る処理を行う
+        // 例: チェックボックスの初期値を設定
+        var checkboxValue = getCookie("checkboxValue");
+        if (checkboxValue === "true") {
+            document.getElementById("check1").checked = true;
+        }
+
+        // 他のCookieからのデータ読み取りや初期値の設定もここに追加できます。
+
+        // visited Cookieを設定して、ユーザーがページを訪れたことを記録
+        document.cookie = VISITED_COOKIE_NAME + "=true;path=/";
+    }
+}
+
 
 
 
@@ -78,8 +104,8 @@
         var rows = theline.split('\n');
 
         thelines = thelinesArray.filter(function(line) {
-    		return line.match(buttonText);
-		}).join('\n');
+            return line.match(buttonText);
+        }).join('\n');
 
         var matrix = rows.map(function(row) {
             return row.split(',');

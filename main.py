@@ -14,3 +14,13 @@ def index():
         'index.html',
         theline=theline
     )
+@app.route('/set')
+def set():
+	return render_template(
+		'set.html'
+		)
+@app.route('/aff')
+def aff():
+	return render_template(
+		'aff.html'
+		)
