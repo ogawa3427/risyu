@@ -388,14 +388,16 @@ class Application(tk.Frame):
 
 	def show_buttons(self):
 		content = self.content
-		#厄介な書き替え
-		#print(content)
-		english_class_lines = '\n'.join([line for line in content.split('\n') if '（英語クラス）' in line])
+
+	# 厄介な書き替え
+		english_class_lines = '\n'.join([line for line in content.splitlines() if '（英語クラス）' in line and line.strip()])
 		english_class_lines = re.sub(r'（英語クラス）', '', english_class_lines)
-		english_class_lines = '\n'.join([re.sub(r'(^[^,]*,[^,]*),', r'\1,[英]', line) for line in english_class_lines.split('\n')])
-		non_english_class_lines = '\n'.join([line for line in content.split('\n') if '（英語クラス）' not in line])
-		content = english_class_lines + non_english_class_lines
-		content = '\n'.join(sorted(content.split('\n'), key=lambda x: x.split(',')[0]))
+		english_class_lines = '\n'.join([re.sub(r'(^[^,]*,[^,]*),', r'\1,[英]', line) for line in english_class_lines.splitlines() if line.strip()])
+
+		non_english_class_lines = '\n'.join([line for line in content.splitlines() if '（英語クラス）' not in line and line.strip()])
+
+		content = english_class_lines + '\n' + non_english_class_lines
+		content = '\n'.join(sorted([line for line in content.splitlines() if line.strip()], key=lambda x: x.split(',')[0]))
 
 		#print(content)
 
@@ -406,13 +408,18 @@ class Application(tk.Frame):
 
 			maxer = elements[6]
 			ruiseki = 0
+			kyu = elements[9]
 			elements[9] = int(elements[9]) - int(elements[8])
 			for i in range(8,13):
 				ruiseki = ruiseki + int(elements[i])
 				if ruiseki >= int(maxer):
 					elements[i] = str(elements[i]) + 'OBER'
+			elements[9] = kyu
 			jele = ",".join(map(str, elements))
-			thelines = thelines + jele + '\n'
+			thelines += jele + '\n'
+
+	# 最後の余計な改行を取り除く
+		thelines = thelines.rstrip('\n')
 
 				
 		contf = tk.Frame(self, width=700, height=650)
@@ -517,6 +524,11 @@ class Application(tk.Frame):
 				widget.destroy()
 			self.whenew = 'Yes'
 			self.regroll()
+
+		elif bkey == 'sett':
+			for widget in self.winfo_children():
+				widget.destroy()
+			self.deepsetting()
 
 		with open('role.json', 'r', encoding='utf-8') as f:
 			data = json.load(f)
@@ -649,6 +661,27 @@ class Application(tk.Frame):
 				label = tk.Label(frames[c], text=text, anchor=tk.W, fg=fg_color)
 				label.pack(fill='both', expand=True)
 		self.outframe.pack()
+
+	def deepsetting(self):
+		print('おはよう')
+		set1 = tk.Frame(self, width=300, height=300)
+		set1.pack()
+		kamokumei = tk.Label(set1, text='科目名の省略度')
+		kamokumei.pack()
+		self.kdoai = tk.IntVar()
+		kdoai1 = tk.Radiobutton(set1, text='強', variable=self.kdoai, value=1)
+		kdoai2 = tk.Radiobutton(set1, text='弱', variable=self.kdoai, value=2)
+		kdoai3 = tk.Radiobutton(set1, text='無', variable=self.kdoai, value=3)
+		kdoai1.pack()
+		kdoai2.pack()
+		kdoai3.pack()
+
+		goback = tk.Button(self,text='戻る',command=self.goback)
+		goback.pack()
+
+	def goback(self):
+		print('GOBACK')
+
 root = tk.Tk()
 root.title('risyu')
 root.geometry('900x1300')
