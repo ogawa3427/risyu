@@ -4,7 +4,8 @@
     "iki": "0",
     "rui": "",
     "nen": "",
-    "kdoai": 2,
+    "kdoai": 1,
+    "hanrei": true,
     "kamoku_kyo": {
         "\u30b0\u30ed\u30fc\u30d0\u30eb\u6642\u4ee3\u306e": "\uff78\uff9e\uff9b\uff70\uff8a\uff9e\uff99\u6642\u4ee3\u306e",
         "\u30a8\u30af\u30b5\u30b5\u30a4\u30ba&\u30b9\u30dd\u30fc\u30c4": "E&S",

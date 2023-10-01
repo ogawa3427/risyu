@@ -14,6 +14,7 @@ initdata = {
 'rui': '',
 'nen': '',
 'kdoai': '2',
+'hanrei': True,
 'kamoku_kyo': {
 		'グローバル時代の': 'ｸﾞﾛｰﾊﾞﾙ時代の',
 		'エクササイズ&スポーツ': 'E&S',

@@ -36,14 +36,7 @@ class Application(tk.Frame):
 
 	def create_widgets(self):
 		if not os.path.exists("setting.json"): #初回起動かどうか
-			initdate = {
-			'filedir': '',
-			'newparson': True,
-			'iki': '',
-			'rui': ''
-	}
-			with open('setting.json', "w", encoding='utf-8') as f:
-				json.dump(initdate, f)
+			pass
 			self.defpath = ''
 		else:
 			with open('setting.json', 'r', encoding='utf-8') as setting:
@@ -273,7 +266,6 @@ class Application(tk.Frame):
 		print(iki)
 		print(rui)
 
-
 		with open('setting.json', 'r', encoding='utf-8') as f:
 			data = json.load(f)
 		data['iki'] = iki
@@ -444,8 +436,7 @@ class Application(tk.Frame):
 
 	# 最後の余計な改行を取り除く
 		thelines = thelines.rstrip('\n')
-
-				
+	
 		contf = tk.Frame(self, width=700, height=650)
 
 		frame1 = tk.Frame(contf, width=700, height=650)
@@ -493,9 +484,6 @@ class Application(tk.Frame):
 		self.buttons[(8, 3)] = btn
 
 		lframe.pack(side=tk.LEFT)
-
-
-
 		frame4 = tk.Frame(contf, width=700, height=650)
 		frame4.pack(padx=1,pady=1, side=tk.RIGHT, after=frame1)
 
@@ -520,7 +508,7 @@ class Application(tk.Frame):
 
 		self.eng_var = tk.BooleanVar()
 		self.eng_var.set(True)
-		self.eng_chk = tk.Checkbutton(frame4, text="科目名を省略", variable=self.eng_var)  # こちらも変数名を変更
+		self.eng_chk = tk.Checkbutton(frame4, text="時間割名を省略", variable=self.eng_var)  # こちらも変数名を変更
 		self.eng_chk.pack(anchor=tk.W)
 
 		self.dropdown_var = tk.StringVar(self)
@@ -552,15 +540,35 @@ class Application(tk.Frame):
 				widget.destroy()
 			self.deepsetting()
 
-
 		thelines = self.sender
 		atama = "時間割番号,科目区分,時間割名,曜日時限,教員名,対象学生,適正人数,全登録数,優先指定,第１希望,第２希望,第３希望,第４希望,第５希望"
 		
-	#科目名
+	#検索
+		buttontext = self.ser_box.get()
+		if buttontext:
+			thelines = '\n'.join(line for line in thelines.splitlines() if buttontext in line)
+		else:
+			if bkey == 'search':
+				pass
+			else:
+				if bkey == '6限' or bkey == '7限' or bkey == '8限':
+					bkey = re.sub(r'限', '', bkey)
+					bkey = '(月|火|水|木|金)' + bkey
+				thelines = '\n'.join(line for line in thelines.splitlines() if re.search(bkey, line))
+
+		if self.dropdown_var.get() == '全群':
+			pass
+		else:
+			thegun = '^7' + self.dropdown_var.get() + '[A-Z]'
+			print(thegun)
+			theli = [line for line in thelines.split('\n') if re.search(thegun, line)]
+			thelines = '\n'.join(theli)
+
+
+	#教員名
 		if self.tea_var.get():
 			thelines = "\n".join([",".join(line.split(',')[:4] + line.split(',')[5:]) for line in thelines.strip().split("\n")])
 			atama = re.sub(',教員名,' ,',' ,atama)
-		print('=========~~~')
 
 	#GSのみ
 		if self.onlygs_var.get():
@@ -599,62 +607,28 @@ class Application(tk.Frame):
 			thelines = re.sub(r'(?<=^.{2})[^,]+,', ',', thelines, flags=re.MULTILINE)
 			atama = re.sub('時間割番号,','No.,',atama)
 
-	#科目名
+	#時間割名
+		engdic = {}
+		with open('setting.json', 'r', encoding='utf-8') as f:
+			data = json.load(f)
+		if data['kdoai'] == '1':
+			engdic = data['kamoku_kyo']
+		elif data['kdoai'] == '2':
+			engdic = data['kamoku_jaku']
+
 		if self.eng_var.get():
 			for i, j in engdic.items():
 				thelines = re.sub(i, j, thelines)
 
-		"""
+	#ATAMA
+		if data['hanrei']:
+			atama = re.sub(',対象学生,適正人数,全登録数,優先指定,第１希望,第２希望,第３希望,第４希望,第５希望',',対象,適,全,優先,[１,２,３,４,５]',atama)
+			atama = re.sub(',曜日時限,',', ,',atama)
 
-		if self.dropdown_var.get() == '全群':
-			pass
-		else:
-			thegun = '^7' + self.dropdown_var.get() + '[A-Z].*?\n$'
-			thelines = re.sub(thegun, '', thelines)
-
-
-
-		
-
-
-
-
-		if re.match(r"^\d", self.dropdown_var.get()):
-			if self.numo_var.get():
-				gunkey = "^" +  self.dropdown_var.get() + "[A-F]"
-			else:
-				gunkey = "^7" +  self.dropdown_var.get() + "[A-F]"
-			thelines = '\n'.join(line for line in thelines.splitlines() if re.search(gunkey, line))
-
-		buttontext = self.ser_box.get()
-		if buttontext:
-			thelines = '\n'.join(line for line in thelines.splitlines() if buttontext in line)
-		else:
-			if bkey == 'search':
-				pass
-			else:
-				if bkey == '6限' or bkey == '7限' or bkey == '8限':
-					bkey = re.sub(r'限', '', bkey)
-					bkey = '(月|火|水|木|金)' + bkey
-				thelines = '\n'.join(line for line in thelines.splitlines() if re.search(bkey, line))
-
-		engdic = 
-
-
-		"""
-		self.oklines = thelines + '\n' + atama
-		print(self.oklines)
-		print('~~~~~~~~~~~~~~~')
-		#self.oklines = thelines
+		self.oklines = atama + '\n' + thelines + '\n' + atama
 		self.make_table()
 
 	def make_table(self):
-
-
-
-		atama = re.sub(',対象学生,適正人数,全登録数,優先指定,第１希望,第２希望,第３希望,第４希望,第５希望',',対象,適,全,優先,[１,２,３,４,５]',atama)
-		atama = re.sub('時間割番号,','No.,',atama)
-		atama = re.sub(',曜日時限,', ', ,', atama)
 		if self.outframe is not None:
 			self.outframe.destroy()
 
@@ -696,15 +670,13 @@ class Application(tk.Frame):
 		
 		set1 = tk.Frame(self, width=300, height=300)
 		set1.pack()
-		kamokumei = tk.Label(set1, text='科目名の省略度')
+		kamokumei = tk.Label(set1, text='時間割名の省略度')
 		kamokumei.pack()
 		self.kdoai = tk.IntVar()
 		kdoai1 = tk.Radiobutton(set1, text='強', variable=self.kdoai, value=1)
 		kdoai2 = tk.Radiobutton(set1, text='弱', variable=self.kdoai, value=2)
-		kdoai3 = tk.Radiobutton(set1, text='無', variable=self.kdoai, value=3)
 		kdoai1.pack()
 		kdoai2.pack()
-		kdoai3.pack()
 		self.kdoai.set(data['kdoai'])
 
 		goback = tk.Button(self,text='戻る',command=self.goback)
