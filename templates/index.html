@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>risyu</title>
+</head>
+<body>
+    <h1> </h1>
+
+    <!-- 表を追加 -->
+
+    <table id="myTable"></table>
+
+    <script>
+        // Jinja2を使用して変数をJavaScriptに埋め込む
+        var theline = `{{ theline }}`;
+
+        // 改行とコンマで区切って二次元リストに変換
+        var rows = theline.split('\n');
+        var matrix = rows.map(function(row) {
+            return row.split(',');
+        });
+
+        // 表を動的に生成
+        var table = document.getElementById('myTable');
+        for (var i = 0; i < matrix.length; i++) {
+            var tr = document.createElement('tr');
+            for (var j = 0; j < matrix[i].length; j++) {
+                var td = document.createElement('td');
+                td.textContent = matrix[i][j];
+                if (matrix[i][j].includes('科目')) {
+                    td.style.color = 'red';
+                }
+                tr.appendChild(td);
+            }
+            table.appendChild(tr);
+        }
+    </script>
+</body>
+</html>
