@@ -7,13 +7,15 @@ app = Flask(__name__)
 def index():
     base_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(base_dir, 'risyu20230924235801.csv')
+    asof = '2023年何月24日hh:mm現在'
 
     with open(file_path, 'r') as f:
         theline = ''.join(line for line in f if "時間割番号,科目区分" not in line)
 
     return render_template(
         'index.html',
-        theline=theline
+        theline=theline,
+        asof=asof
     )
 
 @app.route('/set')

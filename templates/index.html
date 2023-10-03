@@ -11,7 +11,10 @@
     </style>
 </head>
 <body>
-    <h1> y年m月d日hh:MM現在</h1><a href="{{ url_for('aff') }}">所属設定</a><a href="{{ url_for('set') }}">高度な設定</a>
+    <h id="dateDisplay"> </h>
+
+    <br>
+    <a href="{{ url_for('aff') }}"style="margin-left: 20px;">所属設定</a><a href="{{ url_for('set') }}"style="margin-left: 20px;">高度な設定</a>
 
     <!-- 月1から金5までのボタンを配置 -->
     <div id="buttons">
@@ -28,98 +31,37 @@
     <!-- 表を追加 -->
     <table id="myTable"></table>
 
-    <script>
-    	function calbut(event) {
-    		var buttonText = event.target.innerText;
+<script>
+    let theline = "";
+    let cookies = {};
+    function pageinit() {
+        document.cookie = "cookieName" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        let asof = "{{ asof }}";
+        let asofdisp = document.getElementById("dateDisplay");
+        asofdisp.textContent = asof;
 
-    // Filter the lines based on the button text
-    		var filteredLines = theline.split('\n').filter(function(line) {
-        		return line.match(buttonText);
-    		});
+        theline = "{{ theline }}";
 
-    		var matrix = filteredLines.map(function(row) {
-        		return row.split(',');
-    		});
+        document.cookie = "cookieName=cookieValue";
+        document.cookie = "hoge=aho";
+        let kidi = document.cookie; //クッキーを焼こう
 
-    // Clear the existing table contents
-    		var table = document.getElementById('myTable');
-    		while (table.firstChild) {
-    		    table.removeChild(table.firstChild);
-    		}
-
-    // Dynamically generate the table based on the new data
-    		for (var i = 0; i < matrix.length; i++) {
-        		var tr = document.createElement('tr');
-        		for (var j = 0; j < matrix[i].length; j++) {
-            		var td = document.createElement('td');
-            		var cellText = matrix[i][j].replace('OBER', '');
-            		td.textContent = cellText;
-            		if (matrix[i][j].includes('OBER')) {
-            		    td.style.color = 'red';
-            		}
-            		tr.appendChild(td);
-        		}
-        		table.appendChild(tr);
-    		}
-		}
-
-
-
-        // Attach event listeners to all buttons with the class "day-button"
-        var buttons = document.querySelectorAll('.day-button');
-        buttons.forEach(function(button) {
-            button.addEventListener('click', calbut);
-        });
-
-        // Jinja2を使用して変数をJavaScriptに埋め込む
-        var theline = `{{ theline }}`;
-
-        // 改行とコンマで区切って二次元リストに変換
-        var rows = theline.split('\n');
-
-        thelines = thelinesArray.filter(function(line) {
-    		return line.match(buttonText);
-		}).join('\n');
-
-        var matrix = rows.map(function(row) {
-            return row.split(',');
-        });
-
-        // PythonのコードをJavaScriptに変換した部分
-        for (var i = 0; i < matrix.length; i++) {
-            var elements = matrix[i];
-
-            var maxer = elements[6];
-            var ruiseki = 0;
-            var kyu = elements[9];
-            elements[9] = parseInt(elements[9]) - parseInt(elements[8]);
-            for (var j = 8; j <= 12; j++) {
-                ruiseki = ruiseki + parseInt(elements[j]);
-                if (ruiseki >= parseInt(maxer)) {
-                    elements[j] = elements[j] + 'OBER';
-                }
-            }
-            elements[9] = kyu;
-        }
-
-// 表を動的に生成
-        var table = document.getElementById('myTable');
-        for (var i = 0; i < matrix.length; i++) {
-            var tr = document.createElement('tr');
-            for (var j = 0; j < matrix[i].length; j++) {
-                var td = document.createElement('td');
+        if (kidi !== "") {
+            let kata = kidi.split('; ');
+            console.log(kata)
+            console.log("Hello World");
         
-        // OBERを削除してからテキストを設定
-                var cellText = matrix[i][j].replace('OBER', '');
-                td.textContent = cellText;
-        
-                if (matrix[i][j].includes('OBER')) {
-                    td.style.color = 'red';
-                }
-                tr.appendChild(td);
+            for (let i = 0; i < kata.length; i++) {
+                let parts = kata[i].split('=');
+                cookies[parts[0]] = parts[1]
             }
-            table.appendChild(tr);
+
+        console.log(cookies);
+
         }
-    </script>
+    }
+        document.addEventListener("DOMContentLoaded", pageinit);
+</script>
+
 </body>
 </html>
