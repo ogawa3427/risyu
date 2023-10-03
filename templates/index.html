@@ -24,51 +24,88 @@
         <div><button class="day-button">月5</button><button class="day-button">火5</button><button class="day-button">水5</button><button class="day-button">木5</button><button class="day-button">金5</button><label><input type="checkbox" id="check5">時間割名を省略</label></div>
         <div><button class="day-button">6限</button><button class="day-button">7限</button><button class="day-button">8限</button><button class="day-button">集中</button><select id="dropdown"><option value="0">全群</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option></select></div>
         <div><input type="text" id="freeword"><button class="day-button">ﾌﾘｰﾜｰﾄﾞ検索</button></div>
-    </div></div>
     </div>
 
     <table id="myTable"></table>
 
 <script>
+    console.log('HogeHoge')
+    let settings = ["whonlygs", "whotea", "whono", "whrya", "whoname" ]
     let theline = "";
     let cookies = {};
     let freewordValue = "";
 
     function pageinit() {
-        document.cookie = "cookieName" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+        console.log("fun[PageInit]")
+        //document.cookie = "hoge" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
         let asof = "{{ asof }}";
         let asofdisp = document.getElementById("dateDisplay");
         asofdisp.textContent = asof;
-
+    //君は究極で完璧の
         theline = "{{ theline }}";
+        console.log("theline_loaded!");
 
-        document.cookie = "cookieName=cookieValue";
-        document.cookie = "hoge=aho";
         let kidi = document.cookie; //クッキーを焼こう
 
-        if (kidi !== "") {
-            let kata = kidi.split('; ');
-            console.log(kata)
-            console.log("Hello World");
-        
-            for (let i = 0; i < kata.length; i++) {
-                let parts = kata[i].split('=');
-                cookies[parts[0]] = parts[1]
-            }
+        if (kidi == "")  {
+            initc = ["rolever=2023Q3","whonlygs=1", "whotea=0", "whono=1", "whrya=1", "whoname=0"];
+            initc.forEach(function (item) {
+                document.cookie = item;
+            });
+            console.log("coockie initialized!");
 
+        }
+
+        let kata = kidi.split('; ');
+        
+        for (let i = 0; i < kata.length; i++) {
+            let parts = kata[i].split('=');
+            cookies[parts[0]] = parts[1];
+        }
+    //SETTER
+        document.getElementById("check1").checked = cookies.whonlygs == 1;
+        document.getElementById("check2").checked = cookies.whotea == 1;
+        document.getElementById("check3").checked = cookies.whono == 1;
+        document.getElementById("check4").checked = cookies.whrya == 1;
+        document.getElementById("check5").checked = cookies.whoname == 1;
+    }
+        
+    function coockiereader() {
+        console.log("fun[CoockieReader]")
+        let kidi = document.cookie;
+        let kata = kidi.split('; ');
+        for (let i = 0; i < kata.length; i++) {
+            let parts = kata[i].split('=');
+            cookies[parts[0]] = parts[1];
+        }
+    }
+    function coockiewriter() {
+        console.log("fun[CoockieWriter]")
+        cookies.whonlygs = document.getElementById("check1").checked ? 1 : 0;
+        cookies.whotea = document.getElementById("check2").checked ? 1 : 0;
+        cookies.whono = document.getElementById("check3").checked ? 1 : 0;
+        cookies.whrya = document.getElementById("check4").checked ? 1 : 0;
+        cookies.whoname = document.getElementById("check5").checked ? 1 : 0;
+
+        let kobukuro = Object.entries(cookies).map(([key, value]) => `${key}=${value}`).join('; ');
+        document.cookie = kobukuro;
+    }
     function handleButtonClick(event) {
         let buttonText = event.target.textContent;
         let freewordValue = document.getElementById("freeword").value;
-        let isChecked1 = document.getElementById("check1").checked;
-        let isChecked2 = document.getElementById("check2").checked;
-        let isChecked3 = document.getElementById("check3").checked;
-        let isChecked4 = document.getElementById("check4").checked;
-        let isChecked5 = document.getElementById("check5").checked;
+        let whonlygs = document.getElementById("check1").checked;
+        let whotea = document.getElementById("check2").checked;
+        let whono = document.getElementById("check3").checked;
+        let whrya = document.getElementById("check4").checked;
+        let whoname = document.getElementById("check5").checked;
         let rowgun = document.getElementById("dropdown").value;
 
-        console.log(rowgun);
-        console.log(buttonText);
-        console.log("Hello")
+
+        coockiewriter()
+        console.log(cookies);
+
+        coockiewriter()
+
     }
 
 
@@ -80,12 +117,6 @@
         buttons.forEach(function(button) {
             button.addEventListener("click", handleButtonClick);
         });
-    }
-
-        console.log(cookies);
-        
-
-        }
     }
 
 

@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 import os
+import re
 
 app = Flask(__name__)
 
@@ -11,6 +12,7 @@ def index():
 
     with open(file_path, 'r') as f:
         theline = ''.join(line for line in f if "時間割番号,科目区分" not in line)
+        theline = re.sub('\n','eskape', theline)
 
     return render_template(
         'index.html',

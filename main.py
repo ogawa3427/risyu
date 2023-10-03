@@ -13,6 +13,7 @@ def index():
     with open(file_path, 'r') as f:
         theline = ''.join(line for line in f if "時間割番号,科目区分" not in line)
         theline = re.sub('\n','eskape', theline)
+        pront(theline)
     
     return render_template(
         'index.html',
