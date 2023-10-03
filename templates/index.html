@@ -16,7 +16,6 @@
     <br>
     <a href="{{ url_for('aff') }}"style="margin-left: 20px;">所属設定</a><a href="{{ url_for('set') }}"style="margin-left: 20px;">高度な設定</a>
 
-    <!-- 月1から金5までのボタンを配置 -->
     <div id="buttons">
         <div><button class="day-button">月1</button><button class="day-button">火1</button><button class="day-button">水1</button><button class="day-button">木1</button><button class="day-button">金1</button><label><input type="checkbox" id="check1">GSのみ</label></div>
         <div><button class="day-button">月2</button><button class="day-button">火2</button><button class="day-button">水2</button><button class="day-button">木2</button><button class="day-button">金2</button><label><input type="checkbox" id="check2">教員名を省略</label></div>
@@ -28,14 +27,15 @@
     </div></div>
     </div>
 
-    <!-- 表を追加 -->
     <table id="myTable"></table>
 
 <script>
     let theline = "";
     let cookies = {};
+    let freewordValue = "";
+
     function pageinit() {
-        document.cookie = "cookieName" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie = "cookieName" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
         let asof = "{{ asof }}";
         let asofdisp = document.getElementById("dateDisplay");
         asofdisp.textContent = asof;
@@ -56,11 +56,42 @@
                 cookies[parts[0]] = parts[1]
             }
 
+    function handleButtonClick(event) {
+        let buttonText = event.target.textContent;
+        let freewordValue = document.getElementById("freeword").value;
+        let isChecked1 = document.getElementById("check1").checked;
+        let isChecked2 = document.getElementById("check2").checked;
+        let isChecked3 = document.getElementById("check3").checked;
+        let isChecked4 = document.getElementById("check4").checked;
+        let isChecked5 = document.getElementById("check5").checked;
+        let rowgun = document.getElementById("dropdown").value;
+
+        console.log(rowgun);
+        console.log(buttonText);
+        console.log("Hello")
+    }
+
+
+    window.onload = function() {
+        // すべての.day-buttonを取得
+        let buttons = document.querySelectorAll(".day-button");
+
+        // 各ボタンにクリックイベントリスナーを追加
+        buttons.forEach(function(button) {
+            button.addEventListener("click", handleButtonClick);
+        });
+    }
+
         console.log(cookies);
+        
 
         }
     }
-        document.addEventListener("DOMContentLoaded", pageinit);
+
+
+
+    document.addEventListener("DOMContentLoaded", pageinit);
+
 </script>
 
 </body>
