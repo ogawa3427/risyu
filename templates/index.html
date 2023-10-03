@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>risyu</title>
+    <style>
+        /* ボタンに5ピクセルのマージンを追加 */
+        #buttons button {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1> y年m月d日hh:MM現在</h1><a href="{{ url_for('aff') }}">所属設定</a><a href="{{ url_for('set') }}">高度な設定</a>
+
+    <!-- 月1から金5までのボタンを配置 -->
+    <div id="buttons">
+        <div><button class="day-button">月1</button><button class="day-button">火1</button><button class="day-button">水1</button><button class="day-button">木1</button><button class="day-button">金1</button><label><input type="checkbox" id="check1">GSのみ</label></div>
+        <div><button class="day-button">月2</button><button class="day-button">火2</button><button class="day-button">水2</button><button class="day-button">木2</button><button class="day-button">金2</button><label><input type="checkbox" id="check2">教員名を省略</label></div>
+        <div><button class="day-button">月3</button><button class="day-button">火3</button><button class="day-button">水3</button><button class="day-button">木3</button><button class="day-button">金3</button><label><input type="checkbox" id="check3">時間割番号を省略</label></div>
+        <div><button class="day-button">月4</button><button class="day-button">火4</button><button class="day-button">水4</button><button class="day-button">木4</button><button class="day-button">金4</button><label><input type="checkbox" id="check4">優先・限定を簡略化</label></div>
+        <div><button class="day-button">月5</button><button class="day-button">火5</button><button class="day-button">水5</button><button class="day-button">木5</button><button class="day-button">金5</button><label><input type="checkbox" id="check5">時間割名を省略</label></div>
+        <div><button class="day-button">6限</button><button class="day-button">7限</button><button class="day-button">8限</button><button class="day-button">集中</button><select id="dropdown"><option value="0">全群</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option></select></div>
+        <div><input type="text" id="freeword"><button class="day-button">ﾌﾘｰﾜｰﾄﾞ検索</button></div>
+    </div></div>
+    </div>
+
+    <!-- 表を追加 -->
+    <table id="myTable"></table>
+
+    <script>
+    	function calbut(event) {
+    		var buttonText = event.target.innerText;
+
+    // Filter the lines based on the button text
+    		var filteredLines = theline.split('\n').filter(function(line) {
+        		return line.match(buttonText);
+    		});
+
+    		var matrix = filteredLines.map(function(row) {
+        		return row.split(',');
+    		});
+
+    // Clear the existing table contents
+    		var table = document.getElementById('myTable');
+    		while (table.firstChild) {
+    		    table.removeChild(table.firstChild);
+    		}
+
+    // Dynamically generate the table based on the new data
+    		for (var i = 0; i < matrix.length; i++) {
+        		var tr = document.createElement('tr');
+        		for (var j = 0; j < matrix[i].length; j++) {
+            		var td = document.createElement('td');
+            		var cellText = matrix[i][j].replace('OBER', '');
+            		td.textContent = cellText;
+            		if (matrix[i][j].includes('OBER')) {
+            		    td.style.color = 'red';
+            		}
+            		tr.appendChild(td);
+        		}
+        		table.appendChild(tr);
+    		}
+		}
+
+
+
+        // Attach event listeners to all buttons with the class "day-button"
+        var buttons = document.querySelectorAll('.day-button');
+        buttons.forEach(function(button) {
+            button.addEventListener('click', calbut);
+        });
+
+        // Jinja2を使用して変数をJavaScriptに埋め込む
+        var theline = `{{ theline }}`;
+
+        // 改行とコンマで区切って二次元リストに変換
+        var rows = theline.split('\n');
+
+        thelines = thelinesArray.filter(function(line) {
+    		return line.match(buttonText);
+		}).join('\n');
+
+        var matrix = rows.map(function(row) {
+            return row.split(',');
+        });
+
+        // PythonのコードをJavaScriptに変換した部分
+        for (var i = 0; i < matrix.length; i++) {
+            var elements = matrix[i];
+
+            var maxer = elements[6];
+            var ruiseki = 0;
+            var kyu = elements[9];
+            elements[9] = parseInt(elements[9]) - parseInt(elements[8]);
+            for (var j = 8; j <= 12; j++) {
+                ruiseki = ruiseki + parseInt(elements[j]);
+                if (ruiseki >= parseInt(maxer)) {
+                    elements[j] = elements[j] + 'OBER';
+                }
+            }
+            elements[9] = kyu;
+        }
+
+// 表を動的に生成
+        var table = document.getElementById('myTable');
+        for (var i = 0; i < matrix.length; i++) {
+            var tr = document.createElement('tr');
+            for (var j = 0; j < matrix[i].length; j++) {
+                var td = document.createElement('td');
+        
+        // OBERを削除してからテキストを設定
+                var cellText = matrix[i][j].replace('OBER', '');
+                td.textContent = cellText;
+        
+                if (matrix[i][j].includes('OBER')) {
+                    td.style.color = 'red';
+                }
+                tr.appendChild(td);
+            }
+            table.appendChild(tr);
+        }
+    </script>
+</body>
+</html>
