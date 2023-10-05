@@ -44,24 +44,26 @@
     //君は究極で完璧の
         theline = "{{ theline }}";
         console.log("theline_loaded!");
+        coockiereader()
 
-        let kidi = document.cookie; //クッキーを焼こう
+        //let kidi = document.cookie; //クッキーを焼こう
 
-        if (kidi == "")  {
-            initc = ["rolever=2023Q3","whonlygs=1", "whotea=0", "whono=1", "whrya=1", "whoname=0"];
-            initc.forEach(function (item) {
-                document.cookie = item;
-            });
-            console.log("coockie initialized!");
+        //if (kidi == "")  {
+        //    initc = ["rolever=2023Q3","whonlygs=1", "whotea=0", "whono=1", "whrya=1", "whoname=0"];
+        //    initc.forEach(function (item) {
+        //        document.cookie = item;
+        //    });
+        //    console.log("coockie initialized!");
+        //coockiereader()
 
-        }
-
-        let kata = kidi.split('; ');
         
-        for (let i = 0; i < kata.length; i++) {
-            let parts = kata[i].split('=');
-            cookies[parts[0]] = parts[1];
-        }
+
+        //let kata = kidi.split('; ');
+        
+        //for (let i = 0; i < kata.length; i++) {
+        //    let parts = kata[i].split('=');
+        //    cookies[parts[0]] = parts[1];
+        
     //SETTER
         document.getElementById("check1").checked = cookies.whonlygs == 1;
         document.getElementById("check2").checked = cookies.whotea == 1;
@@ -71,7 +73,8 @@
     }
         
     function coockiereader() {
-        console.log("fun[CoockieReader]")
+        console.log("Rfun[CoockieReader]")
+        console.log(document.cookie)
         let kidi = document.cookie;
         let kata = kidi.split('; ');
         for (let i = 0; i < kata.length; i++) {
@@ -80,7 +83,7 @@
         }
     }
     function coockiewriter() {
-        console.log("fun[CoockieWriter]")
+        console.log("Wfun[CoockieWriter]")
         cookies.whonlygs = document.getElementById("check1").checked ? 1 : 0;
         cookies.whotea = document.getElementById("check2").checked ? 1 : 0;
         cookies.whono = document.getElementById("check3").checked ? 1 : 0;
@@ -89,6 +92,7 @@
 
         let kobukuro = Object.entries(cookies).map(([key, value]) => `${key}=${value}`).join('; ');
         document.cookie = kobukuro;
+        console.log(document.cookie)
     }
     function handleButtonClick(event) {
         let buttonText = event.target.textContent;
