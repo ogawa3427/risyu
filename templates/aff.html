@@ -321,6 +321,7 @@
     
                 let checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
+                checkbox.setAttribute('data-role', key);  // data-role属性を追加
     
                 // valueがi+1と一致する場合、チェックボックスをチェック状態にする
                 if (value === i + 1) {
@@ -340,23 +341,24 @@
     }
 
     function handleCompletion() {
-        for (let key in roleDict) {
-            let checkboxes = document.querySelectorAll(`[data-role="${key}"]`);
-            for (let i = 0; i < checkboxes.length; i++) {
-                if (checkboxes[i].checked) {
-                    roleDict[key] = i + 1;
-                    break;
-                }
-            }
-        }
-        let roletxt = '';
-        for (let key in roleDict) {
-            roletxt += roleDict[key].toString();
-        }
-        cookies.role = roletxt
-        cookiewriter();
-        return true;
-    }
+	    for (let key in roleDict) {
+	        let checkboxes = document.querySelectorAll(`input[data-role="${key}"]`);
+	        for (let i = 0; i < checkboxes.length; i++) {
+	            if (checkboxes[i].checked) {
+	                roleDict[key] = i + 1;
+	                break;
+	            }
+	        }
+	    }
+	    let roletxt = '';
+	    for (let key in roleDict) {
+	        roletxt += roleDict[key].toString();
+	    }
+	    cookies.role = roletxt;
+	    cookiewriter();
+	    return true;
+	}
+
 
 
     cookiereader()

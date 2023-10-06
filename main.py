@@ -13,7 +13,6 @@ def index():
 	with open(file_path, 'r') as f:
 		theline = ''.join(line for line in f if "時間割番号,科目区分" not in line)
 		theline = re.sub('\n','eskape', theline)
-		pront(theline)
 	
 	return render_template(
 		'index.html',
@@ -27,7 +26,7 @@ def set():
 		)
 @app.route('/aff')
 def aff():
-	rolelist = ["全学生","全学生（地域創造学類以外）","全学生（理工学域優先）"]
+	rolelist = ["全学生","全学生（地域創造学類以外）","全学生（理工学域優先）","1年生優先"]
 	return render_template(
 		'aff.html',
 		srole='0000000201330023',
