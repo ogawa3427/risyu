@@ -47,7 +47,7 @@
 
         let kidi = document.cookie; //クッキーを焼こう
 
-        if (kidi !== "")  {
+        if (kidi == "")  {
             initc = ["role=032","whonlygs=1", "whotea=0", "whono=1", "whrya=1", "whoname=0", "digree=w"];
             initc.forEach(function (item) {
                 document.cookie = item;

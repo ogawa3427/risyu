@@ -20,25 +20,25 @@
 <body>
 
 <p>所属を選択してください</p>
-<form id="doai">
+<form id="gakuiki">
     <label>
-        <input type="radio" name="option" value="0"> 人間社会学域
+        <input type="radio" name="option" value="人間社会学域"> 人間社会学域
     </label>
     <label>
-        <input type="radio" name="option" value="1"> 理工学域
+        <input type="radio" name="option" value="理工学域"> 理工学域
     </label><br>
     <label>
-        <input type="radio" name="option" value="2"> 医薬保健学域
+        <input type="radio" name="option" value="医薬保健学域"> 医薬保健学域
     </label>
     <label>
-        <input type="radio" name="option" value="3"> 融合学域
+        <input type="radio" name="option" value="融合学域"> 融合学域
     </label><br>
 </form>
-<select>
+<select id="ruiselect">
     <option value="blank">---</option>
 </select>
 <br>
-<select>
+<select id="nenselect">
     <option value="0">---</option>
     <option value="1">1年</option>
     <option value="2">2年</option>
@@ -52,17 +52,17 @@
 <br>
 <div id="checkboxContainer"></div>
 <br>
-<a href="{{ url_for('index') }}" onclick="cookiewriter()">完了</a>
+<a href="{{ url_for('index') }}" onclick="return handleCompletion()">完了</a>
 <script>
     document.querySelectorAll('input[name="option"]').forEach(function(radio) {
         radio.addEventListener('change', function() {
-            let selectElement = document.querySelector('select');
+            let selectElement = document.getElementById('ruiselect');
             let selectedValue = this.value;
 
             // 既存の選択肢をクリア
             selectElement.innerHTML = '';
 
-            if (selectedValue == '0') {
+            if (selectedValue == '人間社会学域') {
                 selectElement.innerHTML = `
                     <option value="---">---</option>
                     <option value="文系一括">文系一括</option>
@@ -73,7 +73,7 @@
                     <option value="地域創造学類">地域創造学類</option>
                     <option value="国際学類">国際学類</option>
                 `;
-            } else if (selectedValue == '1') {
+            } else if (selectedValue == '理工学域') {
                 selectElement.innerHTML = `
                     <option value="---">---</option>
                     <option value="理系一括">理系一括</option>
@@ -86,7 +86,7 @@
                     <option value="地球社会基盤学類">地球社会基盤学類</option>
                     <option value="生命理工学類">生命理工学類</option>
                 `;
-            } else if (selectedValue == '2') {
+            } else if (selectedValue == '医薬保健学域') {
                 selectElement.innerHTML = `
                     <option value="---">---</option>
                     <option value="医学類">医学類</option>
@@ -94,7 +94,7 @@
                     <option value="医薬科学類">医薬科学類</option>
                     <option value="保健学類">保健学類</option>
                 `;
-            } else if (selectedValue == '3') {
+            } else if (selectedValue == '融合学域') {
                 selectElement.innerHTML = `
                     <option value="---">---</option>
                     <option value="先導学類">先導学類</option>
@@ -123,10 +123,52 @@
             let parts = kata[i].split('=');
             cookies[parts[0]] = parts[1];
         }
+        console.log(cookies)
     }
+	function setInitialValues() {
+	    if (cookies.iki) {
+	        let ikiRadio = document.querySelector(`input[name="option"][value="${cookies.iki}"]`);
+	        if (ikiRadio) {
+	            ikiRadio.checked = true;
+	            ikiRadio.dispatchEvent(new Event('change')); // 所属のラジオボタンの変更イベントを手動でトリガー
+	        }
+	    }
+	
+	    // 少しの遅延を持たせて、ruiのプルダウンメニューが更新されるのを待つ
+	    setTimeout(() => {
+	        if (cookies.rui) {
+	            let ruiSelect = document.getElementById('ruiselect');
+	            if (ruiSelect) {
+	                ruiSelect.value = cookies.rui;
+	            }
+	        }
+	    }, 50);
+	
+	    if (cookies.nen) {
+	        console.log("[setnen!!!!")
+	        let nenSelect = document.getElementById('nenselect');
+	        if (nenSelect) {
+	            nenSelect.value = cookies.nen;
+	        }
+	    }
+	}
+	
+
+
 
     function cookiewriter() {
         console.log("Wfun[CookieWriter]")
+
+        let radios = document.querySelectorAll(`input[name="option"]:checked`);
+        cookies.iki = radios.length > 0 ? radios[0].value : null;
+
+        let rdropdown = document.getElementById('ruiselect');
+        cookies.rui = rdropdown ? rdropdown.value : null;
+
+        let ndropdown = document.getElementById('nenselect');
+        cookies.nen = ndropdown ? ndropdown.value : null;
+
+
         let expirationDate = new Date();
         expirationDate.setFullYear(expirationDate.getFullYear() + 1); // 1年後に有効期限を設定
         let expires = "expires=" + expirationDate.toUTCString();
@@ -144,8 +186,6 @@
             roleDict[rolelist[i]] = "0";
         }
         console.log(roleDict)
-
-        //ないんやからさ
     }
 
 	function altrolever() {
@@ -192,15 +232,29 @@
         setter();
     }
 
-
+    iki = "";
+    rui = "";
+    nen = "";
     function executebutton() {
         console.log("[Button!]")
+
+        let radios = document.querySelectorAll(`input[name="option"]:checked`);
+        cookies.iki = radios.length > 0 ? radios[0].value : null;
+
+        let rdropdown = document.getElementById('ruiselect');
+        cookies.rui = rdropdown ? rdropdown.value : null;
+
+        let ndropdown = document.getElementById('nenselect');
+        cookies.nen = ndropdown ? ndropdown.value : null;
+
+        console.log(iki, rui, nen)
+
+
         for (let key in roleDict) {
             if (key.includes('[NEW]')) {
                 delete roleDict[key];
             }
         }
-
         roleDict = autoDict(letsgo);
         setter();
         console.log(roleDict)
@@ -217,6 +271,7 @@
             }else{
                 roleDict[item] = 0;
             }
+
         }
         return roleDict;
     }
@@ -284,8 +339,28 @@
         container.appendChild(table);
     }
 
+    function handleCompletion() {
+        for (let key in roleDict) {
+            let checkboxes = document.querySelectorAll(`[data-role="${key}"]`);
+            for (let i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    roleDict[key] = i + 1;
+                    break;
+                }
+            }
+        }
+        let roletxt = '';
+        for (let key in roleDict) {
+            roletxt += roleDict[key].toString();
+        }
+        cookies.role = roletxt
+        cookiewriter();
+        return true;
+    }
+
 
     cookiereader()
+    setInitialValues();
     //戻るボタン直前までの処理(途中でnewとaltは合流)
     //upはスキップ
     if (typeof cookies.role === "undefined" || cookies.role == ""){
