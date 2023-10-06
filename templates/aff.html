@@ -4,16 +4,116 @@
     <meta charset="UTF-8">
     <title>risyu-affamation</title>
     <style>
+        select {
+        font-size: 17px; /* フォントサイズを大きくする */
+        padding: 1px;  /* 内側の余白を追加する */
+    }
+    .greenRow {
+        background-color: #e0f2f1; /* 薄いグリーン */
+    }
+    .legend {
+        text-align: right;
+        margin-bottom: 10px;
+    }
     </style>
 </head>
 <body>
 
-
-</body>
-
+<p>所属を選択してください</p>
+<form id="doai">
+    <label>
+        <input type="radio" name="option" value="0"> 人間社会学域
+    </label>
+    <label>
+        <input type="radio" name="option" value="1"> 理工学域
+    </label><br>
+    <label>
+        <input type="radio" name="option" value="2"> 医薬保健学域
+    </label>
+    <label>
+        <input type="radio" name="option" value="3"> 融合学域
+    </label><br>
+</form>
+<select>
+    <option value="blank">---</option>
+</select>
+<br>
+<select>
+    <option value="0">---</option>
+    <option value="1">1年</option>
+    <option value="2">2年</option>
+    <option value="3">3年</option>
+    <option value="4">4年</option>
+    <option value="5">5年</option>
+    <option value="6">6年以上</option>
+</select>
+<br>
+<button onclick="executebutton()">実行</button>
+<br>
+<div id="checkboxContainer"></div>
+<br>
+<a href="{{ url_for('index') }}" onclick="cookiewriter()">完了</a>
 <script>
-    cookie = {};
-    sver = "{{ sver }}";
+    document.querySelectorAll('input[name="option"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            let selectElement = document.querySelector('select');
+            let selectedValue = this.value;
+
+            // 既存の選択肢をクリア
+            selectElement.innerHTML = '';
+
+            if (selectedValue == '0') {
+                selectElement.innerHTML = `
+                    <option value="---">---</option>
+                    <option value="文系一括">文系一括</option>
+                    <option value="人文学類">人文学類</option>
+                    <option value="法学類">法学類</option>
+                    <option value="経済学類">経済学類</option>
+                    <option value="学校教育学類">学校教育学類</option>
+                    <option value="地域創造学類">地域創造学類</option>
+                    <option value="国際学類">国際学類</option>
+                `;
+            } else if (selectedValue == '1') {
+                selectElement.innerHTML = `
+                    <option value="---">---</option>
+                    <option value="理系一括">理系一括</option>
+                    <option value="理工３学類">理工３学類</option>
+                    <option value="数物科学類">数物科学類</option>
+                    <option value="物質科学類">物質科学類</option>
+                    <option value="機械学類">機械工学類</option>
+                    <option value="フロンティア工学類">フロンティア工学類</option>
+                    <option value="電子情報通信学類">電気情報通信学類</option>
+                    <option value="地球社会基盤学類">地球社会基盤学類</option>
+                    <option value="生命理工学類">生命理工学類</option>
+                `;
+            } else if (selectedValue == '2') {
+                selectElement.innerHTML = `
+                    <option value="---">---</option>
+                    <option value="医学類">医学類</option>
+                    <option value="薬学類">薬学類</option>
+                    <option value="医薬科学類">医薬科学類</option>
+                    <option value="保健学類">保健学類</option>
+                `;
+            } else if (selectedValue == '3') {
+                selectElement.innerHTML = `
+                    <option value="---">---</option>
+                    <option value="先導学類">先導学類</option>
+                    <option value="観光デザイン学類">観光デザイン学類</option>
+                    <option value="スマート創成科学類">スマート創成科学類</option>
+                `;
+            }
+        });
+    });
+
+
+
+    var rolelist = {{ rolelist|tojson|safe }};
+    console.log(rolelist);
+
+    cookies = {};
+    roleDict = {};
+    srole = "{{ srole }}";
+    letsgo = []
     function cookiereader() {
         console.log("Rfun[CoockieReader]")
         console.log(document.cookie)
@@ -21,14 +121,12 @@
         let kata = kidi.split('; ');
         for (let i = 0; i < kata.length; i++) {
             let parts = kata[i].split('=');
-            cookie[parts[0]] = parts[1];
+            cookies[parts[0]] = parts[1];
         }
     }
 
     function cookiewriter() {
         console.log("Wfun[CookieWriter]")
-
-
         let expirationDate = new Date();
         expirationDate.setFullYear(expirationDate.getFullYear() + 1); // 1年後に有効期限を設定
         let expires = "expires=" + expirationDate.toUTCString();
@@ -36,31 +134,168 @@
         for (let [key, value] of Object.entries(cookies)) {
             document.cookie = `${key}=${value}; ${expires}; path=/`;
         }
-
         console.log(document.cookie)
     }
 
     function newparson() {
-        console.log("[NewPaerson]")
+        console.log("[NewPaerson]");
+        letsgo = rolelist;
+        for (let i = 0; i < rolelist.length; i++) {
+            roleDict[rolelist[i]] = "0";
+        }
+        console.log(roleDict)
+
+        //ないんやからさ
     }
 
-    function altrolever() {
-        console.log("[AltRolever]")
-    }
+	function altrolever() {
+	    console.log("[AltRolever]");
+	    let diffn = rolelist.length - cookies.role.length;
+	    console.log(diffn);
+	
+	    letsgo = rolelist.slice(0, diffn);
+	    console.log(letsgo);
+	    let notInLetsgo = rolelist.filter(item => !letsgo.includes(item));
+	    let ushiro = {};
+	    for (let i = 0; i < notInLetsgo.length; i++) {
+	        ushiro[notInLetsgo[i]] = parseInt(cookies.role.charAt(i), 10);
+	    }
+	
+	    newrows = autoDict(letsgo);
+        console.log("後aoutDict")
+        console.log(newrows)
+	    let newDict = {};
+	    for (let key in newrows) {
+	        newDict['[NEW]' + key] = newrows[key];
+	    }
+	
+	    roleDict = {...ushiro, ...newDict};
+	    console.log(roleDict);
+	    setter();
+
+        letsgo = rolelist
+        letsgo = letsgo.filter(item => !item.includes('[NEW]'));
+
+        console.log("はいどうぞ")
+        console.log(letsgo)
+	}
+
 
     function uptodate() {
-        console.log("[UpToData]")
+        console.log("[UpToDate]");
+        letsgo = rolelist;
+
+        for (let i = 0; i < rolelist.length; i++) {
+            roleDict[rolelist[i]] = parseInt(cookies.role.charAt(i), 10);
+        }
+        console.log(roleDict)
+        setter();
     }
 
+
+    function executebutton() {
+        console.log("[Button!]")
+        for (let key in roleDict) {
+            if (key.includes('[NEW]')) {
+                delete roleDict[key];
+            }
+        }
+
+        roleDict = autoDict(letsgo);
+        setter();
+        console.log(roleDict)
+        return roleDict        
+    }
+
+
+
+    function autoDict(list) {
+        for (let item of list) {
+            
+            if (item.includes("優先")) {
+                roleDict[item] = 1;
+            }else{
+                roleDict[item] = 0;
+            }
+        }
+        return roleDict;
+    }
+
+
+    function setter() {
+        console.log("君は完璧で究極のSetter")
+        console.log(roleDict)
+        let container = document.getElementById('checkboxContainer');
+
+        container.innerHTML = '';
+    
+        // 凡例を追加
+        let legend = document.createElement('div');
+        legend.className = 'legend';
+        legend.textContent = "限定 | 優先 |以外・他の限定|他の優先";
+        container.appendChild(legend);
+    
+        // テーブルを作成
+        let table = document.createElement('table');
+        table.style.width = '100%'; // テーブルの幅を100%に設定
+        table.style.borderCollapse = 'collapse'; // セルの境界線を1本にまとめる
+    
+        let rowIndex = 0;
+        for (let key in roleDict) {
+            let value = roleDict[key];
+    
+            // テーブルの行を作成
+            let tr = document.createElement('tr');
+    
+            // 偶数行の背景色を薄いグリーンに設定
+            if (rowIndex % 2 === 0) {
+                tr.className = 'greenRow';
+            }
+            rowIndex++;
+    
+            // テキストのセルを追加
+            let tdText = document.createElement('td');
+            tdText.textContent = key;
+            tr.appendChild(tdText);
+    
+            // 4つのチェックボックスをセルとして追加
+            for (let i = 0; i < 4; i++) {
+                let tdCheckbox = document.createElement('td');
+                tdCheckbox.style.width = '40px'; // ここでセルの幅を固定
+                tdCheckbox.style.textAlign = 'center'; // チェックボックスをセルの中央に配置
+    
+                let checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+    
+                // valueがi+1と一致する場合、チェックボックスをチェック状態にする
+                if (value === i + 1) {
+                    checkbox.checked = true;
+                }
+    
+                tdCheckbox.appendChild(checkbox);
+                tr.appendChild(tdCheckbox);
+            }
+    
+            // 行をテーブルに追加
+            table.appendChild(tr);
+        }
+    
+        // テーブルをコンテナに追加
+        container.appendChild(table);
+    }
+
+
     cookiereader()
-    if (cookie.rolever == ""){
+    //戻るボタン直前までの処理(途中でnewとaltは合流)
+    //upはスキップ
+    if (typeof cookies.role === "undefined" || cookies.role == ""){
         newparson()
-    } else if (cookie.rolever == sver) {
+    } else if (cookies.role.length == rolelist.length) {
         uptodate()
     } else {
         altrolever()
     }
-    console.log(cookie);
+    console.log(document.cookie);
 
 </script>
 </body>

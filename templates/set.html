@@ -27,18 +27,19 @@ let cookies = {};
             let parts = kata[i].split('=');
             cookies[parts[0]] = parts[1];
         }
+        console.log(cookies)
 
 }
-cookie = {};
+
 function cookiewriter() {
-    selectedRadio = document.querySelector('input[name="option"]:checked');
-    cookie.digree = selectedRadio.value;
+    let selectedRadio = document.querySelector('input[name="option"]:checked');
+    cookies.digree = selectedRadio.value;
 
     let expirationDate = new Date();
     expirationDate.setFullYear(expirationDate.getFullYear() + 1); // 1年後に有効期限を設定
     let expires = "expires=" + expirationDate.toUTCString();
 
-    for (let [key, value] of Object.entries(cookie)) {
+    for (let [key, value] of Object.entries(cookies)) {
         document.cookie = `${key}=${value}; ${expires}; path=/`;
     }
     console.log(document.cookie)
@@ -55,11 +56,8 @@ window.onload = function() {
     else{
         document.querySelector('input[name="option"][value="w"]').checked = false;
         document.querySelector('input[name="option"][value="s"]').checked = true;
-
-    }
-    
+    }    
 }
-
 </script>
 
 </body>

@@ -37,7 +37,7 @@
 
     function pageinit() {
         console.log("fun[PageInit]")
-        document.cookie = "selectedOption" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+        //document.cookie = "role" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
         let asof = "{{ asof }}";
         let asofdisp = document.getElementById("dateDisplay");
         asofdisp.textContent = asof;
@@ -47,8 +47,8 @@
 
         let kidi = document.cookie; //クッキーを焼こう
 
-        if (kidi == "")  {
-            initc = ["rolever=2023Q3","whonlygs=1", "whotea=0", "whono=1", "whrya=1", "whoname=0", "digree=w"];
+        if (kidi !== "")  {
+            initc = ["role=032","whonlygs=1", "whotea=0", "whono=1", "whrya=1", "whoname=0", "digree=w"];
             initc.forEach(function (item) {
                 document.cookie = item;
             });
