@@ -26,7 +26,8 @@ def set():
 
 @app.route('/aff')
 def aff():
-    return render_template('aff.html')
+    rolelist = ["全学生","全学生（地域創造学類以外）","全学生（理工学域優先）"]
+    return render_template('aff.html',sver='2023Q3', rolelist=rolelist)
 
 if __name__ == "__main__":
     app.run()

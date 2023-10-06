@@ -37,7 +37,7 @@
 
     function pageinit() {
         console.log("fun[PageInit]")
-        //document.cookie = "hoge" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+        //document.cookie = "role" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
         let asof = "{{ asof }}";
         let asofdisp = document.getElementById("dateDisplay");
         asofdisp.textContent = asof;
@@ -48,20 +48,19 @@
         let kidi = document.cookie; //クッキーを焼こう
 
         if (kidi == "")  {
-            initc = ["rolever=2023Q3","whonlygs=1", "whotea=0", "whono=1", "whrya=1", "whoname=0"];
+            initc = ["role=032","whonlygs=1", "whotea=0", "whono=1", "whrya=1", "whoname=0", "digree=w"];
             initc.forEach(function (item) {
                 document.cookie = item;
             });
-            console.log("coockie initialized!");
-
+            console.log("cookie initialized!");
         }
-
         let kata = kidi.split('; ');
         
         for (let i = 0; i < kata.length; i++) {
             let parts = kata[i].split('=');
             cookies[parts[0]] = parts[1];
         }
+        
     //SETTER
         document.getElementById("check1").checked = cookies.whonlygs == 1;
         document.getElementById("check2").checked = cookies.whotea == 1;
@@ -69,9 +68,11 @@
         document.getElementById("check4").checked = cookies.whrya == 1;
         document.getElementById("check5").checked = cookies.whoname == 1;
     }
+    
         
-    function coockiereader() {
-        console.log("fun[CoockieReader]")
+    function cookiereader() {
+        console.log("Rfun[CoockieReader]")
+        console.log(document.cookie)
         let kidi = document.cookie;
         let kata = kidi.split('; ');
         for (let i = 0; i < kata.length; i++) {
@@ -79,17 +80,25 @@
             cookies[parts[0]] = parts[1];
         }
     }
-    function coockiewriter() {
-        console.log("fun[CoockieWriter]")
+    function cookiewriter() {
+        console.log("Wfun[CookieWriter]")
         cookies.whonlygs = document.getElementById("check1").checked ? 1 : 0;
         cookies.whotea = document.getElementById("check2").checked ? 1 : 0;
         cookies.whono = document.getElementById("check3").checked ? 1 : 0;
         cookies.whrya = document.getElementById("check4").checked ? 1 : 0;
         cookies.whoname = document.getElementById("check5").checked ? 1 : 0;
 
-        let kobukuro = Object.entries(cookies).map(([key, value]) => `${key}=${value}`).join('; ');
-        document.cookie = kobukuro;
+        let expirationDate = new Date();
+        expirationDate.setFullYear(expirationDate.getFullYear() + 1); // 1年後に有効期限を設定
+        let expires = "expires=" + expirationDate.toUTCString();
+
+        for (let [key, value] of Object.entries(cookies)) {
+            document.cookie = `${key}=${value}; ${expires}; path=/`;
+        }
+
+        console.log(document.cookie)
     }
+
     function handleButtonClick(event) {
         let buttonText = event.target.textContent;
         let freewordValue = document.getElementById("freeword").value;
@@ -100,12 +109,9 @@
         let whoname = document.getElementById("check5").checked;
         let rowgun = document.getElementById("dropdown").value;
 
-
-        coockiewriter()
+        console.log(buttonText)
+        cookiewriter()
         console.log(cookies);
-
-        coockiewriter()
-
     }
 
 
@@ -122,6 +128,7 @@
 
 
     document.addEventListener("DOMContentLoaded", pageinit);
+    
 
 </script>
 
