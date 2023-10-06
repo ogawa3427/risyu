@@ -26,7 +26,7 @@ def set():
 
 @app.route('/aff')
 def aff():
-    return render_template('aff.html')
+    return render_template('aff.html',sver='2023Q3')
 
 if __name__ == "__main__":
     app.run()

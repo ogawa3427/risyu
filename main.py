@@ -28,5 +28,6 @@ def set():
 @app.route('/aff')
 def aff():
 	return render_template(
-		'aff.html'
+		'aff.html',
+        sver='2023Q3'
 		)

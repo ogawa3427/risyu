@@ -2,63 +2,64 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>ラジオボタンとCookie</title>
+    <title>risyu-setting</title>
 </head>
 <body>
-
-<!-- 説明文 -->
-<p>以下のオプションから選択してください。選択した後、戻るリンクをクリックすると、選択が保存されます。</p>
-
-<!-- ラジオボタン -->
-<form id="myForm">
+<p>時間割名の省略の度合い</p>
+<form id="doai">
     <label>
-        <input type="radio" name="option" value="option1"> オプション1
+        <input type="radio" name="option" value="s"> 強
     </label><br>
     <label>
-        <input type="radio" name="option" value="option2"> オプション2
+        <input type="radio" name="option" value="w"> 弱
     </label><br>
 </form>
-
-<!-- 戻るリンク -->
-<a href="{{ url_for('index') }}" onclick="saveToCookie()">戻る</a>
+<a href="{{ url_for('index') }}" onclick="cookiewriter()">戻る</a>
 
 <script>
-function getCookie(name) {
-    var value = "; " + document.cookie;
-    var parts = value.split("; " + name + "=");
-    if (parts.length == 2) return parts.pop().split(";").shift();
-}
-
-function saveToCookie() {
-    // ラジオボタンの値を取得
-    var radios = document.getElementsByName('option');
-    var selectedValue;
-    for (var i = 0; i < radios.length; i++) {
-        if (radios[i].checked) {
-            selectedValue = radios[i].value;
-            break;
+let cookies = {};
+    function cookiereader() {
+        console.log("Rfun[CoockieReader]")
+        console.log(document.cookie)
+        let kidi = document.cookie;
+        let kata = kidi.split('; ');
+        for (let i = 0; i < kata.length; i++) {
+            let parts = kata[i].split('=');
+            cookies[parts[0]] = parts[1];
         }
-    }
 
-    // Cookieに保存
-    if (selectedValue) {
-        document.cookie = "selectedOption=" + selectedValue + ";path=/";
-    }
 }
+cookie = {};
+function cookiewriter() {
+    selectedRadio = document.querySelector('input[name="option"]:checked');
+    cookie.digree = selectedRadio.value;
+
+    let expirationDate = new Date();
+    expirationDate.setFullYear(expirationDate.getFullYear() + 1); // 1年後に有効期限を設定
+    let expires = "expires=" + expirationDate.toUTCString();
+
+    for (let [key, value] of Object.entries(cookie)) {
+        document.cookie = `${key}=${value}; ${expires}; path=/`;
+    }
+    console.log(document.cookie)
+}
+
 
 // ページ読み込み時にCookieから初期値を取得して設定
 window.onload = function() {
-    var savedOption = getCookie("selectedOption");
-    if (savedOption) {
-        var radios = document.getElementsByName('option');
-        for (var i = 0; i < radios.length; i++) {
-            if (radios[i].value === savedOption) {
-                radios[i].checked = true;
-                break;
-            }
-        }
+    cookiereader()
+    if (cookies.digree == 'w'){
+        document.querySelector('input[name="option"][value="w"]').checked = true;
+        document.querySelector('input[name="option"][value="s"]').checked = false;
     }
+    else{
+        document.querySelector('input[name="option"][value="w"]').checked = false;
+        document.querySelector('input[name="option"][value="s"]').checked = true;
+
+    }
+    
 }
+
 </script>
 
 </body>
