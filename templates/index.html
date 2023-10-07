@@ -46,6 +46,7 @@
         console.log("theline_loaded!");
 
         let kidi = document.cookie; //クッキーを焼こう
+        cookiereader()
 
         if (kidi == "")  {
             initc = ["role=032","whonlygs=1", "whotea=0", "whono=1", "whrya=1", "whoname=0", "digree=w"];
@@ -53,14 +54,7 @@
                 document.cookie = item;
             });
             console.log("cookie initialized!");
-        }
-        let kata = kidi.split('; ');
-        
-        for (let i = 0; i < kata.length; i++) {
-            let parts = kata[i].split('=');
-            cookies[parts[0]] = parts[1];
-        }
-        
+        }   
     //SETTER
         document.getElementById("check1").checked = cookies.whonlygs == 1;
         document.getElementById("check2").checked = cookies.whotea == 1;
@@ -69,7 +63,10 @@
         document.getElementById("check5").checked = cookies.whoname == 1;
     }
     
-        
+    var rolelist = {{ rolelist|tojson|safe }};
+    cookies = {};
+    roleDict = {};
+    letsgo = []
     function cookiereader() {
         console.log("Rfun[CoockieReader]")
         console.log(document.cookie)
@@ -79,6 +76,10 @@
             let parts = kata[i].split('=');
             cookies[parts[0]] = parts[1];
         }
+        for (let i = 0; i < rolelist.length; i++) {
+            roleDict[rolelist[i]] = parseInt(cookies.role.charAt(i), 10);
+        }
+        console.log(roleDict)
     }
     function cookiewriter() {
         console.log("Wfun[CookieWriter]")
@@ -95,7 +96,6 @@
         for (let [key, value] of Object.entries(cookies)) {
             document.cookie = `${key}=${value}; ${expires}; path=/`;
         }
-
         console.log(document.cookie)
     }
 
