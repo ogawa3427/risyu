@@ -110,7 +110,6 @@
     var rolelist = {{ rolelist|tojson|safe }};
     cookies = {};
     roleDict = {};
-    srole = "{{ srole }}";
     letsgo = []
     function cookiereader() {
         console.log("Rfun[CoockieReader]")
@@ -349,7 +348,6 @@
 	    cookiewriter();
 	    return true;
 	}
-
 
 
     cookiereader()
