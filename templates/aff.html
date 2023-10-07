@@ -108,15 +108,12 @@
 
 
     var rolelist = {{ rolelist|tojson|safe }};
-    console.log(rolelist);
-
     cookies = {};
     roleDict = {};
     srole = "{{ srole }}";
     letsgo = []
     function cookiereader() {
         console.log("Rfun[CoockieReader]")
-        console.log(document.cookie)
         let kidi = document.cookie;
         let kata = kidi.split('; ');
         for (let i = 0; i < kata.length; i++) {
@@ -185,7 +182,6 @@
         for (let i = 0; i < rolelist.length; i++) {
             roleDict[rolelist[i]] = "0";
         }
-        console.log(roleDict)
     }
 
 	function altrolever() {
@@ -194,7 +190,6 @@
 	    console.log(diffn);
 	
 	    letsgo = rolelist.slice(0, diffn);
-	    console.log(letsgo);
 	    let notInLetsgo = rolelist.filter(item => !letsgo.includes(item));
 	    let ushiro = {};
 	    for (let i = 0; i < notInLetsgo.length; i++) {
@@ -202,22 +197,16 @@
 	    }
 	
 	    newrows = autoDict(letsgo);
-        console.log("後aoutDict")
-        console.log(newrows)
 	    let newDict = {};
 	    for (let key in newrows) {
 	        newDict['[NEW]' + key] = newrows[key];
 	    }
 	
 	    roleDict = {...ushiro, ...newDict};
-	    console.log(roleDict);
 	    setter();
 
         letsgo = rolelist
         letsgo = letsgo.filter(item => !item.includes('[NEW]'));
-
-        console.log("はいどうぞ")
-        console.log(letsgo)
 	}
 
 
@@ -372,6 +361,7 @@
     } else {
         altrolever()
     }
+    console.log(cookies)
     console.log(document.cookie);
 
 </script>
