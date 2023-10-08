@@ -187,20 +187,18 @@
 	    console.log("[AltRolever]");
 	    let diffn = rolelist.length - cookies.role.length;
 	    console.log(diffn);
-	
+        
 	    letsgo = rolelist.slice(0, diffn);
 	    let notInLetsgo = rolelist.filter(item => !letsgo.includes(item));
 	    let ushiro = {};
 	    for (let i = 0; i < notInLetsgo.length; i++) {
 	        ushiro[notInLetsgo[i]] = parseInt(cookies.role.charAt(i), 10);
-	    }
-	
+	    }	
 	    newrows = autoDict(letsgo);
 	    let newDict = {};
 	    for (let key in newrows) {
 	        newDict['[NEW]' + key] = newrows[key];
-	    }
-	
+	    }	
 	    roleDict = {...ushiro, ...newDict};
 	    setter();
 

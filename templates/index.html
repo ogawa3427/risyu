@@ -18,7 +18,7 @@
 
     <div id="buttons">
         <div><button class="day-button">月1</button><button class="day-button">火1</button><button class="day-button">水1</button><button class="day-button">木1</button><button class="day-button">金1</button><label><input type="checkbox" id="check1">GSのみ</label></div>
-        <div><button class="day-button">月2</button><button class="day-button">火2</button><button class="day-button">水2</button><button class="day-button">木2</button><button class="day-button">金2</button><label><input type="checkbox" id="check2">教員名を省略</label></div>
+        <div><button class="day-button">月2</button><button class="day-button">火2</button><button class="day-button">水2</button><button class="day-button">木2</button><button class="day-button">金2</button><label><input type="checkbox" id="teaomit">教員名を省略</label></div>
         <div><button class="day-button">月3</button><button class="day-button">火3</button><button class="day-button">水3</button><button class="day-button">木3</button><button class="day-button">金3</button><label><input type="checkbox" id="check3">時間割番号を省略</label></div>
         <div><button class="day-button">月4</button><button class="day-button">火4</button><button class="day-button">水4</button><button class="day-button">木4</button><button class="day-button">金4</button><label><input type="checkbox" id="check4">優先・限定を簡略化</label></div>
         <div><button class="day-button">月5</button><button class="day-button">火5</button><button class="day-button">水5</button><button class="day-button">木5</button><button class="day-button">金5</button><label><input type="checkbox" id="check5">時間割名を省略</label></div>
@@ -32,8 +32,12 @@
     console.log('HogeHoge')
     let settings = ["whonlygs", "whotea", "whono", "whrya", "whoname" ]
     let theline = "";
+    let thelines = [];
+    let sender = "";
     let cookies = {};
     let freewordValue = "";
+    var weakdict = {{ weakdict|tojson|safe }};
+    var strodict = {{ strodict|tojson|safe }};
 
     function pageinit() {
         console.log("fun[PageInit]")
@@ -54,13 +58,50 @@
                 document.cookie = item;
             });
             console.log("cookie initialized!");
-        }   
+        }
     //SETTER
         document.getElementById("check1").checked = cookies.whonlygs == 1;
-        document.getElementById("check2").checked = cookies.whotea == 1;
+        document.getElementById("teaomit").checked = cookies.whotea == 1;
         document.getElementById("check3").checked = cookies.whono == 1;
         document.getElementById("check4").checked = cookies.whrya == 1;
         document.getElementById("check5").checked = cookies.whoname == 1;
+
+    //theline下準備
+        theline = theline.replace(/eskape/g, '\n');
+
+        let lines = theline.split('\n');
+             
+        for (let line of lines) {
+            let elements = line.split(',');
+           
+            let maxer = parseInt(elements[6], 10);  // 適正人数
+            let ruiseki = parseInt(elements[8], 10);  // 優先指定から開始
+            let isOver = false;  // オーバーしているかどうかのフラグ
+        
+            if (ruiseki > maxer) {  // 優先指定の時点でオーバーしている場合
+                elements[8] = 'OBER' + elements[8];
+                isOver = true;  // オーバーフラグをtrueに設定
+            }
+        
+            for (let i = 9; i <= 13; i++) {  // 第１希望から第５希望まで
+                if (isOver) {  // 既にオーバーしている場合
+                    elements[i] = 'GREI' + elements[i];
+                    continue;  // 次のループへ
+                }
+        
+                if (i === 9) {  // 第一希望の場合
+                    ruiseki += (parseInt(elements[i], 10) - parseInt(elements[8], 10));  // 第一希望の人数から優先指定の人数を引いた値を加える
+                } else {
+                    ruiseki += parseInt(elements[i], 10);
+                }
+        
+                if (ruiseki > maxer) {
+                    elements[i] = 'OBER' + elements[i];
+                    isOver = true;  // オーバーフラグをtrueに設定
+                }
+            }
+            sender += elements.join(',') + '\n';
+        }
     }
     
     var rolelist = {{ rolelist|tojson|safe }};
@@ -84,7 +125,7 @@
     function cookiewriter() {
         console.log("Wfun[CookieWriter]")
         cookies.whonlygs = document.getElementById("check1").checked ? 1 : 0;
-        cookies.whotea = document.getElementById("check2").checked ? 1 : 0;
+        cookies.whotea = document.getElementById("teaomit").checked ? 1 : 0;
         cookies.whono = document.getElementById("check3").checked ? 1 : 0;
         cookies.whrya = document.getElementById("check4").checked ? 1 : 0;
         cookies.whoname = document.getElementById("check5").checked ? 1 : 0;
@@ -103,7 +144,7 @@
         let buttonText = event.target.textContent;
         let freewordValue = document.getElementById("freeword").value;
         let whonlygs = document.getElementById("check1").checked;
-        let whotea = document.getElementById("check2").checked;
+        let whotea = document.getElementById("teaomit").checked;
         let whono = document.getElementById("check3").checked;
         let whrya = document.getElementById("check4").checked;
         let whoname = document.getElementById("check5").checked;
@@ -112,7 +153,122 @@
         console.log(buttonText)
         cookiewriter()
         console.log(cookies);
+
+
+        //フィルターはじめっか
+        //1
+        thelines = sender.split('\n');
+        if (whotea === true){
+            for (let i = 0; i < thelines.length; i++) {
+                thelines[i] = thelines[i].replace(/((?:[^,]*,){4})[^,]*,/, '$1'); 
+            };
+            console.log("TeaOmit")
+        }
+
+        //2
+        if (whonlygs === true){
+            thelines = thelines.filter(line => line.includes("ＧＳ科目"));
+            for (let i = 0; i < thelines.length; i++) {
+                thelines[i] = thelines[i].replace(/((?:[^,]*,){1})[^,]*,/, '$1'); 
+            };
+        }
+
+        //3
+        if (whono === true) {
+            for (let i = 0; i < thelines.length; i++) {
+                let parts = thelines[i].split(',');
+                if (parts.length > 0) {
+                    parts[0] = parts[0].substring(1, 3);  // 最初の3文字だけを取得
+                    thelines[i] = parts.join(',');
+                }
+            };
+        }
+        
+
+        //4
+        if (whrya === true) {
+            for (let i = 0; i < thelines.length; i++) {
+                let parts = thelines[i].split(',');  // 各行をカンマで分割して配列にする
+        
+                for (let j = 0; j < parts.length; j++) {
+                    for (let key in roleDict) {
+                        if (parts[j] === key) {  // 完全一致の場合のみ
+                            if (roleDict[key] === 0) {
+                                parts[j] = "";  // 0の場合の処理
+                            } else if (roleDict[key] === 1) {
+                                parts[j] = "限";  // 1の場合の処理
+                            } else if (roleDict[key] === 2) {
+                                parts[j] = "優";  // 2の場合の処理
+                            } else if (roleDict[key] === 3) {
+                                parts[j] = "外";  // 3の場合の処理
+                            } else if (roleDict[key] === 4) {
+                                parts[j] = "他";  // 4の場合の処理
+                                parts = parts.map(item => "GREI" + item);
+                            }
+                        }
+                    }
+                }
+        
+                thelines[i] = parts.join(',');  // 配列をカンマで結合して文字列に戻す
+            }
+        }
+
+
+        //5
+        if (whoname === true) {
+            for (let i = 0; i < thelines.length; i++) {
+                for (let key in weakdict) {
+                    if (thelines[i].includes(key)) {
+                        thelines[i] = thelines[i].replace(key, weakdict[key]);
+                    }
+                }
+            }
+            if (cookies.digree == "s") {
+                for (let i = 0; i < thelines.length; i++) {
+                    for (let key in strodict) {
+                        if (thelines[i].includes(key)) {
+                            thelines[i] = thelines[i].replace(key, strodict[key]);
+                        }
+                    }
+                }
+            }
+        }
+
+        console.log(thelines)
+        createTableFromLines(thelines);
+
     }
+
+    function createTableFromLines(thelines) {
+        // 既存のテーブルの内容をリセット
+        let table = document.getElementById("myTable");
+        table.innerHTML = "";
+    
+        // 各行を解析してテーブルを作成
+        for (let line of thelines) {
+            let row = table.insertRow();
+            let cells = line.split(',');
+    
+            for (let cellContent of cells) {
+                let cell = row.insertCell();
+                
+                // OBERを含むセルの文字色を赤にして、文字列を取り除く
+                if (cellContent.includes('OBER')) {
+                    cell.style.color = "red";
+                    cellContent = cellContent.replace('OBER', '');
+                }
+    
+                // GREIを含むセルの文字色をグレーにして、文字列を取り除く
+                if (cellContent.includes('GREI')) {
+                    cell.style.color = "gray";
+                    cellContent = cellContent.replace('GREI', '');
+                }
+    
+                cell.textContent = cellContent;
+            }
+        }
+    }
+    
 
 
     window.onload = function() {
