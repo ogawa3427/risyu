@@ -28,6 +28,9 @@
 
     <table id="myTable"></table>
 
+    <br>
+    <button onclick="eraeser()">Cookieを削除する</button>
+
 <script>
     console.log('HogeHoge')
     let settings = ["whonlygs", "whotea", "whono", "whrya", "whoname" ]
@@ -38,6 +41,7 @@
     let freewordValue = "";
     var weakdict = {{ weakdict|tojson|safe }};
     var strodict = {{ strodict|tojson|safe }};
+    let newperson = "N";
 
     function pageinit() {
         console.log("fun[PageInit]")
@@ -50,15 +54,16 @@
         console.log("theline_loaded!");
 
         let kidi = document.cookie; //クッキーを焼こう
-        cookiereader()
 
-        if (kidi == "")  {
-            initc = ["role=032","whonlygs=1", "whotea=0", "whono=1", "whrya=1", "whoname=0", "digree=w"];
+        if (kidi == "undefined")  {
+            newperson = "Y"
+            initc = ["role=","whonlygs=1", "whotea=0", "whono=1", "whrya=1", "whoname=0", "digree=w"];
             initc.forEach(function (item) {
                 document.cookie = item;
             });
             console.log("cookie initialized!");
         }
+        cookiereader()
     //SETTER
         document.getElementById("check1").checked = cookies.whonlygs == 1;
         document.getElementById("teaomit").checked = cookies.whotea == 1;
@@ -120,8 +125,10 @@
             let parts = kata[i].split('=');
             cookies[parts[0]] = parts[1];
         }
-        for (let i = 0; i < rolelist.length; i++) {
-            roleDict[rolelist[i]] = parseInt(cookies.role.charAt(i), 10);
+        if (newperson == "Y") {
+            for (let i = 0; i < rolelist.length; i++) {
+                roleDict[rolelist[i]] = parseInt(cookies.role.charAt(i), 10);
+            }
         }
         console.log(roleDict)
     }
@@ -297,6 +304,12 @@
                 cell.textContent = cellContent;
             }
         }
+    }
+
+    function eraeser() {
+        document.cookie.split(";").forEach(function(c) {
+            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+        });
     }
     
 
