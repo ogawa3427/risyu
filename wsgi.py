@@ -7,8 +7,10 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+    csvs_directory = os.path.join(current_directory, 'csvs')
     # 'csvs'ディレクトリ内のファイルとディレクトリのリストを取得
-    ls = os.listdir('csvs')
+    ls = os.listdir(csvs_directory)
     ls = [ls for ls in ls if re.search("risyu", ls)]
     ls = [ls for ls in ls if re.search("csv", ls)]
 
