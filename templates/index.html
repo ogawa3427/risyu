@@ -107,7 +107,9 @@
     var rolelist = {{ rolelist|tojson|safe }};
     cookies = {};
     roleDict = {};
-    letsgo = []
+    letsgo = [];
+    buttonText = "";
+    rowgun = "";
     function cookiereader() {
         console.log("Rfun[CoockieReader]")
         console.log(document.cookie)
@@ -141,14 +143,14 @@
     }
 
     function handleButtonClick(event) {
-        let buttonText = event.target.textContent;
+        buttonText = event.target.textContent;
         let freewordValue = document.getElementById("freeword").value;
         let whonlygs = document.getElementById("check1").checked;
         let whotea = document.getElementById("teaomit").checked;
         let whono = document.getElementById("check3").checked;
         let whrya = document.getElementById("check4").checked;
         let whoname = document.getElementById("check5").checked;
-        let rowgun = document.getElementById("dropdown").value;
+        rowgun = document.getElementById("dropdown").value;
 
         console.log(buttonText)
         cookiewriter()
@@ -234,8 +236,28 @@
             }
         }
 
+        //filter
+        let searche = "";
+        if (rowgun !== "0") {
+            if (whono) {
+                let regex = new RegExp("^" + rowgun);
+                thelines = thelines.filter(line => regex.test(line));
+            } else {
+                let regex = new RegExp("^7" + rowgun);
+                thelines = thelines.filter(line => regex.test(line));
+            }
+        }
+        if (freewordValue) {
+            searche = freewordValue;
+        } else {
+            searche = buttonText;
+        }
+        thelines = thelines.filter(line => line.includes(searche));
+
         console.log(thelines)
         createTableFromLines(thelines);
+        console.log(searche)
+        console.log(rowgun)
 
     }
 
@@ -260,8 +282,14 @@
     
                 // GREIを含むセルの文字色をグレーにして、文字列を取り除く
                 if (cellContent.includes('GREI')) {
-                    cell.style.color = "gray";
+                    cell.style.color = "silver";
                     cellContent = cellContent.replace('GREI', '');
+                }
+
+                if (cellContent.includes('（英語クラス）')) {
+                    cell.style.color = '#191970';
+                    cellContent = cellContent.replace('（英語クラス）', '');
+                    cellContent = "[英]" + cellContent
                 }
     
                 cell.textContent = cellContent;
