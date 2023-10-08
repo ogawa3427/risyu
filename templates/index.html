@@ -67,6 +67,7 @@
         document.getElementById("check5").checked = cookies.whoname == 1;
 
     //theline下準備
+        theline = theline.replace(/&amp;/g, '&')
         theline = theline.replace(/eskape/g, '\n');
 
         let lines = theline.split('\n');
@@ -250,6 +251,7 @@
         if (freewordValue) {
             searche = freewordValue;
         } else {
+            buttonText = buttonText.replace('ﾌﾘｰﾜｰﾄﾞ検索', "")
             searche = buttonText;
         }
         thelines = thelines.filter(line => line.includes(searche));
