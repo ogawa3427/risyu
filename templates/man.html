@@ -27,13 +27,21 @@
         .redt {
             color: red;
         }
+        .cellg {
+            color: black;
+            background-color: lightgreen;
+        }
+        .cellb {
+            color: black;
+            background-color: lightblue;
+        }
     </style>
 </head>
 <body>
     <a href="{{ url_for('index') }}"style="margin-left: 20px;" id="top">戻る</a>
 
 
-    <h1>risyu</h1>
+    <h1>risyu web edition</h1>
     <h2>金沢大学履修登録支援スクリプト</h2>
     <p>このサイトは、金沢大学の学務情報サービス内の<a href="https://eduweb.sta.kanazawa-u.ac.jp/Portal/StudentApp/Regist/RegistrationStatus.aspx?year=2023&lct_term_cd=21">抽選科目登録状況</a>から取得した情報を再構成し、検索やフィルター機能を用いてより円滑な履修登録を可能にするものです。</p>
 
@@ -47,8 +55,9 @@
     <a href="#argu">よくある質問</a>
 
     <h3 id ="func">機能の紹介</h3>
+    <p>使用手順<br>(初回のみ 所属設定)→チェックボックス設定→(群指定)→検索ボタン</p>
+
     <h4>検索</h4>
-    <p>チェックボックス→プルダウン→ボタンの順に処理します。</p>
     <div class="container">
         <button>月1</button>
         <p>該当する日程で開講される科目のみ表示します。</p>
@@ -77,12 +86,79 @@
     </div>
 
     <h4>結果</h4>
-    <p></p>
+    <p>2C グロ文 木2 優 50 101 17 <span class="redt">58</span> <span class="greyt">35 6 2 0</span><br>
+    <br>
+    限　自身が限定に含まれていることを示します<br>優　自身が優先に含まれていることを示します<br><span class="greyt">外</span>　履修条件を満たしていない可能性が高いことを示します。<br>他　自分以外が優先に含まれていることを示します。この場合当選状況が数字通りにならない可能性があります。</p>
+    <p>17(黒数字)　この強度までは適正人数内のため、登録するとほぼ確実に当選します。(所属の)優先の影響によってはこの通りにならないことがあります。<br><span class="redt">58(赤文字)</span>　この強度で適正人数をオーバーするため落選の可能性があります。<br><span class="greyt">35 6 2 0</span>(灰文字)　これより強い強度で抽選が終了して、この強度では抽選されない可能性が高いです。</p>
+
+    <h4>所属設定</h4>
+
+    <h4>高度な設定</h4>
+    <p>時間割名の省略の度合い　Twitter等での呼称を元に設定しています。秀逸な略称があれば教えていただけると幸いです。</p>
+    <div class="container">
+        <button>Cookieを消去する</button>
+        <p>所属やチェックボックスの情報を消去します</p>
+    </div>
+
+    <h3 id="ver">バージョン情報</h3>
+    <h4>web版</h4>
+    <table border="1">
+        <tr>
+            <td class="cellb">β0.9.0</td>
+            <td>/manを作り始めた</td>
+        </tr>
+    </table>
+    <p>青背景　現行バージョン(安定版とは限らない)<br>緑背景　安定版<br>白背景　開発版</p>
+
+    <h4>Python・shell言語版はgithubのりどみに書くかも</h4>
+
+    <h3 id="links">リンク</h3>
+    <table border="1">
+        <tr>
+            <td><a href="https://eduweb.sta.kanazawa-u.ac.jp/Portal/StudentApp/Regist/RegistrationStatus.aspx?year=2023&lct_term_cd=21">抽選科目履修登録状況</a></td>
+            <td>偉大なる元データ URLいじると時間旅行できる</td>
+        </tr>
+        <tr>
+            <td><a href="https://acanthus.cis.kanazawa-u.ac.jp/base/confirmation/always">アカンサスポータル確認事項</a></td>
+            <td>問い合わせたら第６条（８）にはあたらないということ</td>
+        </tr>
+        <tr>
+            <td><a href="https://intelligent.w3.kanazawa-u.ac.jp/ish/">金沢大学 情報戦略本部</a></td>
+            <td>ここの事務に問い合わせた</td>
+        </tr>
+        <tr>
+            <td><a href="https://github.com/ogawa3427/risyu">Githubリポジトリ</a></td>
+            <td>全editionがここに入ってる</td>
+        </tr>
+        <tr>
+            <td><a href="https://sites.google.com/view/ogawa34">首謀者のHP</a></td>
+            <td>ごちゃごちゃ</td>
+        </tr>
+        <tr>
+            <td><a href="https://twitter.com/stspecedjpstuku">首謀者Twitter</a></td>
+            <td>うるさめ</td>
+        </tr>
+        <tr>
+            <td><a href="https://kurisyushien.org/">当サービス</a></td>
+            <td>HTTPでも行けた気がする</td>
+        </tr>
+        <tr>
+            <td><a href=""></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+    <h3 id="tech">技術仕様</h3>
+    <p>AWS EC2 t2.micro(無料枠)<br>さくらのドメインおよびDNS</p>
+    <p>ubuntu-focal-20.04-amd64-server<br>Appach2<br>gunicorn<br>Flask<br>Python3.8</p>
+
+    <h3 id="lice">ライセンスとメッセージ</h3>
+    <p>このプロジェクトのソースコードのうち私に権利のある部分は好きに使っていただいて構いませんが、原案は私(@stspecedjp/ogawa3427)にあります。<br>GithubのmainにあるREADME.mdと食い違っている場合Githubの記述が優越します。</p>
+
+    <h3 id="argu">よくある質問</h3>
 
 
 
-
-    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
     <a href="{{ url_for('index') }}"style="margin-left: 20px;">戻る</a>
     <a href="#top">ぺージの先頭に戻る</a>
 
