@@ -6,15 +6,86 @@
     <style>
         /* ボタンに5ピクセルのマージンを追加 */
         #buttons button {
-            margin: 5px;
+            margin: 1px;
+        }
+        h3, h4, .container {
+            margin-bottom: 1px; /* この値を調整して行間を詰める */
+        }
+        .container {
+            display: flex;
+            align-items: center;
+        }
+        .container > * {
+            margin-right: 10px; /* 要素間のスペース */
+        }
+        .container p {
+            margin-left: 0; /* 上で設定した要素間のスペースを使用するため、このマージンは0に設定 */
+        }
+        .greyt {
+            color: silver;
+        }
+        .redt {
+            color: red;
         }
     </style>
 </head>
 <body>
+    <a href="{{ url_for('index') }}"style="margin-left: 20px;" id="top">戻る</a>
+
+
+    <h1>risyu</h1>
+    <h2>金沢大学履修登録支援スクリプト</h2>
+    <p>このサイトは、金沢大学の学務情報サービス内の<a href="https://eduweb.sta.kanazawa-u.ac.jp/Portal/StudentApp/Regist/RegistrationStatus.aspx?year=2023&lct_term_cd=21">抽選科目登録状況</a>から取得した情報を再構成し、検索やフィルター機能を用いてより円滑な履修登録を可能にするものです。</p>
+
+    <h3>もくじ</h3>
+    <a href="#top">先頭</a><br>
+    <a href="#func">機能の紹介</a><br>
+    <a href="#ver">バージョン情報</a><br>
+    <a href="#links">リンク</a><br>
+    <a href="#tech">技術仕様</a><br>
+    <a href="#lice">ライセンスとメッセージ</a><br>
+    <a href="#argu">よくある質問</a>
+
+    <h3 id ="func">機能の紹介</h3>
+    <h4>検索</h4>
+    <p>チェックボックス→プルダウン→ボタンの順に処理します。</p>
+    <div class="container">
+        <button>月1</button>
+        <p>該当する日程で開講される科目のみ表示します。</p>
+    </div>
+    <div class="container">
+        <select>
+            <option value="0">全群</option>
+        </select>
+        <p>GS科目の群ごとにフィルタリングします。</p>
+    </div>
+    <div class="container">
+        <button>ﾌﾘｰﾜｰﾄﾞ検索</button>
+        <p>左の検索窓のテキストで検索を行います。文字列加工後(後述)の項目についてマッチングを行う点に注意してください。空文字列で検索すると全項目を吐き出します。</p>
+    </div>
+    <div class="container">
+        <input type="checkbox">GS科目のみ
+        <p>　GS科目以外の行と科目区分の列を非表示にします。</p>
+    </div>
+    <div class="container">
+        <input type="checkbox">省略
+        <p>　該当の列を非表示または省略した表示に切り替えます。</p>
+    </div>
+    <div class="container">
+        <input type="checkbox">優先・限定を簡略化
+        <p>　履修条件表示を、限定・優先・対象外・他の優先のうち自身がどれに該当(後述)するかの情報表示に切り替えます。</p>
+    </div>
+
+    <h4>結果</h4>
+    <p></p>
+
+
+
+
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
     <a href="{{ url_for('index') }}"style="margin-left: 20px;">戻る</a>
+    <a href="#top">ぺージの先頭に戻る</a>
 
-
-    <h1>準備中-Under Construction-</h1>
 
 
 <script>
