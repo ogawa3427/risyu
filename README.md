@@ -3,6 +3,8 @@
 事務さんからOK出ましたが
 鯖の負荷には注意
 
+KUSSOの先にあるデータを一般公開してるのってまずくね？みたいなことも思ってないわけではない
+
 https://burnt-learning-ae0.notion.site/risyu-68085c98995a4446b9fbdb91e10142b0?pvs=4
 
 自己責任においてクローン等するようにしてください
@@ -16,20 +18,25 @@ $HOMEに抽選科目登録状況のHTMLを投げ込んでrisyu(シェルスク�
 dir.csvにフルパスを書いとくとそこからHTMLを探します  
 私はDownloadにしてる
 
+(Python GUI)
 python3.11.5  
 ~~PySimpleGUI~~  
 tknter  
 
-商用利用不可
+(WEB)
+python3.8
+Flask
+WSGI
+Apache2
 
-自作発言不可
 
-改変可  
+#ライセンス License
+MITライセンスでよろしくお願いいたします
+MIT License
 
 
 NO　WARRANTIY
 
-出所明示に限り(改変)再配布可
 
 
 ## ファイル構成 Files  
@@ -42,5 +49,15 @@ setting.json
 role.json  
 　履修対象判定のための情報が入ってる。  
 (タイムスタンプ)risyu.csv  
-　完成品のＣＳＶです。煮るなり焼くなりって感じ。   
+　完成品のＣＳＶです。煮るなり焼くなりって感じ。
+app.py
+	webサーバーの内蔵ちゃん
+templates/
+	内蔵ちゃんが読み出すHTML
+	index.html
+	aff.html
+	set.html
+	man.html
+csvs/
+	内蔵ちゃんが投げてくるデータ置き場、最新のタイムスタンプのやつがデフォで使われる
 
