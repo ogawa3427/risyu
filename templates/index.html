@@ -130,10 +130,12 @@
                 roleDict[rolelist[i]] = parseInt(cookies.role.charAt(i), 10);
             }
         }
+        console.log(cookies)
         console.log(roleDict)
     }
     function cookiewriter() {
         console.log("Wfun[CookieWriter]")
+        console.log(cookies)
         cookies.whonlygs = document.getElementById("check1").checked ? 1 : 0;
         cookies.whotea = document.getElementById("teaomit").checked ? 1 : 0;
         cookies.whono = document.getElementById("check3").checked ? 1 : 0;
@@ -147,7 +149,6 @@
         for (let [key, value] of Object.entries(cookies)) {
             document.cookie = `${key}=${value}; ${expires}; path=/`;
         }
-        console.log(document.cookie)
     }
 
     function handleButtonClick(event) {
@@ -172,7 +173,6 @@
             for (let i = 0; i < thelines.length; i++) {
                 thelines[i] = thelines[i].replace(/((?:[^,]*,){4})[^,]*,/, '$1'); 
             };
-            console.log("TeaOmit")
         }
 
         //2
@@ -197,29 +197,30 @@
 
         //4
         if (whrya === true) {
+            console.log("hogehogehogehogehogeoehgoehgoehgoehgo")
             for (let i = 0; i < thelines.length; i++) {
                 let parts = thelines[i].split(',');  // 各行をカンマで分割して配列にする
         
                 for (let j = 0; j < parts.length; j++) {
                     for (let key in roleDict) {
-                        if (parts[j] === key) {  // 完全一致の場合のみ
+                        if (parts[j] == key) {
                             if (roleDict[key] === 0) {
-                                parts[j] = "";  // 0の場合の処理
+                                parts[j] = "";
                             } else if (roleDict[key] === 1) {
-                                parts[j] = "限";  // 1の場合の処理
+                                parts[j] = "限";
                             } else if (roleDict[key] === 2) {
-                                parts[j] = "優";  // 2の場合の処理
+                                parts[j] = "優";
                             } else if (roleDict[key] === 3) {
-                                parts[j] = "外";  // 3の場合の処理
+                                parts[j] = "外";
                             } else if (roleDict[key] === 4) {
-                                parts[j] = "他";  // 4の場合の処理
+                                parts[j] = "他";
                                 parts = parts.map(item => "GREI" + item);
                             }
                         }
                     }
                 }
         
-                thelines[i] = parts.join(',');  // 配列をカンマで結合して文字列に戻す
+                thelines[i] = parts.join(',');
             }
         }
 
@@ -265,9 +266,6 @@
 
         console.log(thelines)
         createTableFromLines(thelines);
-        console.log(searche)
-        console.log(rowgun)
-
     }
 
     function createTableFromLines(thelines) {
@@ -311,25 +309,17 @@
             document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
         });
     }
-    
 
 
     window.onload = function() {
-        // すべての.day-buttonを取得
         let buttons = document.querySelectorAll(".day-button");
-
-        // 各ボタンにクリックイベントリスナーを追加
         buttons.forEach(function(button) {
             button.addEventListener("click", handleButtonClick);
         });
     }
-
-
-
     document.addEventListener("DOMContentLoaded", pageinit);
     
 
 </script>
-
 </body>
 </html>
