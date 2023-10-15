@@ -120,8 +120,10 @@
             let parts = kata[i].split('=');
             cookies[parts[0]] = parts[1];
         }
-        for (let i = 0; i < rolelist.length; i++) {
-            roleDict[rolelist[i]] = parseInt(cookies.role.charAt(i), 10);
+        if (newperson !== "Y") {
+            for (let i = 0; i < rolelist.length; i++) {
+                roleDict[rolelist[i]] = parseInt(cookies.role.charAt(i), 10);
+            }
         }
         console.log(roleDict)
     }
@@ -192,7 +194,6 @@
         if (whrya === true) {
             for (let i = 0; i < thelines.length; i++) {
                 let parts = thelines[i].split(',');  // 各行をカンマで分割して配列にする
-        
                 for (let j = 0; j < parts.length; j++) {
                     for (let key in roleDict) {
                         if (parts[j] === key) {  // 完全一致の場合のみ
@@ -203,9 +204,24 @@
                             } else if (roleDict[key] === 2) {
                                 parts[j] = "優";  // 2の場合の処理
                             } else if (roleDict[key] === 3) {
-                                parts[j] = "外";  // 3の場合の処理
+                                parts[j] = "外";
+                                parts = parts.map(item => "GREI" + item);
                             } else if (roleDict[key] === 4) {
-                                parts[j] = "他";  // 4の場合の処理
+                                parts[j] = "他";
+                            }
+                        }
+                    }
+                }
+        
+                thelines[i] = parts.join(',');
+            }
+        } else {
+            for (let i =0; i< thelines.length; i++) {
+                let parts = thelines[i].split(',');
+                for (let j = 0; j < parts.length; j++) {
+                    for (let key in roleDict) {
+                        if (parts[j] == key) {
+                            if (roleDict[key] === 3) {
                                 parts = parts.map(item => "GREI" + item);
                             }
                         }
