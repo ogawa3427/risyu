@@ -28,6 +28,8 @@
 
     <table id="myTable"></table>
 
+    <button onclick="clearCookies()">cookieを消去</button>
+
 <script>
     console.log('HogeHoge')
     let settings = ["whonlygs", "whotea", "whono", "whrya", "whoname" ]
@@ -47,18 +49,8 @@
         asofdisp.textContent = asof;
     //君は究極で完璧の
         theline = "{{ theline }}";
-        console.log("theline_loaded!");
 
-        let kidi = document.cookie; //クッキーを焼こう
         cookiereader()
-
-        if (kidi == "")  {
-            initc = ["role=032","whonlygs=1", "whotea=0", "whono=1", "whrya=1", "whoname=0", "digree=w"];
-            initc.forEach(function (item) {
-                document.cookie = item;
-            });
-            console.log("cookie initialized!");
-        }
     //SETTER
         document.getElementById("check1").checked = cookies.whonlygs == 1;
         document.getElementById("teaomit").checked = cookies.whotea == 1;
@@ -120,7 +112,13 @@
             let parts = kata[i].split('=');
             cookies[parts[0]] = parts[1];
         }
-        if (newperson !== "Y") {
+        let newperson = "N";  // Nは新規, Yは既存とする
+
+        if (typeof cookies.role === "undefined" || cookies.role == "") {
+            newperson = "Y";
+        }
+
+        if (newperson == "N") {
             for (let i = 0; i < rolelist.length; i++) {
                 roleDict[rolelist[i]] = parseInt(cookies.role.charAt(i), 10);
             }
@@ -314,6 +312,19 @@
             }
         }
     }
+
+    function clearCookies() {
+        let allCookies = document.cookie.split(';');
+    
+        for (let i = 0; i < allCookies.length; i++) {
+            let cookie = allCookies[i];
+            let eqPos = cookie.indexOf("=");
+            let name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+        }
+        console.log("All cookies cleared!");
+    }
+
     
 
 
@@ -325,6 +336,26 @@
         buttons.forEach(function(button) {
             button.addEventListener("click", handleButtonClick);
         });
+
+        let newperson = "N";  // Nは新規, Yは既存とする
+
+        if (typeof cookies.role === "undefined" || cookies.role == "") {
+            newperson = "Y";
+        }
+
+        if (newperson == "Y") {
+            document.getElementById("check1").checked = true;
+            document.getElementById("teaomit").checked = false;
+            document.getElementById("check3").checked = true;
+            document.getElementById("check4").checked = true;
+            document.getElementById("check5").checked = false;
+
+            newperson = "N";
+        }
+
+        if (typeof cookies.role === "undefined" || cookies.role == "") {
+            alert("「所属設定」を行うことで\n「優先・限定を簡略化」が動作するようになります")
+        }
     }
 
 
