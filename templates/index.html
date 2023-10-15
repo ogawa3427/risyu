@@ -28,8 +28,7 @@
 
     <table id="myTable"></table>
 
-    <br>
-    <button onclick="eraeser()">Cookieを削除する</button>
+    <button onclick="clearCookies()">cookieを消去</button>
 
 <script>
     console.log('HogeHoge')
@@ -41,7 +40,6 @@
     let freewordValue = "";
     var weakdict = {{ weakdict|tojson|safe }};
     var strodict = {{ strodict|tojson|safe }};
-    let newperson = "N";
 
     function pageinit() {
         console.log("fun[PageInit]")
@@ -51,18 +49,7 @@
         asofdisp.textContent = asof;
     //君は究極で完璧の
         theline = "{{ theline }}";
-        console.log("theline_loaded!");
 
-        let kidi = document.cookie; //クッキーを焼こう
-
-        if (kidi == "undefined")  {
-            newperson = "Y"
-            initc = ["role=","whonlygs=1", "whotea=0", "whono=1", "whrya=1", "whoname=0", "digree=w"];
-            initc.forEach(function (item) {
-                document.cookie = item;
-            });
-            console.log("cookie initialized!");
-        }
         cookiereader()
     //SETTER
         document.getElementById("check1").checked = cookies.whonlygs == 1;
@@ -125,17 +112,21 @@
             let parts = kata[i].split('=');
             cookies[parts[0]] = parts[1];
         }
-        if (newperson == "Y") {
+        let newperson = "N";  // Nは新規, Yは既存とする
+
+        if (typeof cookies.role === "undefined" || cookies.role == "") {
+            newperson = "Y";
+        }
+
+        if (newperson == "N") {
             for (let i = 0; i < rolelist.length; i++) {
                 roleDict[rolelist[i]] = parseInt(cookies.role.charAt(i), 10);
             }
         }
-        console.log(cookies)
         console.log(roleDict)
     }
     function cookiewriter() {
         console.log("Wfun[CookieWriter]")
-        console.log(cookies)
         cookies.whonlygs = document.getElementById("check1").checked ? 1 : 0;
         cookies.whotea = document.getElementById("teaomit").checked ? 1 : 0;
         cookies.whono = document.getElementById("check3").checked ? 1 : 0;
@@ -149,6 +140,7 @@
         for (let [key, value] of Object.entries(cookies)) {
             document.cookie = `${key}=${value}; ${expires}; path=/`;
         }
+        console.log(document.cookie)
     }
 
     function handleButtonClick(event) {
@@ -173,6 +165,7 @@
             for (let i = 0; i < thelines.length; i++) {
                 thelines[i] = thelines[i].replace(/((?:[^,]*,){4})[^,]*,/, '$1'); 
             };
+            console.log("TeaOmit")
         }
 
         //2
@@ -197,30 +190,43 @@
 
         //4
         if (whrya === true) {
-            console.log("hogehogehogehogehogeoehgoehgoehgoehgo")
             for (let i = 0; i < thelines.length; i++) {
                 let parts = thelines[i].split(',');  // 各行をカンマで分割して配列にする
-        
                 for (let j = 0; j < parts.length; j++) {
                     for (let key in roleDict) {
-                        if (parts[j] == key) {
+                        if (parts[j] === key) {  // 完全一致の場合のみ
                             if (roleDict[key] === 0) {
-                                parts[j] = "";
+                                parts[j] = "";  // 0の場合の処理
                             } else if (roleDict[key] === 1) {
-                                parts[j] = "限";
+                                parts[j] = "限";  // 1の場合の処理
                             } else if (roleDict[key] === 2) {
-                                parts[j] = "優";
+                                parts[j] = "優";  // 2の場合の処理
                             } else if (roleDict[key] === 3) {
                                 parts[j] = "外";
+                                parts = parts.map(item => "GREI" + item);
                             } else if (roleDict[key] === 4) {
                                 parts[j] = "他";
-                                parts = parts.map(item => "GREI" + item);
                             }
                         }
                     }
                 }
         
                 thelines[i] = parts.join(',');
+            }
+        } else {
+            for (let i =0; i< thelines.length; i++) {
+                let parts = thelines[i].split(',');
+                for (let j = 0; j < parts.length; j++) {
+                    for (let key in roleDict) {
+                        if (parts[j] == key) {
+                            if (roleDict[key] === 3) {
+                                parts = parts.map(item => "GREI" + item);
+                            }
+                        }
+                    }
+                }
+        
+                thelines[i] = parts.join(',');  // 配列をカンマで結合して文字列に戻す
             }
         }
 
@@ -266,6 +272,9 @@
 
         console.log(thelines)
         createTableFromLines(thelines);
+        console.log(searche)
+        console.log(rowgun)
+
     }
 
     function createTableFromLines(thelines) {
@@ -304,22 +313,57 @@
         }
     }
 
-    function eraeser() {
-        document.cookie.split(";").forEach(function(c) {
-            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-        });
+    function clearCookies() {
+        let allCookies = document.cookie.split(';');
+    
+        for (let i = 0; i < allCookies.length; i++) {
+            let cookie = allCookies[i];
+            let eqPos = cookie.indexOf("=");
+            let name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+        }
+        console.log("All cookies cleared!");
     }
+
+    
 
 
     window.onload = function() {
+        // すべての.day-buttonを取得
         let buttons = document.querySelectorAll(".day-button");
+
+        // 各ボタンにクリックイベントリスナーを追加
         buttons.forEach(function(button) {
             button.addEventListener("click", handleButtonClick);
         });
+
+        let newperson = "N";  // Nは新規, Yは既存とする
+
+        if (typeof cookies.role === "undefined" || cookies.role == "") {
+            newperson = "Y";
+        }
+
+        if (newperson == "Y") {
+            document.getElementById("check1").checked = true;
+            document.getElementById("teaomit").checked = false;
+            document.getElementById("check3").checked = true;
+            document.getElementById("check4").checked = true;
+            document.getElementById("check5").checked = false;
+
+            newperson = "N";
+        }
+
+        if (typeof cookies.role === "undefined" || cookies.role == "") {
+            alert("「所属設定」を行うことで\n「優先・限定を簡略化」が動作するようになります")
+        }
     }
+
+
+
     document.addEventListener("DOMContentLoaded", pageinit);
     
 
 </script>
+
 </body>
 </html>

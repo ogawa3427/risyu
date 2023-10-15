@@ -121,34 +121,34 @@
         }
         console.log(cookies)
     }
-	function setInitialValues() {
-	    if (cookies.iki) {
-	        let ikiRadio = document.querySelector(`input[name="option"][value="${cookies.iki}"]`);
-	        if (ikiRadio) {
-	            ikiRadio.checked = true;
-	            ikiRadio.dispatchEvent(new Event('change')); // 所属のラジオボタンの変更イベントを手動でトリガー
-	        }
-	    }
-	
-	    // 少しの遅延を持たせて、ruiのプルダウンメニューが更新されるのを待つ
-	    setTimeout(() => {
-	        if (cookies.rui) {
-	            let ruiSelect = document.getElementById('ruiselect');
-	            if (ruiSelect) {
-	                ruiSelect.value = cookies.rui;
-	            }
-	        }
-	    }, 50);
-	
-	    if (cookies.nen) {
-	        console.log("[setnen!!!!")
-	        let nenSelect = document.getElementById('nenselect');
-	        if (nenSelect) {
-	            nenSelect.value = cookies.nen;
-	        }
-	    }
-	}
-	
+    function setInitialValues() {
+        if (cookies.iki) {
+            let ikiRadio = document.querySelector(`input[name="option"][value="${cookies.iki}"]`);
+            if (ikiRadio) {
+                ikiRadio.checked = true;
+                ikiRadio.dispatchEvent(new Event('change')); // 所属のラジオボタンの変更イベントを手動でトリガー
+            }
+        }
+    
+        // 少しの遅延を持たせて、ruiのプルダウンメニューが更新されるのを待つ
+        setTimeout(() => {
+            if (cookies.rui) {
+                let ruiSelect = document.getElementById('ruiselect');
+                if (ruiSelect) {
+                    ruiSelect.value = cookies.rui;
+                }
+            }
+        }, 50);
+    
+        if (cookies.nen) {
+            console.log("[setnen!!!!")
+            let nenSelect = document.getElementById('nenselect');
+            if (nenSelect) {
+                nenSelect.value = cookies.nen;
+            }
+        }
+    }
+    
 
 
 
@@ -183,28 +183,28 @@
         }
     }
 
-	function altrolever() {
-	    console.log("[AltRolever]");
-	    let diffn = rolelist.length - cookies.role.length;
-	    console.log(diffn);
+    function altrolever() {
+        console.log("[AltRolever]");
+        let diffn = rolelist.length - cookies.role.length;
+        console.log(diffn);
         
-	    letsgo = rolelist.slice(0, diffn);
-	    let notInLetsgo = rolelist.filter(item => !letsgo.includes(item));
-	    let ushiro = {};
-	    for (let i = 0; i < notInLetsgo.length; i++) {
-	        ushiro[notInLetsgo[i]] = parseInt(cookies.role.charAt(i), 10);
-	    }	
-	    newrows = autoDict(letsgo);
-	    let newDict = {};
-	    for (let key in newrows) {
-	        newDict['[NEW]' + key] = newrows[key];
-	    }	
-	    roleDict = {...ushiro, ...newDict};
-	    setter();
+        letsgo = rolelist.slice(0, diffn);
+        let notInLetsgo = rolelist.filter(item => !letsgo.includes(item));
+        let ushiro = {};
+        for (let i = 0; i < notInLetsgo.length; i++) {
+            ushiro[notInLetsgo[i]] = parseInt(cookies.role.charAt(i), 10);
+        }   
+        newrows = autoDict(letsgo);
+        let newDict = {};
+        for (let key in newrows) {
+            newDict['[NEW]' + key] = newrows[key];
+        }   
+        roleDict = {...ushiro, ...newDict};
+        setter();
 
         letsgo = rolelist
         letsgo = letsgo.filter(item => !item.includes('[NEW]'));
-	}
+    }
 
 
     function uptodate() {
@@ -218,9 +218,6 @@
         setter();
     }
 
-    iki = "";
-    rui = "";
-    nen = "";
     function executebutton() {
         console.log("[Button!]")
 
@@ -232,9 +229,6 @@
 
         let ndropdown = document.getElementById('nenselect');
         cookies.nen = ndropdown ? ndropdown.value : null;
-
-        console.log(iki, rui, nen)
-
 
         for (let key in roleDict) {
             if (key.includes('[NEW]')) {
@@ -248,16 +242,63 @@
     }
 
 
-
-    function autoDict(list) {
-        for (let item of list) {
-            
-            if (item.includes("優先")) {
-                roleDict[item] = 1;
-            }else{
-                roleDict[item] = 0;
+    function selector(target, search) {
+        if (target.includes(search)) {
+            if (target.includes("限定")) {
+                return 1;
+            } else if (target.includes("優先")) {
+                return 2;
+            } else if (target.includes("以外")) {
+                return 3;
+            } else {
+                return 0;
             }
+        } else {
+            if (target.includes("限定")) {
+                return 3;
+            } else if (target.includes("優先")) {
+                return 4;
+            } else if (target.includes("以外")) {
+                return 0;
+            } else {
+                return 3;
+            }
+        }
+    }
+    function autoDict(list) {
+        malist = [ cookies.nen, cookies.iki, cookies.rui ]
+        console.log(malist)
 
+        let ijo = [];
+        let ika = [];
+        for (let jo = 1; jo <= cookies.nen; jo++) {
+            let label = jo + "年以上";
+            ijo.push(label);
+        }
+        for (let ka = cookies.nen; ka <= 6; ka++) {
+            let label = ka + "年以下";
+            ika.push(label);
+        }
+        console.log(ijo)
+        console.log(ika)
+        let nen = cookies.nen + "年";
+        let nenlist = [ nen, ...ijo, ...ika ];
+
+        for (let ma in malist) {
+            for (let item of list) {
+                if (item.includes('全学生')) {
+                    roleDict[item] = 0;
+                }
+                if (/^[0-9]$/.test(ma)) {
+                    for (let nen in nenlist) {
+                        let target = nenlist[nen];
+                        roleDict[item] = selector(item, target);
+                    }
+                } else {
+                    roleDict[item] = selector(item, malist[ma]);
+                }
+
+            }
         }
         return roleDict;
     }
@@ -326,26 +367,30 @@
         container.appendChild(table);
     }
 
+
+
     function handleCompletion() {
-	    for (let key in roleDict) {
-	        let checkboxes = document.querySelectorAll(`input[data-role="${key}"]`);
-	        for (let i = 0; i < checkboxes.length; i++) {
-	            if (checkboxes[i].checked) {
-	                roleDict[key] = i + 1;
-	                break;
-	            }
-	        }
-	    }
+
+
+        for (let key in roleDict) {
+            let checkboxes = document.querySelectorAll(`input[data-role="${key}"]`);
+            for (let i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    roleDict[key] = i + 1;
+                    break;
+                }
+            }
+        }
         console.log("[ChkReader")
         console.log(roleDict)
-	    let roletxt = '';
-	    for (let key in roleDict) {
-	        roletxt += roleDict[key].toString();
-	    }
-	    cookies.role = roletxt;
-	    cookiewriter();
-	    return true;
-	}
+        let roletxt = '';
+        for (let key in roleDict) {
+            roletxt += roleDict[key].toString();
+        }
+        cookies.role = roletxt;
+        cookiewriter();
+        return true;
+    }
 
 
     cookiereader()
