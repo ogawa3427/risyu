@@ -272,16 +272,16 @@
         let ijo = [];
         let ika = [];
         for (let jo = 1; jo <= cookies.nen; jo++) {
-            let label = jo + "年以上";
+            let label = jo + "年生以上";
             ijo.push(label);
         }
         for (let ka = cookies.nen; ka <= 6; ka++) {
-            let label = ka + "年以下";
+            let label = ka + "年生以下";
             ika.push(label);
         }
         console.log(ijo)
         console.log(ika)
-        let nen = cookies.nen + "年";
+        let nen = cookies.nen + "年生";
         let nenlist = [ nen, ...ijo, ...ika ];
 
         for (let ma in malist) {

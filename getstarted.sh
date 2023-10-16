@@ -13,3 +13,6 @@ cat conf_template.txt | sudo tee /etc/apache2/sites-enabled/000-default.conf > /
 sudo a2enmod proxy
 sudo a2enmod proxy_http
 sudo systemctl restart apache2
+
+echo "Congratulations! You can get comleated successfully starting the Risyu Server by few steps! \n Please excuse this command "gunicorn app:app" and access the server at http://your-global\ip \nNext, consider setting up a domain name and SSL certificate for your server. \nThey are not necessary, but they will make your server more secure and easier to access. \nYou can find instructions for setting up a domain name and SSL certificate at man-page of mine.:)"
+exit
