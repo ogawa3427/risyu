@@ -107,8 +107,8 @@
 
 
 
-    var rolelist = {{ rolelist|tojson|safe }};
-    rolelist = Object.keys(rolelist);
+    var rowlist = {{ rolelist|tojson|safe }};
+    rolelist = Object.keys(rowlist);
     console.log(rolelist)
     cookies = {};
     roleDict = {};
@@ -240,82 +240,58 @@
     }
 
 
-    function theselector(moto, search) {
-        if (moto.includes(search)) {
-            if (moto.includes("限定")) {
-                return 6;
-            } else if (moto.includes("優先")) {
-                return 7;
-            } else if (moto.includes("以外")) {
-                return 8;
-            } else {
-                return 5;
-            }
-        } else {
-            if (moto.includes("限定")) {
-                return 3;
-            } else if (moto.includes("優先")) {
-                return 4;
-            } else if (moto.includes("以外")) {
-                return 0;
-            } else {
-                return 3;
-            }
-        }
-    }
     function autoDict(list) {
-        malist = [ cookies.nen, cookies.iki, cookies.rui ]
-        console.log("malist")
-        console.log(malist)
+        console.log("[AutoDict]")
 
-        let ijo = [];
-        let ika = [];
-        for (let jo = 1; jo <= cookies.nen; jo++) {
-            let label = jo + "年生以上";
-            ijo.push(label);
+        let regexString = '';
+        for (let char of cookies.youraff) {
+            regexString += `[${char}w]`;
         }
-        for (let ka = cookies.nen; ka <= 6; ka++) {
-            let label = ka + "年生以下";
-            ika.push(label);
-        }
-        console.log(ijo)
-        console.log(ika)
-        let nen = cookies.nen + "年生";
-        let nenlist = [ nen, ...ijo, ...ika ];
-
+        regexString += '$';
+        let regexPattern = new RegExp(regexString);
+        let pool = "";
         for (let item of list) {
-            let breakloop = false;
-            for (let ma of malist) {
-                console.log(`moto: ${item}, search: ${ma}, result: ${theselector(item, ma)}`);
-                if (item.includes('全学生')) {
-                    roleDict[item] = 0;
-                    breakloop = true;
-                }
-                if (typeof ma === 'string' && /^[0-9]$/.test(ma)) {
-                    for (let nen in nenlist) {
-                        let target = nenlist[nen];
-                        let result = theselector(item, target);
-                        if (result >= 5) {
-                            roleDict[item] = result - 5;
-                        //console.log(roleDict[item])
-                            breakloop = true;
+            if (item.startsWith('M')) {
+                roleDict[item] = "0";
+                continue;
+            } else if (rowlist[item]) {
+                for (let tar of rowlist[item]) {
+                    console.log(tar);
+                    pool = "";
+                    if (regexPattern.test(tar)) {
+                        if (tar.startsWith("G")) {
+                            pool += "G";
+                        }
+                        if (tar.startsWith("Y")) {
+                            pool += "Y";
+                        } else if (tar.startsWith("N")) {
+                            pool += "N";
+                        }
+                        if (tar.includes("I")) {
+                            pool += "I";
                             break;
-                        } else {
-                            roleDict[item] = result;
+                        }
+                    } else {
+                        if (tar.startsWith("G")) {
+                            pool += "I";
+                            break;
+                        }
+                        if (tar.startsWith("Y")) {
+                            pool += "T";
+                        }
+                        if (tar.startsWith("I")) {
+                            pool += "J";
                         }
                     }
-                } else {
-                    roleDict[item] = theselector(item, malist[ma]);
+                //console.log(item + ", " + pool);
                 }
-                if (breakloop) {
-                    break;
-                }
-
+            } else {
+                roleDict[item] += "0";
+                pool += "0";
             }
+            console.log(item + ", " + pool);
         }
         return roleDict;
-        console.log("AutoDict")
-        console.log(roleDict)
     }
 
 
