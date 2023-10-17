@@ -124,33 +124,34 @@
         console.log(cookies)
     }
     function setInitialValues() {
-        if (cookies.iki) {
-            let ikiRadio = document.querySelector(`input[name="option"][value="${cookies.iki}"]`);
+        if (cookies.youraff) {
+            let nenValue = cookies.youraff.charAt(0);
+            let ikiValue = cookies.youraff.charAt(1);
+            let ruiValue = cookies.youraff.slice(2);
+    
+            // 年数の初期値設定
+            let nenSelect = document.getElementById('nenselect');
+            if (nenSelect) {
+                nenSelect.value = nenValue;
+            }
+    
+            // 所属の初期値設定
+            let ikiRadio = document.querySelector(`input[name="option"][value="${ikiValue}"]`);
             if (ikiRadio) {
                 ikiRadio.checked = true;
                 ikiRadio.dispatchEvent(new Event('change'));
             }
-        }
     
-        // 少しの遅延を持たせて、ruiのプルダウンメニューが更新されるのを待つ
-        setTimeout(() => {
-            if (cookies.rui) {
+            // 少しの遅延を持たせて、ruiのプルダウンメニューが更新されるのを待つ
+            setTimeout(() => {
                 let ruiSelect = document.getElementById('ruiselect');
                 if (ruiSelect) {
-                    ruiSelect.value = cookies.rui;
+                    ruiSelect.value = ruiValue;
                 }
-            }
-        }, 50);
-    
-        if (cookies.nen) {
-            console.log("[setnen!!!!")
-            let nenSelect = document.getElementById('nenselect');
-            if (nenSelect) {
-                nenSelect.value = cookies.nen;
-            }
+            }, 50);
         }
     }
-    
+
 
 
 
@@ -158,13 +159,13 @@
         console.log("Wfun[CookieWriter]")
 
         let radios = document.querySelectorAll(`input[name="option"]:checked`);
-        cookies.iki = radios.length > 0 ? radios[0].value : null;
+        let rdropdownrui = document.getElementById('ruiselect');
+        let ndropdownnen = document.getElementById('nenselect');
 
-        let rdropdown = document.getElementById('ruiselect');
-        cookies.rui = rdropdown ? rdropdown.value : null;
-
-        let ndropdown = document.getElementById('nenselect');
-        cookies.nen = ndropdown ? ndropdown.value : null;
+        console.log("YourAffamation");
+        let youraff = ndropdownnen.value + radios[0].value + rdropdownrui.value;
+        console.log(youraff);
+        cookies.youraff = youraff;
 
 
         let expirationDate = new Date();
@@ -174,7 +175,6 @@
         for (let [key, value] of Object.entries(cookies)) {
             document.cookie = `${key}=${value}; ${expires}; path=/`;
         }
-        console.log(document.cookie)
     }
 
     function newparson() {
@@ -224,13 +224,8 @@
         console.log("[Button!]")
 
         let radios = document.querySelectorAll(`input[name="option"]:checked`);
-        cookies.iki = radios.length > 0 ? radios[0].value : null;
-
         let rdropdownrui = document.getElementById('ruiselect');
-        cookies.rui = rdropdownrui ? rdropdownrui.value : null;
-
         let ndropdownnen = document.getElementById('nenselect');
-        cookies.nen = ndropdownnen ? ndropdownnen.value : null;
 
         console.log("YourAffamation");
         let youraff = ndropdownnen.value + radios[0].value + rdropdownrui.value;
