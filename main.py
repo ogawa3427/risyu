@@ -57,8 +57,9 @@ def set():
 def aff():
     return render_template(
         'aff.html',
-        rolelist=rolelist,
-        qur=qur
+        rolelist=keys_list,
+        qur=qur,
+        rowlist=rolelist
         )
 
 @app.route('/man')

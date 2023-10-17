@@ -15,6 +15,19 @@
         text-align: right;
         margin-bottom: 10px;
     }
+    #tooltip {
+    position: absolute;
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    padding: 5px;
+    z-index: 1000;
+    }
+    .orangerow {
+        background-color: orange;
+    }
+    .lightorange {
+        background-color: #fe989a;
+    }
     </style>
 </head>
 <body>
@@ -107,9 +120,9 @@
 
 
 
-    var rowlist = {{ rolelist|tojson|safe }};
-    rolelist = Object.keys(rowlist);
-    console.log(rolelist)
+    var rowlist = {{ rowlist|tojson|safe }};
+    //rolelist = Object.keys(rowlist);
+    var rolelist = {{ rolelist|tojson|safe }};
     cookies = {};
     roleDict = {};
     letsgo = []
@@ -122,6 +135,14 @@
             cookies[parts[0]] = parts[1];
         }
         console.log(cookies)
+    }
+    function roledecorder() {
+        console.log("Rfun[RoleDecorder]");
+
+        let roletxt = cookies.role || "";  // cookies.roleがundefinedの場合、空文字を使用
+        for (let i = 0; i < roletxt.length; i++) {
+            roleDict[rolelist[i]] = roletxt.charAt(i);
+        }
     }
     function setInitialValues() {
         if (cookies.youraff) {
@@ -154,7 +175,18 @@
 
 
 
-
+    function roleencoder() {
+        console.log("Rfun[RoleEncoder]")
+        let roletxt = '';
+        for (let item of rolelist) {
+            if (roleDict[item] !== undefined) {
+                roletxt += roleDict[item].toString();
+            } else {
+                console.error("Key not found in roleDict:", item);
+            }
+        }
+        cookies.role = roletxt;
+    }
     function cookiewriter() {
         console.log("Wfun[CookieWriter]")
 
@@ -162,11 +194,9 @@
         let rdropdownrui = document.getElementById('ruiselect');
         let ndropdownnen = document.getElementById('nenselect');
 
-        console.log("YourAffamation");
         let youraff = ndropdownnen.value + radios[0].value + rdropdownrui.value;
         console.log(youraff);
         cookies.youraff = youraff;
-
 
         let expirationDate = new Date();
         expirationDate.setFullYear(expirationDate.getFullYear() + 1); // 1年後に有効期限を設定
@@ -190,35 +220,21 @@
         let diffn = rolelist.length - cookies.role.length;
         console.log(diffn);
         
-        letsgo = rolelist.slice(0, diffn);
+        letsgo = rolelist.slice(0, diffn);//後半を分離
         let notInLetsgo = rolelist.filter(item => !letsgo.includes(item));
-        let ushiro = {};
-        for (let i = 0; i < notInLetsgo.length; i++) {
-            ushiro[notInLetsgo[i]] = parseInt(cookies.role.charAt(i), 10);
-        }   
-        newrows = autoDict(letsgo);
-        let newDict = {};
-        for (let key in newrows) {
-            newDict['[NEW]' + key] = newrows[key];
-        }   
-        roleDict = {...ushiro, ...newDict};
-        setter();
 
+        newDict = autoDict(letsgo);
+        for (let key in letsgo) {//差分を反映
+            roleDict[letsgo[key]] = newDict[letsgo[key]];
+        }
         letsgo = rolelist
-        letsgo = letsgo.filter(item => !item.includes('[NEW]'));
     }
-
 
     function uptodate() {
         console.log("[UpToDate]");
         letsgo = rolelist;
-
-        for (let i = 0; i < rolelist.length; i++) {
-            roleDict[rolelist[i]] = parseInt(cookies.role.charAt(i), 10);
-        }
-        console.log(roleDict)
-        setter();
     }
+
 
     function executebutton() {
         console.log("[Button!]")
@@ -232,7 +248,6 @@
         console.log(youraff);
         cookies.youraff = youraff;
 
-
         roleDict = autoDict(letsgo);
         setter();
         console.log(roleDict)
@@ -243,7 +258,7 @@
     function autoDict(list) {
         console.log("[AutoDict]")
 
-        let regexString = '';
+        let regexString = '^.*';
         for (let char of cookies.youraff) {
             regexString += `[${char}w]`;
         }
@@ -252,12 +267,12 @@
         let pool = "";
         for (let item of list) {
             if (item.startsWith('M')) {
-                roleDict[item] = "0";
-                continue;
+                roleDict[item] = "O";
+
             } else if (rowlist[item]) {
+                pool = "";
                 for (let tar of rowlist[item]) {
-                    console.log(tar);
-                    pool = "";
+                    //console.log(tar);
                     if (regexPattern.test(tar)) {
                         if (tar.startsWith("G")) {
                             pool += "G";
@@ -274,7 +289,6 @@
                     } else {
                         if (tar.startsWith("G")) {
                             pool += "I";
-                            break;
                         }
                         if (tar.startsWith("Y")) {
                             pool += "T";
@@ -283,111 +297,152 @@
                             pool += "J";
                         }
                     }
-                //console.log(item + ", " + pool);
                 }
             } else {
-                roleDict[item] += "0";
-                pool += "0";
+                pool += "O";
             }
-            console.log(item + ", " + pool);
+            //console.log(item,pool);
+            if (pool.includes("O")) {
+                roleDict[item] = "0";
+            } else if (pool.includes("I")) {
+                roleDict[item] = "3";
+            } else if (pool.includes("G")) {
+                roleDict[item] = "1";
+            } else if (pool.includes("Y")) {
+                roleDict[item] = "2";
+            } else if (pool.includes("N")) {
+                roleDict[item] = "5";
+            } else if (pool.includes("T")) {
+                roleDict[item] = "4";
+            } 
         }
+        console.log(roleDict)
         return roleDict;
     }
 
 
     function setter() {
-        console.log("君は完璧で究極のSetter")
-        console.log(roleDict)
-        let container = document.getElementById('checkboxContainer');
-
-        container.innerHTML = '';
+        console.log("君は完璧で究極のSetter");
     
+        let container = document.getElementById('checkboxContainer');
+        container.innerHTML = '';
+        
         // 凡例を追加
         let legend = document.createElement('div');
         legend.className = 'legend';
-        legend.textContent = "限定 | 優先 |以外・他の限定|他の優先";
+        legend.textContent = "限定 | 優先 |以外・他の限定|他の優先|次点";
         container.appendChild(legend);
+        
+        // ツールチップを表示/非表示にする関数をここに追加
+        function showTooltip(event, text) {
+            let tooltip = document.getElementById('tooltip');
+            tooltip.textContent = text;
+            tooltip.style.left = (event.pageX + 10) + 'px';
+            tooltip.style.top = (event.pageY + 10) + 'px';
+            tooltip.style.display = 'block';
+        }
+    
+        function hideTooltip() {
+            let tooltip = document.getElementById('tooltip');
+            tooltip.style.display = 'none';
+        }
     
         // テーブルを作成
         let table = document.createElement('table');
-        table.style.width = '100%'; // テーブルの幅を100%に設定
-        table.style.borderCollapse = 'collapse'; // セルの境界線を1本にまとめる
+        table.style.width = '100%';
+        table.style.borderCollapse = 'collapse';
     
         let rowIndex = 0;
-        for (let key in roleDict) {
-            let value = roleDict[key];
-    
-            // テーブルの行を作成
+        rolelist.forEach(function(item) {
+            let value = roleDict[item];
             let tr = document.createElement('tr');
     
-            // 偶数行の背景色を薄いグリーンに設定
-            if (rowIndex % 2 === 0) {
+            if (item.startsWith('ART')) {
+                if (rowIndex % 2 == 0) {
+                    tr.className = 'lightorange';
+                } else {
+                    tr.className = 'orangerow';
+                }
+            } else if (rowIndex % 2 == 1) {
                 tr.className = 'greenRow';
-            }
+            }    
             rowIndex++;
     
-            // テキストのセルを追加
             let tdText = document.createElement('td');
-            tdText.textContent = key;
+            tdText.textContent = item.replace('ART', '');
             tr.appendChild(tdText);
     
-            // 4つのチェックボックスをセルとして追加
-            for (let i = 0; i < 4; i++) {
+            for (let i = 0; i < 5; i++) {
                 let tdCheckbox = document.createElement('td');
-                tdCheckbox.style.width = '40px'; // ここでセルの幅を固定
-                tdCheckbox.style.textAlign = 'center'; // チェックボックスをセルの中央に配置
-    
+                tdCheckbox.style.width = '40px';
+                tdCheckbox.style.textAlign = 'center';
+            
                 let checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
-                checkbox.setAttribute('data-role', key);  // data-role属性を追加
-    
-                // valueがi+1と一致する場合、チェックボックスをチェック状態にする
-                if (value === i + 1) {
+                checkbox.id = 'checkbox_' + item + '_' + i;  // ユニークなIDを設定
+                checkbox.setAttribute('data-role', item);
+            
+                if (value == (i + 1).toString()) {
                     checkbox.checked = true;
                 }
-    
-                tdCheckbox.appendChild(checkbox);
+            
+                // チェックボックスにホバーイベントをアタッチ
+                let texts = ["自分の限定", "自分の優先", "対象外\n(以外・他の限定)", "他の優先", "次点"];
+                tdCheckbox.onmouseover = function(event) {
+                    showTooltip(event, texts[i]);
+                };
+                tdCheckbox.onmouseout = hideTooltip;
+            
+                // チェックボックスをラベルで囲む
+                let label = document.createElement('label');
+                label.style.display = 'block';  // ブロック要素に変更
+                label.style.width = '100%';     // 全幅に設定
+                label.style.height = '100%';    // 全高に設定
+                label.htmlFor = checkbox.id;    // ラベルが参照するチェックボックスのIDを設定
+                label.appendChild(checkbox);
+            
+                tdCheckbox.appendChild(label);
                 tr.appendChild(tdCheckbox);
             }
-    
-            // 行をテーブルに追加
             table.appendChild(tr);
-        }
-    
-        // テーブルをコンテナに追加
+        });
         container.appendChild(table);
     }
-
-
-
-    function handleCompletion() {
-
-
-        for (let key in roleDict) {
-            let checkboxes = document.querySelectorAll(`input[data-role="${key}"]`);
-            for (let i = 0; i < checkboxes.length; i++) {
-                if (checkboxes[i].checked) {
-                    roleDict[key] = i + 1;
-                    break;
+    
+    function whichchked(text) {
+        let tds = document.querySelectorAll('td');
+        for (let td of tds) {
+            if (td.textContent === text) {
+                let checkboxes = td.parentElement.querySelectorAll('input[type="checkbox"]');
+                for (let i = 0; i < checkboxes.length; i++) {
+                    if (checkboxes[i].checked) {
+                        return i + 1;
+                    }
                 }
+                return 0;
             }
         }
+        return 0;
+    }
+
+    function handleCompletion() {
         console.log("[ChkReader")
-        console.log(roleDict)
         let roletxt = '';
         for (let key in roleDict) {
-            roletxt += roleDict[key].toString();
+            roleDict[key] = whichchked(key);
         }
-        cookies.role = roletxt;
+        roleencoder();
         cookiewriter();
         return true;
     }
 
 
     cookiereader()
+    roledecorder()
     setInitialValues();
     //戻るボタン直前までの処理(途中でnewとaltは合流)
     //upはスキップ
+
     if (typeof cookies.role === "undefined" || cookies.role == ""){
         newparson()
     } else if (cookies.role.length == rolelist.length) {
@@ -395,9 +450,9 @@
     } else {
         altrolever()
     }
+    setter()
     console.log(cookies)
-    console.log(document.cookie);
-
 </script>
+<div id="tooltip" style="display: none;"></div>
 </body>
 </html>
