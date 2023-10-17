@@ -22,16 +22,16 @@
 <p>所属を選択してください</p>
 <form id="gakuiki">
     <label>
-        <input type="radio" name="option" value="人間社会学域"> 人間社会学域
+        <input type="radio" name="option" value="A"> 人間社会学域
     </label>
     <label>
-        <input type="radio" name="option" value="理工学域"> 理工学域
+        <input type="radio" name="option" value="B"> 理工学域
     </label><br>
     <label>
-        <input type="radio" name="option" value="医薬保健学域"> 医薬保健学域
+        <input type="radio" name="option" value="C"> 医薬保健学域
     </label>
     <label>
-        <input type="radio" name="option" value="融合学域"> 融合学域
+        <input type="radio" name="option" value="D"> 融合学域
     </label><br>
 </form>
 <select id="ruiselect">
@@ -62,44 +62,44 @@
             // 既存の選択肢をクリア
             selectElement.innerHTML = '';
 
-            if (selectedValue == '人間社会学域') {
+            if (selectedValue == 'A') {
                 selectElement.innerHTML = `
                     <option value="---">---</option>
-                    <option value="文系一括">文系一括</option>
-                    <option value="人文学類">人文学類</option>
-                    <option value="法学類">法学類</option>
-                    <option value="経済学類">経済学類</option>
-                    <option value="学校教育学類">学校教育学類</option>
-                    <option value="地域創造学類">地域創造学類</option>
-                    <option value="国際学類">国際学類</option>
+                    <option value="1">文系一括</option>
+                    <option value="2">人文学類</option>
+                    <option value="3">法学類</option>
+                    <option value="4">経済学類</option>
+                    <option value="5">学校教育学類</option>
+                    <option value="6">地域創造学類</option>
+                    <option value="7">国際学類</option>
                 `;
-            } else if (selectedValue == '理工学域') {
+            } else if (selectedValue == 'B') {
                 selectElement.innerHTML = `
                     <option value="---">---</option>
-                    <option value="理系一括">理系一括</option>
-                    <option value="理工３学類">理工３学類</option>
-                    <option value="数物科学類">数物科学類</option>
-                    <option value="物質科学類">物質科学類</option>
-                    <option value="機械学類">機械工学類</option>
-                    <option value="フロンティア工学類">フロンティア工学類</option>
-                    <option value="電子情報通信学類">電気情報通信学類</option>
-                    <option value="地球社会基盤学類">地球社会基盤学類</option>
-                    <option value="生命理工学類">生命理工学類</option>
+                    <option value="1">理系一括</option>
+                    <option value="2">理工３学類</option>
+                    <option value="3">数物科学類</option>
+                    <option value="4">物質科学類</option>
+                    <option value="5">機械工学類</option>
+                    <option value="6">フロンティア工学類</option>
+                    <option value="7">電気情報通信学類</option>
+                    <option value="8">地球社会基盤学類</option>
+                    <option value="9">生命理工学類</option>
                 `;
-            } else if (selectedValue == '医薬保健学域') {
+            } else if (selectedValue == 'C') {
                 selectElement.innerHTML = `
                     <option value="---">---</option>
-                    <option value="医学類">医学類</option>
-                    <option value="薬学類">薬学類</option>
-                    <option value="医薬科学類">医薬科学類</option>
-                    <option value="保健学類">保健学類</option>
+                    <option value="1">医学類</option>
+                    <option value="2">薬学類</option>
+                    <option value="3">医薬科学類</option>
+                    <option value="4">保健学類</option>
                 `;
-            } else if (selectedValue == '融合学域') {
+            } else if (selectedValue == 'D') {
                 selectElement.innerHTML = `
                     <option value="---">---</option>
-                    <option value="先導学類">先導学類</option>
-                    <option value="観光デザイン学類">観光デザイン学類</option>
-                    <option value="スマート創成科学類">スマート創成科学類</option>
+                    <option value="1">先導学類</option>
+                    <option value="2">観光デザイン学類</option>
+                    <option value="3">スマート創成科学類</option>
                 `;
             }
         });
@@ -108,6 +108,8 @@
 
 
     var rolelist = {{ rolelist|tojson|safe }};
+    rolelist = Object.keys(rolelist);
+    console.log(rolelist)
     cookies = {};
     roleDict = {};
     letsgo = []
@@ -126,7 +128,7 @@
             let ikiRadio = document.querySelector(`input[name="option"][value="${cookies.iki}"]`);
             if (ikiRadio) {
                 ikiRadio.checked = true;
-                ikiRadio.dispatchEvent(new Event('change')); // 所属のラジオボタンの変更イベントを手動でトリガー
+                ikiRadio.dispatchEvent(new Event('change'));
             }
         }
     
@@ -224,17 +226,18 @@
         let radios = document.querySelectorAll(`input[name="option"]:checked`);
         cookies.iki = radios.length > 0 ? radios[0].value : null;
 
-        let rdropdown = document.getElementById('ruiselect');
-        cookies.rui = rdropdown ? rdropdown.value : null;
+        let rdropdownrui = document.getElementById('ruiselect');
+        cookies.rui = rdropdownrui ? rdropdownrui.value : null;
 
-        let ndropdown = document.getElementById('nenselect');
-        cookies.nen = ndropdown ? ndropdown.value : null;
+        let ndropdownnen = document.getElementById('nenselect');
+        cookies.nen = ndropdownnen ? ndropdownnen.value : null;
 
-        for (let key in roleDict) {
-            if (key.includes('[NEW]')) {
-                delete roleDict[key];
-            }
-        }
+        console.log("YourAffamation");
+        let youraff = ndropdownnen.value + radios[0].value + rdropdownrui.value;
+        console.log(youraff);
+        cookies.youraff = youraff;
+
+
         roleDict = autoDict(letsgo);
         setter();
         console.log(roleDict)
@@ -242,23 +245,23 @@
     }
 
 
-    function selector(target, search) {
-        if (target.includes(search)) {
-            if (target.includes("限定")) {
-                return 1;
-            } else if (target.includes("優先")) {
-                return 2;
-            } else if (target.includes("以外")) {
-                return 3;
+    function theselector(moto, search) {
+        if (moto.includes(search)) {
+            if (moto.includes("限定")) {
+                return 6;
+            } else if (moto.includes("優先")) {
+                return 7;
+            } else if (moto.includes("以外")) {
+                return 8;
             } else {
-                return 0;
+                return 5;
             }
         } else {
-            if (target.includes("限定")) {
+            if (moto.includes("限定")) {
                 return 3;
-            } else if (target.includes("優先")) {
+            } else if (moto.includes("優先")) {
                 return 4;
-            } else if (target.includes("以外")) {
+            } else if (moto.includes("以外")) {
                 return 0;
             } else {
                 return 3;
@@ -267,6 +270,7 @@
     }
     function autoDict(list) {
         malist = [ cookies.nen, cookies.iki, cookies.rui ]
+        console.log("malist")
         console.log(malist)
 
         let ijo = [];
@@ -284,23 +288,39 @@
         let nen = cookies.nen + "年生";
         let nenlist = [ nen, ...ijo, ...ika ];
 
-        for (let ma in malist) {
-            for (let item of list) {
+        for (let item of list) {
+            let breakloop = false;
+            for (let ma of malist) {
+                console.log(`moto: ${item}, search: ${ma}, result: ${theselector(item, ma)}`);
                 if (item.includes('全学生')) {
                     roleDict[item] = 0;
+                    breakloop = true;
                 }
-                if (/^[0-9]$/.test(ma)) {
+                if (typeof ma === 'string' && /^[0-9]$/.test(ma)) {
                     for (let nen in nenlist) {
                         let target = nenlist[nen];
-                        roleDict[item] = selector(item, target);
+                        let result = theselector(item, target);
+                        if (result >= 5) {
+                            roleDict[item] = result - 5;
+                        //console.log(roleDict[item])
+                            breakloop = true;
+                            break;
+                        } else {
+                            roleDict[item] = result;
+                        }
                     }
                 } else {
-                    roleDict[item] = selector(item, malist[ma]);
+                    roleDict[item] = theselector(item, malist[ma]);
+                }
+                if (breakloop) {
+                    break;
                 }
 
             }
         }
         return roleDict;
+        console.log("AutoDict")
+        console.log(roleDict)
     }
 
 

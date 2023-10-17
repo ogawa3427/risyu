@@ -40,14 +40,19 @@ class Handler(FileSystemEventHandler):
     def on_modified(self, event):
         if event.is_directory:
             return None
-        else:
-            print(f"Re-running Flask due to: {event.src_path}")
-            self.flask_runner()
+
+        if os.path.basename(event.src_path) == "app.py":
+            # Copy the contents of app.py to main.py
+            with open("app.py", "r") as source, open("main.py", "w") as dest:
+                dest.write(source.read())
+            print("Updated main.py with the content of app.py")
+
+        print(f"Re-running Flask due to: {event.src_path}")
+        self.flask_runner()
 
 if __name__ == '__main__':
-    directory_to_watch = os.path.expanduser('~/risyu/templates')  # デフォルトの監視ディレクトリを指定
+    directory_to_watch = os.path.expanduser('~/risyu')  # デフォルトの監視ディレクトリを指定
     if len(sys.argv) > 1:
         directory_to_watch = sys.argv[1]  # コマンドライン引数が指定されていれば、それを使用
     w = Watcher(directory_to_watch)
     w.run()
-
