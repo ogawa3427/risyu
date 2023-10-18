@@ -66,15 +66,16 @@
 <div id="checkboxContainer"></div>
 <br>
 <a href="{{ url_for('index') }}" onclick="return handleCompletion()">完了</a>
+<div id="tooltip" style="display: none;"></div>
+
 <script>
+    //initですか？
     document.querySelectorAll('input[name="option"]').forEach(function(radio) {
         radio.addEventListener('change', function() {
             let selectElement = document.getElementById('ruiselect');
             let selectedValue = this.value;
 
-            // 既存の選択肢をクリア
             selectElement.innerHTML = '';
-
             if (selectedValue == 'A') {
                 selectElement.innerHTML = `
                     <option value="---">---</option>
@@ -117,15 +118,14 @@
             }
         });
     });
+//ずっと使う
+    var rowlist = {{ rowlist|tojson|safe }}; //順序系
+    var rolelist = {{ rolelist|tojson|safe }}; //内容系
+    cookies = {};//cookieを辞書で格納
+    roleDict = {};//順序はさておき内容を入れてる
+    letsgo = []//soutoDict()行きのリスト
 
 
-
-    var rowlist = {{ rowlist|tojson|safe }};
-    //rolelist = Object.keys(rowlist);
-    var rolelist = {{ rolelist|tojson|safe }};
-    cookies = {};
-    roleDict = {};
-    letsgo = []
     function cookiereader() {
         console.log("Rfun[CoockieReader]")
         let kidi = document.cookie;
@@ -135,9 +135,6 @@
             cookies[parts[0]] = parts[1];
         }
         console.log(cookies)
-    }
-    function roledecorder() {
-        console.log("Rfun[RoleDecorder]");
 
         let roletxt = cookies.role || "";  // cookies.roleがundefinedの場合、空文字を使用
         for (let i = 0; i < roletxt.length; i++) {
@@ -150,20 +147,15 @@
             let ikiValue = cookies.youraff.charAt(1);
             let ruiValue = cookies.youraff.slice(2);
     
-            // 年数の初期値設定
             let nenSelect = document.getElementById('nenselect');
             if (nenSelect) {
                 nenSelect.value = nenValue;
             }
-    
-            // 所属の初期値設定
-            let ikiRadio = document.querySelector(`input[name="option"][value="${ikiValue}"]`);
+                let ikiRadio = document.querySelector(`input[name="option"][value="${ikiValue}"]`);
             if (ikiRadio) {
                 ikiRadio.checked = true;
                 ikiRadio.dispatchEvent(new Event('change'));
             }
-    
-            // 少しの遅延を持たせて、ruiのプルダウンメニューが更新されるのを待つ
             setTimeout(() => {
                 let ruiSelect = document.getElementById('ruiselect');
                 if (ruiSelect) {
@@ -174,9 +166,7 @@
     }
 
 
-
-    function roleencoder() {
-        console.log("Rfun[RoleEncoder]")
+    function cookiewriter() {
         let roletxt = '';
         for (let item of rolelist) {
             if (roleDict[item] !== undefined) {
@@ -186,10 +176,6 @@
             }
         }
         cookies.role = roletxt;
-    }
-    function cookiewriter() {
-        console.log("Wfun[CookieWriter]")
-
         let radios = document.querySelectorAll(`input[name="option"]:checked`);
         let rdropdownrui = document.getElementById('ruiselect');
         let ndropdownnen = document.getElementById('nenselect');
@@ -334,18 +320,33 @@
         container.appendChild(legend);
         
         // ツールチップを表示/非表示にする関数をここに追加
-        function showTooltip(event, text) {
-            let tooltip = document.getElementById('tooltip');
-            tooltip.textContent = text;
-            tooltip.style.left = (event.pageX + 10) + 'px';
-            tooltip.style.top = (event.pageY + 10) + 'px';
-            tooltip.style.display = 'block';
-        }
-    
+        function showTooltip(element, text) {
+             let tooltip = document.getElementById('tooltip');
+             let rect = element.getBoundingClientRect(); // Get the position and size of the element
+         
+             tooltip.textContent = text;
+             
+             // Position tooltip above the checkbox
+             let tooltipLeft = rect.left + window.pageXOffset + rect.width / 2 - tooltip.offsetWidth / 2;
+             
+             // Ensure the tooltip doesn't go beyond the left edge of the screen
+             tooltipLeft = Math.max(tooltipLeft, 10); 
+             
+             // Ensure the tooltip doesn't go beyond the right edge of the screen
+             tooltipLeft = Math.min(tooltipLeft, window.innerWidth + window.pageXOffset - tooltip.offsetWidth - 10);
+         
+             tooltip.style.left = tooltipLeft + 'px'; 
+             tooltip.style.top = (rect.bottom + window.pageYOffset + 5) + 'px';
+         
+             tooltip.style.display = 'block';
+         }
+
+                
         function hideTooltip() {
             let tooltip = document.getElementById('tooltip');
             tooltip.style.display = 'none';
         }
+
     
         // テーブルを作成
         let table = document.createElement('table');
@@ -388,10 +389,11 @@
             
                 // チェックボックスにホバーイベントをアタッチ
                 let texts = ["自分の限定", "自分の優先", "対象外\n(以外・他の限定)", "他の優先", "次点"];
-                tdCheckbox.onmouseover = function(event) {
-                    showTooltip(event, texts[i]);
+
+                checkbox.onmouseover = function(event) {
+                    showTooltip(checkbox, texts[i]); 
                 };
-                tdCheckbox.onmouseout = hideTooltip;
+                checkbox.onmouseout = hideTooltip;
             
                 // チェックボックスをラベルで囲む
                 let label = document.createElement('label');
@@ -427,18 +429,16 @@
 
     function handleCompletion() {
         console.log("[ChkReader")
-        let roletxt = '';
-        for (let key in roleDict) {
+        for (let key of rolelist) {
             roleDict[key] = whichchked(key);
         }
-        roleencoder();
+        console.log(roleDict)
         cookiewriter();
         return true;
     }
 
 
     cookiereader()
-    roledecorder()
     setInitialValues();
     //戻るボタン直前までの処理(途中でnewとaltは合流)
     //upはスキップ
@@ -451,8 +451,6 @@
         altrolever()
     }
     setter()
-    console.log(cookies)
 </script>
-<div id="tooltip" style="display: none;"></div>
 </body>
 </html>

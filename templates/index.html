@@ -12,6 +12,7 @@
             position: relative;
             display: inline-block;
             cursor: pointer;
+            vertical-align: middle;
         }
         
         .tooltip .tooltip-content {
@@ -35,7 +36,9 @@
             visibility: visible;
             opacity: 1;
         }
-        
+        #myTable td {
+            vertical-align: middle;
+        }
     </style>
 </head>
 <body>
@@ -110,7 +113,7 @@
                     continue;  // 次のループへ
                 }
         
-                if (i === 9) {  // 第一希望の場合
+                if (i === 9) {
                     ruiseki += (parseInt(elements[i], 10) - parseInt(elements[8], 10));  // 第一希望の人数から優先指定の人数を引いた値を加える
                 } else {
                     ruiseki += parseInt(elements[i], 10);
@@ -126,6 +129,7 @@
     }
     
     var rolelist = {{ rolelist|tojson|safe }};
+    rolelist = rolelist.map(item => item.replace(/^ART/, ""));
     cookies = {};
     roleDict = {};
     letsgo = [];
@@ -140,7 +144,7 @@
             let parts = kata[i].split('=');
             cookies[parts[0]] = parts[1];
         }
-        let newperson = "N";  // Nは新規, Yは既存とする
+        let newperson = "N";
 
         if (typeof cookies.role === "undefined" || cookies.role == "") {
             newperson = "Y";
@@ -151,6 +155,7 @@
                 roleDict[rolelist[i]] = parseInt(cookies.role.charAt(i), 10);
             }
         }
+        console.log("RoleDICT")
         console.log(roleDict)
     }
     function cookiewriter() {
@@ -225,7 +230,7 @@
                     if (parts[j] === key) {  // 完全一致の場合のみ
                         let originalPart = parts[j];  // 元の文字列を保存
                         if (roleDict[key] === 0) {
-                            parts[j] = "";
+                            parts[j] = " - ";
                         } else if (roleDict[key] === 1) {
                             parts[j] = "限";
                         } else if (roleDict[key] === 2) {
@@ -235,6 +240,8 @@
                             parts = parts.map(item => "GREI" + item);
                         } else if (roleDict[key] === 4) {
                             parts[j] = "他";
+                        } else if (roleDict[key] === 5) {
+                            parts[j] = "次";
                         }
                         parts.splice(j + 1, 0, originalPart);  // 元の文字列を新しいカンマ区切りの部分として追加
                         j++;  // 追加した部分をスキップ
@@ -314,7 +321,13 @@
         let table = document.getElementById("myTable");
         table.innerHTML = "";
 
-        let a = 3;
+        let a = 5;
+        if (cookies.whonlygs === 1) {
+            a = a - 1;
+        }
+        if (cookies.whotea === 1) {
+            a = a - 1;
+        }
     
         // 各行を解析してテーブルを作成
         for (let line of thelines) {
@@ -329,34 +342,30 @@
                     cellContent = cellContent.replace('OBER', '');
                 }
     
+                let originalCellContent = cellContent;  // オリジナルのcellContentを保存
+
                 if (cellContent.includes('GREI')) {
                     cell.style.color = "silver";
                     cellContent = cellContent.replace('GREI', '');
                 }
-
+                
                 if (cellContent.includes('（英語クラス）')) {
                     cell.style.color = '#191970';
                     cellContent = cellContent.replace('（英語クラス）', '');
-                    cellContent = "[英]" + cellContent
+                    cellContent = "[英]" + cellContent;
                 }
                 
-                
-                if (cookies.whrya === 1 && cells.indexOf(cellContent) === a ) {
-                    //console.log("Hoge")
-                    //console.log(cells[a + 1])
-                    //console.log(cellContent)
+                if (cookies.whrya === 1 && cells.indexOf(originalCellContent) === a) {
                     let nextContent = cells[a + 1];
+                    nextContent = nextContent.replace('GREI', '');
                     cell.classList.add("tooltip");
                     cell.innerHTML = `<span>${cellContent}</span><span class="tooltip-content">${nextContent}</span>`;
-
-                    //console.log(cell.innerHTML)
-
-                } else if (cookies.whrya === 1 && cells.indexOf(cellContent) === a + 1) {
-                    //console.log("Fuga")
+                } else if (cookies.whrya === 1 && cells.indexOf(originalCellContent) === a + 1) {
                     continue;
                 } else {
                     cell.textContent = cellContent;
                 }
+
             }
             if (cookies.whrya === 1) {
                 row.deleteCell(a + 1);
@@ -445,7 +454,6 @@
                 content.style.opacity = '0';
             });
         });
-        setTooltipListeners();
     }
 
 
