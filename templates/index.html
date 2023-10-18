@@ -8,6 +8,34 @@
         #buttons button {
             margin: 5px;
         }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+        
+        .tooltip .tooltip-content {
+            visibility: hidden;
+            width: 120px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* Position above the tooltip element */
+            left: 50%;
+            margin-left: -60px; /* Center the tooltip */
+            opacity: 0;
+            
+        }
+        
+        .tooltip:hover .tooltip-content {
+            visibility: visible;
+            opacity: 1;
+        }
+        
     </style>
 </head>
 <body>
@@ -189,46 +217,50 @@
         
 
         //4
-        if (whrya === true) {
-            for (let i = 0; i < thelines.length; i++) {
-                let parts = thelines[i].split(',');  // 各行をカンマで分割して配列にする
-                for (let j = 0; j < parts.length; j++) {
-                    for (let key in roleDict) {
-                        if (parts[j] === key) {  // 完全一致の場合のみ
-                            if (roleDict[key] === 0) {
-                                parts[j] = "";  // 0の場合の処理
-                            } else if (roleDict[key] === 1) {
-                                parts[j] = "限";  // 1の場合の処理
-                            } else if (roleDict[key] === 2) {
-                                parts[j] = "優";  // 2の場合の処理
-                            } else if (roleDict[key] === 3) {
-                                parts[j] = "外";
-                                parts = parts.map(item => "GREI" + item);
-                            } else if (roleDict[key] === 4) {
-                                parts[j] = "他";
-                            }
+    if (whrya === true) {
+        for (let i = 0; i < thelines.length; i++) {
+            let parts = thelines[i].split(',');  // 各行をカンマで分割して配列にする
+            for (let j = 0; j < parts.length; j++) {
+                for (let key in roleDict) {
+                    if (parts[j] === key) {  // 完全一致の場合のみ
+                        let originalPart = parts[j];  // 元の文字列を保存
+                        if (roleDict[key] === 0) {
+                            parts[j] = "";
+                        } else if (roleDict[key] === 1) {
+                            parts[j] = "限";
+                        } else if (roleDict[key] === 2) {
+                            parts[j] = "優";
+                        } else if (roleDict[key] === 3) {
+                            parts[j] = "外";
+                            parts = parts.map(item => "GREI" + item);
+                        } else if (roleDict[key] === 4) {
+                            parts[j] = "他";
                         }
+                        parts.splice(j + 1, 0, originalPart);  // 元の文字列を新しいカンマ区切りの部分として追加
+                        j++;  // 追加した部分をスキップ
                     }
                 }
-        
-                thelines[i] = parts.join(',');
             }
-        } else {
-            for (let i =0; i< thelines.length; i++) {
-                let parts = thelines[i].split(',');
-                for (let j = 0; j < parts.length; j++) {
-                    for (let key in roleDict) {
-                        if (parts[j] == key) {
-                            if (roleDict[key] === 3) {
-                                parts = parts.map(item => "GREI" + item);
-                            }
-                        }
-                    }
-                }
-        
-                thelines[i] = parts.join(',');  // 配列をカンマで結合して文字列に戻す
-            }
+            thelines[i] = parts.join(',');
         }
+    } else {
+        for (let i = 0; i < thelines.length; i++) {
+            let parts = thelines[i].split(',');
+            for (let j = 0; j < parts.length; j++) {
+                for (let key in roleDict) {
+                    if (parts[j] == key) {
+                        let originalPart = parts[j];
+                        if (roleDict[key] === 3) {
+                            parts = parts.map(item => "GREI" + item);
+                        }
+                        parts.splice(j + 1, 0, originalPart);
+                        j++;
+                    }
+                }
+            }
+            thelines[i] = parts.join(',');
+        }
+    }
 
 
         //5
@@ -270,7 +302,7 @@
         }
         thelines = thelines.filter(line => line.includes(searche));
 
-        console.log(thelines)
+        //console.log(thelines)
         createTableFromLines(thelines);
         console.log(searche)
         console.log(rowgun)
@@ -281,6 +313,8 @@
         // 既存のテーブルの内容をリセット
         let table = document.getElementById("myTable");
         table.innerHTML = "";
+
+        let a = 3;
     
         // 各行を解析してテーブルを作成
         for (let line of thelines) {
@@ -289,14 +323,12 @@
     
             for (let cellContent of cells) {
                 let cell = row.insertCell();
-                
-                // OBERを含むセルの文字色を赤にして、文字列を取り除く
+            
                 if (cellContent.includes('OBER')) {
                     cell.style.color = "red";
                     cellContent = cellContent.replace('OBER', '');
                 }
     
-                // GREIを含むセルの文字色をグレーにして、文字列を取り除く
                 if (cellContent.includes('GREI')) {
                     cell.style.color = "silver";
                     cellContent = cellContent.replace('GREI', '');
@@ -307,11 +339,51 @@
                     cellContent = cellContent.replace('（英語クラス）', '');
                     cellContent = "[英]" + cellContent
                 }
-    
-                cell.textContent = cellContent;
+                
+                
+                if (cookies.whrya === 1 && cells.indexOf(cellContent) === a ) {
+                    //console.log("Hoge")
+                    //console.log(cells[a + 1])
+                    //console.log(cellContent)
+                    let nextContent = cells[a + 1];
+                    cell.classList.add("tooltip");
+                    cell.innerHTML = `<span>${cellContent}</span><span class="tooltip-content">${nextContent}</span>`;
+
+                    //console.log(cell.innerHTML)
+
+                } else if (cookies.whrya === 1 && cells.indexOf(cellContent) === a + 1) {
+                    //console.log("Fuga")
+                    continue;
+                } else {
+                    cell.textContent = cellContent;
+                }
+            }
+            if (cookies.whrya === 1) {
+                row.deleteCell(a + 1);
             }
         }
+        setTooltipListeners();
     }
+    function setTooltipListeners() {
+        console.log("fun[setTooltipListeners]")
+        let tooltips = document.querySelectorAll('.tooltip');
+        tooltips.forEach(function(tooltip) {
+            tooltip.addEventListener('mouseover', function() {
+                //console.log("this.querySelector('.tooltip-content')")
+                let content = this.querySelector('.tooltip-content');
+                //console.log("THIS")
+                //console.log(this)
+                content.style.visibility = 'visible';
+                content.style.opacity = '1';
+            });
+            tooltip.addEventListener('mouseout', function() {
+                let content = this.querySelector('.tooltip-content');
+                content.style.visibility = 'hidden';
+                content.style.opacity = '0';
+            });
+        });
+    }
+
 
     function clearCookies() {
         let allCookies = document.cookie.split(';');
@@ -356,6 +428,24 @@
         if (typeof cookies.role === "undefined" || cookies.role == "") {
             alert("「所属設定」を行うことで\n「優先・限定を簡略化」が動作するようになります")
         }
+
+        let tooltips = document.querySelectorAll('.tooltip');
+
+        tooltips.forEach(function(tooltip) {
+            tooltip.addEventListener('mouseover', function() {
+                let content = this.querySelector('.tooltip-content');
+                //console.log(content)
+                content.style.visibility = 'visible';
+                content.style.opacity = '1';
+            });
+         
+            tooltip.addEventListener('mouseout', function() {
+                let content = this.querySelector('.tooltip-content');
+                content.style.visibility = 'hidden';
+                content.style.opacity = '0';
+            });
+        });
+        setTooltipListeners();
     }
 
 
