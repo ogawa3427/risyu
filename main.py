@@ -20,6 +20,10 @@ keys_list = list(rolelist.keys())
 @app.route('/')
 def index():
     csvs_directory = os.path.join(os.path.expanduser('~'), 'risyu', 'csvs')
+    
+    with open(os.path.join(os.path.expanduser('~'), 'risyu', 'counter.txt'), 'r', encoding='utf-8') as f:
+        count = f.read()
+    count = int(count)
     # 'csvs'ディレクトリ内のファイルとディレクトリのリストを取得
     ls = os.listdir(csvs_directory)
     ls = [ls for ls in ls if re.search("risyu", ls)]
@@ -39,6 +43,10 @@ def index():
     repl = r"\1年\2月\3日\4:\5:\6現在"
     asof = re.sub(patt, repl, asof)
 
+    with open(os.path.join(os.path.expanduser('~'), 'risyu', 'counter.txt'), 'w', encoding='utf-8') as f:
+        count += 1
+        f.write(str(count))
+
     return render_template(
         'index.html',
         theline=theline,
@@ -46,7 +54,8 @@ def index():
         rolelist=keys_list,
         weakdict=weakdict,
         strodict=strodict,
-        qur=qur
+        qur=qur,
+        count=count
     )
 
 @app.route('/set')
