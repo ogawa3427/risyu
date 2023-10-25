@@ -4,3 +4,7 @@
 *.png
 *.css
 *.js
+lib
+lib64
+bin
+*.cfg
