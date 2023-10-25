@@ -416,14 +416,10 @@
                 let content = this.querySelector('.tooltip-content');
                 if (content) {
                     content.style.visibility = 'visible';
-                }
-
-                if (!content) {
+                    content.style.opacity = '1';
+                } else {
                     console.error("Tooltip without content found!", this);
-                    return;  // ここで処理を終了して、次のエラーを防ぎます
                 }
-                content.style.visibility = 'visible';
-                content.style.opacity = '1';
             });
             tooltip.addEventListener('mouseout', function() {
                 let content = this.querySelector('.tooltip-content');
