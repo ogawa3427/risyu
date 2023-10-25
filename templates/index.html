@@ -38,6 +38,7 @@
         }
         #myTable td {
             vertical-align: middle;
+            table-layout: fixed;
         }
     </style>
 </head>
@@ -100,6 +101,7 @@
             let elements = line.split(',');
            
             let maxer = parseInt(elements[6], 10);  // 適正人数
+            elements[6] = elements[6] + 'TECKSEI'
             let ruiseki = parseInt(elements[8], 10);  // 優先指定から開始
             let isOver = false;  // オーバーしているかどうかのフラグ
         
@@ -317,6 +319,7 @@
 
     }
 
+    let tiplist = [ "", "適正人数", "全志望者", "優先指定", "第一希望", "第二希望", "第三希望", "第四希望", "第五希望"]
     function createTableFromLines(thelines) {
         // 既存のテーブルの内容をリセット
         let table = document.getElementById("myTable");
@@ -334,6 +337,8 @@
         for (let line of thelines) {
             let row = table.insertRow();
             let cells = line.split(',');
+
+            var tipnum = 0;
     
             for (let cellContent of cells) {
                 let cell = row.insertCell();
@@ -342,7 +347,7 @@
                     cell.style.color = "red";
                     cellContent = cellContent.replace('OBER', '');
                 }
-    
+
                 let originalCellContent = cellContent;  // オリジナルのcellContentを保存
 
                 if (cellContent.includes('GREI')) {
@@ -356,20 +361,49 @@
                     cellContent = "[英]" + cellContent;
                 }
                 
-                if (cookies.whrya === 1 && cells.indexOf(originalCellContent) === a) {
-                    let nextContent = cells[a + 1];
-                    nextContent = nextContent.replace('GREI', '');
+                if (cookies.whrya === 1) {
+                // 列の内容を取得し、その内容をツールチップとして追加
+                    let tooltipContent = cells[a + 1].replace('GREI', '');
+                    cell.classList.add('tooltip');
+                    cell.innerHTML = `
+                        ${originalCellContent}
+                        <span class="tooltip-content">${tooltipContent}</span>
+                    `;
+                }
+
+
+                if (cellContent.includes('TECKSEI')) {
+                    cellContent = cellContent.replace('TECKSEI', '');
+                    tipnum += 1;
                     cell.classList.add("tooltip");
-                    cell.innerHTML = `<span>${cellContent}</span><span class="tooltip-content">${nextContent}</span>`;
-                } else if (cookies.whrya === 1 && cells.indexOf(originalCellContent) === a + 1) {
-                    continue;
+                    cell.innerHTML = `<span>${cellContent}</span><span class="tooltip-content">${tiplist[tipnum]}</span>`;
                 } else {
                     cell.textContent = cellContent;
                 }
 
+                if (tipnum !== 0) {
+                    cell.classList.add("tooltip");
+                    cell.innerHTML = `<span>${cellContent}</span><span class="tooltip-content">${tiplist[tipnum]}</span>`;
+                    tipnum += 1;
+                }
+            
+                if (tipnum == 9) {
+                    tipnum = 0;
+                }
+            
             }
             if (cookies.whrya === 1) {
-                row.deleteCell(a + 1);
+                let tooltipContentCell = row.cells[a + 1];
+                if (tooltipContentCell) {
+                    let previousCell = row.cells[a];
+                    if (previousCell) {
+                        let tooltipContent = tooltipContentCell.textContent || tooltipContentCell.innerHTML;
+                        previousCell.classList.add('tooltip');
+                        previousCell.innerHTML += `<span class="tooltip-content">${tooltipContent}</span>`;
+                    }
+                    row.deleteCell(a + 1);
+                
+                }
             }
         }
         setTooltipListeners();
@@ -379,10 +413,15 @@
         let tooltips = document.querySelectorAll('.tooltip');
         tooltips.forEach(function(tooltip) {
             tooltip.addEventListener('mouseover', function() {
-                //console.log("this.querySelector('.tooltip-content')")
                 let content = this.querySelector('.tooltip-content');
-                //console.log("THIS")
-                //console.log(this)
+                if (content) {
+                    content.style.visibility = 'visible';
+                }
+
+                if (!content) {
+                    console.error("Tooltip without content found!", this);
+                    return;  // ここで処理を終了して、次のエラーを防ぎます
+                }
                 content.style.visibility = 'visible';
                 content.style.opacity = '1';
             });
@@ -393,6 +432,7 @@
             });
         });
     }
+    
 
 
     function clearCookies() {
