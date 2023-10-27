@@ -7,8 +7,9 @@ from watchdog.events import FileSystemEventHandler
 
 class Watcher:
 
-    def __init__(self, directory_to_watch):
+    def __init__(self, directory_to_watch, virtualenv_path):
         self.DIRECTORY_TO_WATCH = directory_to_watch
+        self.virtualenv_path = virtualenv_path
         self.observer = Observer()
         self.flask_process = None
 
@@ -30,7 +31,9 @@ class Watcher:
     def run_flask(self):
         if self.flask_process:
             self.flask_process.terminate()
-        self.flask_process = subprocess.Popen(["flask", "run"])
+        env = os.environ.copy()
+        env['PATH'] = self.virtualenv_path + "/bin:" + env['PATH']
+        self.flask_process = subprocess.Popen(["flask", "run"], env=env)
 
 class Handler(FileSystemEventHandler):
 
@@ -39,6 +42,11 @@ class Handler(FileSystemEventHandler):
 
     def on_modified(self, event):
         if event.is_directory:
+            return None
+
+        # counter.txt ファイルを無視する
+        if os.path.basename(event.src_path) == "counter.txt":
+            print("Ignoring changes in counter.txt")
             return None
 
         if os.path.basename(event.src_path) == "app.py":
@@ -50,9 +58,12 @@ class Handler(FileSystemEventHandler):
         print(f"Re-running Flask due to: {event.src_path}")
         self.flask_runner()
 
+
 if __name__ == '__main__':
     directory_to_watch = os.path.expanduser('~/risyu')  # デフォルトの監視ディレクトリを指定
+    virtualenv_path = os.path.expanduser('~/risyu/risyu')  # デフォルトのvirtualenvのパスを指定
+
     if len(sys.argv) > 1:
         directory_to_watch = sys.argv[1]  # コマンドライン引数が指定されていれば、それを使用
-    w = Watcher(directory_to_watch)
+    w = Watcher(directory_to_watch, virtualenv_path)
     w.run()

@@ -1,4 +1,8 @@
 import sys
-print(sys.path)
+import os
+
 sys.path.insert(0, '/var/www/html/risyu')
-from app  import app as application
+sys.path.insert(0, os.path.expanduser('~/risyu'))
+print(sys.path)
+
+from app import app as application

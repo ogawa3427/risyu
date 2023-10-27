@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 import os
 import re
+
 import json
 
 app = Flask(__name__)
@@ -35,7 +36,7 @@ def index():
     openfile = re.sub(r'$', '.csv', openfile)
     # 'csvs'ディレクトリ内のファイルを開く
     with open(os.path.join(csvs_directory, openfile), 'r', encoding='utf-8') as f:
-        theline = ''.join(line for line in f if "時間割番号,科目区分" not in line)
+        theline = ''.join(line for line in f if True)
         theline = re.sub('\n','eskape', theline)
 
     asof = max(numlist)
