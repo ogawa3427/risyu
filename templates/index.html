@@ -8,6 +8,14 @@
         #buttons button {
             margin: 5px;
         }
+        .tooltip {
+            position: absolute;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            padding: 5px;
+            border-radius: 4px;
+            z-index: 1000;
+        }
     </style>
 </head>
 <body>
@@ -156,11 +164,6 @@
                         item['onechar'] = "GREI" + item['onechar'];
                     }
                 }
-
-
-
-
-                // 5
                 // 5
                 if (whoname) {
                     //console.log(weakdict)
@@ -187,7 +190,6 @@
                         }
                     }
                 }
-   
                 return item;
             });
         //console.log("toshowdata")
@@ -195,23 +197,21 @@
         createTableFromLines(toshowdata);
     }
 
-    let tiplist = [ "", "適正人数", "全志望者", "優先指定", "第一希望", "第二希望", "第三希望", "第四希望", "第五希望"]
+    let tiplist = [ "", "適正人数", "全志望者", "優先指定", "第１希望", "第２希望", "第３希望", "第４希望", "第５希望"]
     function createTableFromLines(toshowdata) {
         console.log("fun[createTableFromLines]")
-        //console.log(toshowdata.forEach(item => { let keys = Object.keys(item); console.log(keys); }));
         let existingTable = document.querySelector("table");
         if (existingTable) {
             existingTable.remove();
         }
     
         let table = document.createElement('table');
-
-// 指定されたキーの順番
         
         for (let item of toshowdata) {
-            console.log(item['onechar'])
+            //console.log(item['onechar'])
             let row = table.insertRow();
-            for (let key of keyOrder) {
+            for (let i = 0; i < keyOrder.length; i++) {
+                let key = keyOrder[i];
                 if (key !== "firstMinusYusen") {
                     let cell = row.insertCell();
                     let celltext = item[key];
@@ -235,12 +235,57 @@
                     }
         
                     cell.textContent = celltext;
+        
+                    // 特定のキーのときにツールチップ用のイベントリスナーを設定
+                    if (tiplist.includes(key)) {
+                        cell.addEventListener('mouseover', function() {
+                            // ここでツールチップを表示
+                            showTooltip(cell, keyOrder[i]);
+                        });
+                        cell.addEventListener('mouseout', function() {
+                            // ここでツールチップを非表示
+                            hideTooltip();
+                        });
+                    }
+
+                    if (key === "onechar") {
+                        cell.addEventListener('mouseover', function() {
+                            // ここでツールチップを表示
+                            showTooltip(cell, item["対象学生"]);
+                        });
+                        cell.addEventListener('mouseout', function() {
+                            // ここでツールチップを非表示
+                            hideTooltip();
+                        });
+                    }
                 }
             }
         }
         
         document.body.appendChild(table);
     }
+    
+    // ツールチップを表示する関数
+    function showTooltip(element, text) {
+        let tooltip = document.createElement("div");
+        tooltip.className = "tooltip";  // CSSクラスを適用
+        tooltip.innerText = text;
+    
+        // ツールチップの位置を計算
+        let rect = element.getBoundingClientRect();
+        tooltip.style.left = rect.left + window.scrollX + "px";
+        tooltip.style.top = rect.bottom + window.scrollY + "px";
+    
+        // ツールチップを文書に追加
+        document.body.appendChild(tooltip);
+    }
+    
+    // ツールチップを非表示にする関数
+    function hideTooltip() {
+        let tooltips = document.querySelectorAll(".tooltip");
+        tooltips.forEach(tooltip => tooltip.remove());
+    }
+
 
 
     function clearCookies() {
