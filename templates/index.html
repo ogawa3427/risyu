@@ -42,7 +42,7 @@
 
 <script>
     function cookiewriter() {
-        console.log("Wfun[CookieWriter]")
+        //console.log("Wfun[CookieWriter]")
         cookies.whonlygs = document.getElementById("check1").checked ? 1 : 0;
         cookies.whotea = document.getElementById("teaomit").checked ? 1 : 0;
         cookies.whono = document.getElementById("check3").checked ? 1 : 0;
@@ -56,18 +56,18 @@
         for (let [key, value] of Object.entries(cookies)) {
             document.cookie = `${key}=${value}; ${expires}; path=/`;
         }
-        console.log(document.cookie)
+        //console.log(document.cookie)
     }
 
     function gyomodifier(name, themat) {
-        console.log("fun[gyomodifier]")
+        //console.log("fun[gyomodifier]")
         
     }
     let toshowdata = [];
     let keyOrder = ['時間割番号', '科目区分', '時間割名', '曜日時限', '教員名', '対象学生', 'onechar', '適正人数', '全登録数', '優先指定', '第１希望', '第２希望', '第３希望', '第４希望', '第５希望'];
     function handleButtonClick(event) {
 
-        console.log("fun[handleButtonClick]")
+        //console.log("fun[handleButtonClick]")
         buttonText = event.target.textContent;
         let freewordValue = document.getElementById("freeword").value;
         let whonlygs = document.getElementById("check1").checked;
@@ -109,7 +109,7 @@
 
                 // 科目名のフィルタリング
                 if (freewordValue) {
-                    console.log(freewordValue)
+                    //console.log(freewordValue)
                     let regex = new RegExp(freewordValue);
                     if (!regex.test(item["科目名"])) {
                         return false;
@@ -216,8 +216,11 @@
                     let cell = row.insertCell();
                     let celltext = item[key];
         
-                    if (typeof celltext !== 'string') {
+                    if (celltext && typeof celltext !== 'string') {
                         celltext = celltext.toString();
+                    } else if (!celltext) {
+                // celltext が undefined の場合は、何らかのデフォルト値を設定
+                        celltext = "";
                     }
         
                     if (celltext.includes("英語クラス")) {
@@ -313,8 +316,8 @@
         let asofdisp = document.getElementById("dateDisplay");
         asofdisp.textContent = asof;
 
-        console.log("[CoockieReader]")
-        console.log(document.cookie)
+        //console.log("[CoockieReader]")
+        //console.log(document.cookie)
         let kidi = document.cookie;
         let kata = kidi.split('; ');
         for (let i = 0; i < kata.length; i++) {
@@ -323,8 +326,8 @@
         }
 
         const rolelist = {{ rolelist|tojson|safe }}.map(item => item.replace(/^ART/, ""));
-        if (typeof cookies.role !== "undefined" || cookies.role !== "") {
-            console.log("NOTnewperson")
+        if (typeof cookies.role !== "undefined" && cookies.role !== "") {
+            //console.log("NOTnewperson")
             for (let i = 0; i < rolelist.length; i++) {
                 roleDict[rolelist[i]] = parseInt(cookies.role.charAt(i), 10);
             }
@@ -393,15 +396,15 @@
         let freewordValue = "";
 
 
-        console.log("fugafuga")
+        //console.log("fugafuga")
 
         
         let buttons = document.querySelectorAll(".day-button");
             buttons.forEach(button => {
-                console.log("fun[forEach]")
+                //console.log("fun[forEach]")
                 button.addEventListener("click", handleButtonClick);
             });
-        console.log("fun[onload]")
+        //console.log("fun[onload]")
         // すべての.day-buttonを取得
         // 各ボタンにクリックイベントリスナーを追加
         buttons.forEach(function(button) {
