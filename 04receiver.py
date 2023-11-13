@@ -34,5 +34,8 @@ while True:
     except:
         server.send_message(msg)
         server.close()
+
+        time.sleep(49)
 # 変数の内容を表示（オプション）
-    print(text_data)
+    naiyou = response.json()
+    print(naiyou[asof])

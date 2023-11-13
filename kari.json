@@ -1,0 +1,6 @@
+{
+    "remote_host": "20.78.138.195",
+    "remote_user": "azureuser",
+    "private_key_path": "/home/ogawa27/.ssh/api-er_key.pem",
+    "remote_path": "/home/azureuser/risyu/csvs/"
+}
