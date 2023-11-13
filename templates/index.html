@@ -36,9 +36,11 @@
 
     <table id="myTable"></table>
 
-    <button onclick="clearCookies()">cookieを消去</button><p>定義ファイル {{ qur }}</p>
-
-    <p>再起動から{{ count }}人目の訪問者</p>
+    <div id="footer">
+        <button onclick="clearCookies()">cookieを消去</button><p>定義ファイル {{ qur }}</p>
+        <p>再起動から{{ count }}人目の訪問者</p>
+        <p>現在の更新レート：5分毎</p>
+    </div>
 
 <script>
     function cookiewriter() {
@@ -266,6 +268,8 @@
         }
         
         document.body.appendChild(table);
+        let footer = document.getElementById("footer");
+        document.body.insertBefore(table, footer);
     }
     
     // ツールチップを表示する関数
