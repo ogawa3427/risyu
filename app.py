@@ -1,12 +1,14 @@
 from flask import Flask, render_template
 import os
 import re
-
+import requests
 import json
 
 app = Flask(__name__)
 
 qur = '2023q3.json'
+
+count = 0
 
 with open(os.path.join(os.path.expanduser('~'), 'risyu', 'sv_admin', 'strodict.json'), 'r', encoding='utf-8') as f:
     strodict = json.load(f)
@@ -20,29 +22,12 @@ keys_list = list(rolelist.keys())
 
 @app.route('/')
 def index():
-    csvs_directory = os.path.join(os.path.expanduser('~'), 'risyu', 'csvs')
-    
-    with open(os.path.join(os.path.expanduser('~'), 'risyu', 'counter.txt'), 'r', encoding='utf-8') as f:
-        count = f.read()
-    count = int(count)
-    # 'csvs'ディレクトリ内のファイルとディレクトリのリストを取得
-    ls = os.listdir(csvs_directory)
-    ls = [ls for ls in ls if re.search("risyu", ls)]
-    ls = [ls for ls in ls if re.search("csv", ls)]
+    global count
+    with open('recieved.json', 'r', encoding='utf-8') as f:
+        recieved = json.load(f)
 
-    numlist = [re.findall(r'\d+', fname)[0] for fname in ls if re.findall(r'\d+', fname)]
-    openfile = max(numlist)
-    openfile = re.sub(r'^', 'risyu', openfile)
-    openfile = re.sub(r'$', '.csv', openfile)
-    # 'csvs'ディレクトリ内のファイルを開く
-    with open(os.path.join(csvs_directory, openfile), 'r', encoding='utf-8') as f:
-        theline = ''.join(line for line in f if True)
-        theline = re.sub('\n','eskape', theline)
-
-    asof = max(numlist)
-    patt = r"(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})"
-    repl = r"\1年\2月\3日\4:\5:\6現在"
-    asof = re.sub(patt, repl, asof)
+    theline = recieved['csv']
+    asof = recieved['asof']
 
     with open(os.path.join(os.path.expanduser('~'), 'risyu', 'counter.txt'), 'w', encoding='utf-8') as f:
         count += 1
