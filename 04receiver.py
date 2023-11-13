@@ -38,4 +38,4 @@ while True:
         time.sleep(49)
 # 変数の内容を表示（オプション）
     naiyou = response.json()
-    print(naiyou[asof])
+    print(naiyou['asof'])

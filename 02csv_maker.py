@@ -23,8 +23,8 @@ msg['From'] = os.environ["GMAIL"]
 msg['To'] = os.environ["GMAIL"]
 msg['date'] = time.strftime('%a, %d %b %Y %H:%M:%S %z')
 
-source = "金沢大学教務システム - 抽選科目登録状況.htm"
-#source = 'page_source.html'
+#source = "金沢大学教務システム - 抽選科目登録状況.htm"
+source = 'page_source.html'
 
 while True:
 	try:
@@ -75,9 +75,10 @@ while True:
 		with open(path, 'w', encoding='utf-8') as file:
 			file.write(contents)
 
-		#print('CSV_made_sucsessfuly')
+		print('CSV_made_sucsessfuly')
+		print(path)
 
-		time.sleep(55)
+		time.sleep(50)
 	except:
 		server.send_message(msg)
 		server.close()

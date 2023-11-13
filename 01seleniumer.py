@@ -4,9 +4,11 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 import time
 import  requests
@@ -32,8 +34,8 @@ msg['date'] = time.strftime('%a, %d %b %Y %H:%M:%S %z')
 
 try:
     while True:
-        os.mkdir('screenshots')
-    # Setup Chrome options
+        #os.mkdir('screenshots')
+        # Setup Chrome options
         options = Options()
         #options.add_argument("--headless") # Ensure GUI is off. Remove this line if you want to see the browser navigating.
         
@@ -96,39 +98,62 @@ try:
         driver.get_screenshot_as_file("screenshots7.png")
         
         for i in range(12 * 6):
-            print(1/0)
-            
-            #driver.refresh()
+            #print(1/0)
         
-            ##謎
-            #link = driver.find_element(By.XPATH, "//a[contains(., '履修登録状況')]")
-            #link.click()
-              
-            #状況クリック後
-            #0で全件表示
-            #select_element = driver.find_element(By.ID, "ctl00_phContents_ucRegistrationStatus_ddlLns_ddl")
-            #select_object = Select(select_element)
-            #select_object.select_by_value("0")
-            
-            #pdfurl = driver.current_url
-            #driver.get(pdfurl)
-            
-            source = 'page_source.html'
-            
-            #page_source = driver.page_source
-            #with open(source, 'w', encoding='utf-8') as f:
-            #    f.write(page_source)
-            
-            #driver.close()
-
-            time.sleep(60 * 5)
+            driver.refresh()
+            print(driver.window_handles)
+         ##謎
+            link = driver.find_element(By.XPATH, '//*[@id="ctl00_phContents_ucRegistEdit_lnkrationStatus"]')
+            link.click()
     
+            all_handles = driver.window_handles
+    
+            driver.switch_to.window(all_handles[-1])
+    
+            print(driver.title)
+            print(driver.window_handles)
+    
+            with open('test.htm', 'w', encoding='utf-8') as f:
+                f.write(driver.page_source)
+            print(driver.current_url)
+        
+                      
+                    #状況クリック後
+                    #0で全件表示
+            print(driver.title)
+            select_element = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.ID, "ctl00_phContents_ucRegistrationStatus_ddlLns_ddl"))
+            )
+            print("hoge")
+            select_element = driver.find_element(By.ID, "ctl00_phContents_ucRegistrationStatus_ddlLns_ddl")
+            select = Select(select_element)
+            select.select_by_value('0')
+                
+            pdfurl = driver.current_url
+            driver.get(pdfurl)
+                
+            source = 'page_source.html'
+                
+            page_source = driver.page_source
+            with open(source, 'w', encoding='utf-8') as f:
+                f.write(page_source)
+                
+            driver.close()
+    
+            all_handles = driver.window_handles
+            driver.switch_to.window(all_handles[-1])
+        
+            time.sleep(60 * 5)
+            #time.sleep(10)
+        
         
         #time.sleep(1000)
-        driver.quit()
+        #driver.quit()
     
 except:
-    #driver.quit()
-        
+    driver.quit()
+    
     server.send_message(msg)
     server.close()
+    print('error')
+

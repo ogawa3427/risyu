@@ -9,4 +9,5 @@ lib64
 bin
 *.cfg
 page_source.html
-.csv
+*.csv
+kari.json
