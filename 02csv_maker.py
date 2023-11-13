@@ -75,7 +75,7 @@ while True:
 		with open(path, 'w', encoding='utf-8') as file:
 			file.write(contents)
 
-		print('CSV_made_sucsessfuly')
+		#print('CSV_made_sucsessfuly')
 
 		time.sleep(55)
 	except:

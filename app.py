@@ -28,6 +28,8 @@ def index():
 
     theline = recieved['csv']
     asof = recieved['asof']
+    header = recieved['header']
+    #print(theline)
 
     with open(os.path.join(os.path.expanduser('~'), 'risyu', 'counter.txt'), 'w', encoding='utf-8') as f:
         count += 1
@@ -37,6 +39,7 @@ def index():
         'index.html',
         theline=theline,
         asof=asof,
+        header=header,
         rolelist=keys_list,
         weakdict=weakdict,
         strodict=strodict,

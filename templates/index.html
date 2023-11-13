@@ -67,7 +67,7 @@
     let keyOrder = ['時間割番号', '科目区分', '時間割名', '曜日時限', '教員名', '対象学生', 'onechar', '適正人数', '全登録数', '優先指定', '第１希望', '第２希望', '第３希望', '第４希望', '第５希望'];
     function handleButtonClick(event) {
 
-        //console.log("fun[handleButtonClick]")
+        console.log("fun[handleButtonClick]")
         buttonText = event.target.textContent;
         let freewordValue = document.getElementById("freeword").value;
         let whonlygs = document.getElementById("check1").checked;
@@ -85,7 +85,7 @@
 
         //フィルターはじめっか
         //console.log("data")
-        //console.log(data)
+        console.log(data)
         //1
         toshowdata = data
             .filter(item => {
@@ -346,8 +346,12 @@
         } 
 
         const theline = "{{ theline }}".replace(/$amp;/g, '&')
+        console.log(theline)
         const rows = theline.trim().split('eskape').map(row => row.split(','));
-        const headers = rows.shift();
+        console.log(rows)
+        //const headers = rows.shift();
+        let headers = "{{ header }}"
+        headers = headers.split(',')
         data = rows.map(row => {
             const obj = {};
             headers.forEach((header, i) => {
@@ -355,6 +359,7 @@
             });
             return obj;
         });
+        console.log(data)
         data.forEach(item => {
             const firstMinusYusen = parseInt(item["第１希望"], 10) - parseInt(item["優先指定"], 10);
             item.firstMinusYusen = firstMinusYusen;
