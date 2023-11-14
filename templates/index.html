@@ -84,86 +84,98 @@
         //console.log(cookies);
         //console.log(rowgun);
 
+        let localKeyOrder = [...keyOrder];
 
         //フィルターはじめっか
         //console.log("data")
         console.log(data)
         //1
-        toshowdata = data
+        const displayData = data
             .filter(item => {
-            // 科目区分がGS科目である者のみ残す（条件2）
+                // 科目区分がGS科目である者のみ残す（条件2）
                 if (whonlygs === true && item["科目区分"] !== "ＧＳ科目") {
                     return false;
+                } else if (rowgun !== "0" && item["科目区分"] !== "ＧＳ科目") {
+                    return false;
                 }
-       
+
+                
                 // 時間割番号のフィルタリング
+                console.log(rowgun)
+                console.log(typeof rowgun)
                 if (rowgun !== "0") {
+                    console.log("HOGEHOGE")
                     let regex;
-                    if (whono) {
-                        regex = new RegExp("^" + rowgun);
-                    } else {
-                        regex = new RegExp("^7" + rowgun);
-                    }
+                    //if (whonlygs) {
+                    //    regex = new RegExp("^" + rowgun + ".*");
+                    //} else {
+                    regex = new RegExp("^7" + rowgun + ".*");
+                    //}
+                    console.log("regex:", regex);
                     if (!regex.test(item["時間割番号"])) {
                         return false;
                     }
+                    console.log("FUGAFUGA");
+                    console.log("rowgun:", rowgun);
+                    console.log("rowgun type:", typeof rowgun);
                 }
-
-                // 科目名のフィルタリング
-                if (freewordValue) {
-                    //console.log(freewordValue)
+        
+                // フリーワード検索の条件（freewordValueが空でない場合のみ）
+                if (freewordValue && buttonText === "ﾌﾘｰﾜｰﾄﾞ検索") {
                     let regex = new RegExp(freewordValue);
-                    if (!regex.test(item["科目名"])) {
-                        return false;
-                    }
-                } else {
-                    buttonText = buttonText.replace('ﾌﾘｰﾜｰﾄﾞ検索', "");
+                    return regex.test(item["時間割名"]);
+                }
+        
+                // フリーワード検索でない場合の日程によるフィルタリング
+                if (buttonText !== 'ﾌﾘｰﾜｰﾄﾞ検索') {
                     let regex = new RegExp(buttonText);
-                    if (!regex.test(item["曜日時限"])) {
-                        return false;
-                    }
+                    return regex.test(item["曜日時限"]);
                 }
         
                 return true;
             })
+            
+            //console.log(item["時間割名"])
 
             .map(item => {
+                const newItem = {...item};
+                console.log(newItem['時間割名']);
                 // 担当教員名を削除（条件1）
                 if (whotea === true) {
-                    delete item["教員名"];
-                    keyOrder = keyOrder.filter(key => key !== "教員名");
+                    delete newItem["教員名"];
+                    localKeyOrder = localKeyOrder.filter(key => key !== "教員名");
                 }
 
                 if (whonlygs) {
-                    delete item["科目区分"];
-                    keyOrder = keyOrder.filter(key => key !== "科目区分");
+                    delete newItem["科目区分"];
+                    localKeyOrder = localKeyOrder.filter(key => key !== "科目区分");
                 }
         
                 // 時間割番号の2,3文字目のみ残す（条件3）
-                if (whono === true && item["時間割番号"]) {
-                    item["時間割番号"] = item["時間割番号"].substring(1, 3);
+                if (whono === true && newItem["時間割番号"]) {
+                    newItem["時間割番号"] = newItem["時間割番号"].substring(1, 3);
                 }
 
                 // 4
                 if (whrya === true) {
-                    keyOrder = keyOrder.filter(key => key !== "対象学生");
-                    if (item['onechar'] === "0") {
-                        item['onechar'] = " - ";
-                    } else if (item['onechar'] === 1) {
-                        item['onechar'] = "限";
-                    } else if (item['onechar'] === 2) {
-                        item['onechar'] = "優";
-                    } else if (item['onechar'] === 3) {
-                        item['onechar'] = "GREI" + item['onechar'];
-                    } else if (item['onechar'] === 4) {
-                        item['onechar'] = "他";
-                    } else if (item['onechar'] === 5) {
-                        item['onechar'] = "次";
+                    localKeyOrder = localKeyOrder.filter(key => key !== "対象学生");
+                    if (newItem['onechar'] === "0") {
+                        newItem['onechar'] = " - ";
+                    } else if (newItem['onechar'] === 1) {
+                        newItem['onechar'] = "限";
+                    } else if (newItem['onechar'] === 2) {
+                        newItem['onechar'] = "優";
+                    } else if (newItem['onechar'] === 3) {
+                        newItem['onechar'] = "GREI" + newItem['onechar'];
+                    } else if (newItem['onechar'] === 4) {
+                        newItem['onechar'] = "他";
+                    } else if (newItem['onechar'] === 5) {
+                        newItem['onechar'] = "次";
                     }
                 } else {
-                    keyOrder = keyOrder.filter(key => key !== "onechar");
-                    if (item['onechar'] === "3") {
-                        item['onechar'] = "GREI" + item['onechar'];
+                    localKeyOrder = localKeyOrder.filter(key => key !== "onechar");
+                    if (newItem['onechar'] === "3") {
+                        newItem['onechar'] = "GREI" + newItem['onechar'];
                     }
                 }
                 // 5
@@ -171,12 +183,17 @@
                     //console.log(weakdict)
                     //console.log(strodict)
         
+                    //console.log("UWAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+                    //console.log(newItem['時間割名'])
             // 科目名について、weakdict を使用して置換
                     const weakdict = {{ weakdict|tojson|safe }};
                     if (cookies.digree == "w") {
                         for (let key in weakdict) {
-                            if (item['時間割名'].includes(key)) {
-                                item['時間割名'] = item['時間割名'].replace(key, weakdict[key]);
+                            if (newItem['時間割名'].includes(key)) {
+                                newItem['時間割名'] = newItem['時間割名'].replace(key, weakdict[key]);
+                            }
+                            if (newItem['教員名'].includes(key)) {
+                                newItem['教員名'] = newItem['教員名'].replace(key, weakdict[key]);
                             }
                         }
                     }   
@@ -186,22 +203,26 @@
                     const strodict = {{ strodict|tojson|safe }};
                     if (cookies.digree == "s") {
                         for (let key in strodict) {
-                            if (item['時間割名'].includes(key)) {
-                                item['時間割名'] = item['時間割名'].replace(key, strodict[key]);
+                            if (newItem['時間割名'].includes(key)) {
+                                newItem['時間割名'] = newItem['時間割名'].replace(key, strodict[key]);
+                            }
+                            if (newItem['教員名'].includes(key)) {
+                                newItem['教員名'] = newItem['教員名'].replace(key, strodict[key]);
                             }
                         }
                     }
                 }
-                return item;
+                return newItem;
             });
         //console.log("toshowdata")
         //console.log(toshowdata)
-        createTableFromLines(toshowdata);
+        createTableFromLines(displayData, localKeyOrder);
     }
 
     let tiplist = [ "", "適正人数", "全志望者", "優先指定", "第１希望", "第２希望", "第３希望", "第４希望", "第５希望"]
-    function createTableFromLines(toshowdata) {
+    function createTableFromLines(data, keyOrder) {
         console.log("fun[createTableFromLines]")
+        toshowdata = data;
         let existingTable = document.querySelector("table");
         if (existingTable) {
             existingTable.remove();
@@ -311,6 +332,8 @@
     let roleDict = {};
     let data = [];
 
+    
+
     window.addEventListener("DOMContentLoaded", function() {
         console.log("hogehoge")
 
@@ -350,7 +373,7 @@
         } 
 
         const theline = "{{ theline }}".replace(/&amp;/g, '&')
-        console.log(theline)
+        //console.log(theline)
         const rows = theline.trim().split('eskape').map(row => row.split(','));
         console.log(rows)
         //const headers = rows.shift();
@@ -397,10 +420,12 @@
             //console.log(roleDict)
             //console.log(item["対象学生"])
             if (roleDict.hasOwnProperty(item["対象学生"])) {
-                console.log("HELLO")
+                //console.log("HELLO")
                 item['onechar'] = roleDict[item["対象学生"]];
             }
         });
+
+        //const openeddata = data;
     
         let freewordValue = "";
 
