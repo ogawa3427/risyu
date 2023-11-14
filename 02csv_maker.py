@@ -63,6 +63,8 @@ while True:
 		#header = "時間割番号,科目区分,時間割名,曜日時限,教員名,対象学生,適正人数,全登録数,優先指定,第１希望,第２希望,第３希望,第４希望,第５希望"
 		#contents = header + '\n' + content
 		contents = content
+		#こんなことしかできない自分のことが大嫌いだ
+		contents = contents.replace("月2,火2", "月2，火2")
 
 		name = re.sub(r'<.*?>', '', name)
 		name = re.sub(r'\t', '', name)

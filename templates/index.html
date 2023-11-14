@@ -349,7 +349,7 @@
             alert("「所属設定」を行うことで\n「優先・限定を簡略化」が動作するようになります")
         } 
 
-        const theline = "{{ theline }}".replace(/$amp;/g, '&')
+        const theline = "{{ theline }}".replace(/&amp;/g, '&')
         console.log(theline)
         const rows = theline.trim().split('eskape').map(row => row.split(','));
         console.log(rows)

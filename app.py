@@ -1,12 +1,11 @@
 from flask import Flask, render_template
 import os
 import re
-import requests
 import json
 
 app = Flask(__name__)
 
-qur = '2023q3.json'
+qur = '2023q4.json'
 
 count = 0
 
