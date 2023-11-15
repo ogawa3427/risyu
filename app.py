@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
 import os
 import re
 import json
@@ -64,6 +64,10 @@ def man():
     return render_template(
         'man.html'
         )
+
+@app.route('/api')
+def api():
+    return redirect('http://20.78.138.195:5000/api')
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80)

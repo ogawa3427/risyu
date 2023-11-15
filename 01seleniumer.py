@@ -20,9 +20,7 @@ from email.mime.multipart import MIMEMultipart
 smtpserver = 'smtp.gmail.com'
 smtpport = 587
 
-server = smtplib.SMTP(smtpserver, smtpport)
-server.starttls()
-server.login(os.environ["GMAIL"], os.environ["GMAILPASS"])
+
 
 text = '🦖🦖🦖Selenium_Stoped!!!!!!!!!!'
 msg = MIMEText(text)
@@ -152,6 +150,10 @@ try:
     
 except:
     driver.quit()
+
+    server = smtplib.SMTP(smtpserver, smtpport)
+    server.starttls()
+    server.login(os.environ["GMAIL"], os.environ["GMAILPASS"])
     
     server.send_message(msg)
     server.close()
