@@ -192,8 +192,10 @@
                             if (newItem['時間割名'].includes(key)) {
                                 newItem['時間割名'] = newItem['時間割名'].replace(key, weakdict[key]);
                             }
-                            if (newItem['教員名'].includes(key)) {
-                                newItem['教員名'] = newItem['教員名'].replace(key, weakdict[key]);
+                            if (whotea) {
+                                if (newItem['教員名'].includes(key)) {
+                                    newItem['教員名'] = newItem['教員名'].replace(key, weakdict[key]);
+                                }
                             }
                         }
                     }   
@@ -206,10 +208,12 @@
                             if (newItem['時間割名'].includes(key)) {
                                 newItem['時間割名'] = newItem['時間割名'].replace(key, strodict[key]);
                             }
-                            if (newItem['教員名'].includes(key)) {
-                                newItem['教員名'] = newItem['教員名'].replace(key, strodict[key]);
+                            if (whotea) {
+                                if (newItem['教員名'].includes(key)) {
+                                    newItem['教員名'] = newItem['教員名'].replace(key, strodict[key]);
+                                }
                             }
-                        }
+                        }   
                     }
                 }
                 return newItem;
