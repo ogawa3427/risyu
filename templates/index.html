@@ -128,10 +128,20 @@
         
                 // フリーワード検索でない場合の日程によるフィルタリング
                 if (buttonText !== 'ﾌﾘｰﾜｰﾄﾞ検索') {
-                    let regex = new RegExp(buttonText);
+                    if (buttonText === '6限' || buttonText === '7限' || buttonText === '8限') {
+                        if (buttonText === '6限') {
+                            limitexp = "[月火水木金]6";
+                        } else if (buttonText === '7限') {
+                            limitexp = "[月火水木金]7";
+                        } else if (buttonText === '8限') {
+                            limitexp = "[月火水木金]8";
+                        }
+                    } else {
+                        limitexp = buttonText;
+                    }
+                    let regex = new RegExp(limitexp);
                     return regex.test(item["曜日時限"]);
-                }
-        
+                }        
                 return true;
             })
             
