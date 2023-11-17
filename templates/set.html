@@ -14,6 +14,16 @@
         <input type="radio" name="option" value="w"> 弱
     </label><br>
 </form>
+<p>フリーワード検索のタイミング<br>書き換え処理の...</p>
+<form>
+    <label>
+        <input type="radio" name="searchaorb" value="b"> まえ
+    </label><br>
+    <label>
+        <input type="radio" name="searchaorb" value="a"> あと
+    </label><br>
+</form>
+<button onclick="clearCookies()">cookieを消去</button><br>
 <a href="{{ url_for('index') }}" onclick="cookiewriter()">戻る</a>
 
 <script>
@@ -34,6 +44,9 @@ let cookies = {};
 function cookiewriter() {
     let selectedRadio = document.querySelector('input[name="option"]:checked');
     cookies.digree = selectedRadio.value;
+
+    let selectedRadio2 = document.querySelector('input[name="searchaorb"]:checked');
+    cookies.searchaorb = selectedRadio2.value;
 
     let expirationDate = new Date();
     expirationDate.setFullYear(expirationDate.getFullYear() + 1); // 1年後に有効期限を設定
@@ -56,7 +69,27 @@ window.onload = function() {
     else{
         document.querySelector('input[name="option"][value="w"]').checked = false;
         document.querySelector('input[name="option"][value="s"]').checked = true;
-    }    
+    }
+    if (cookies.searchaorb == 'a'){
+        document.querySelector('input[name="searchaorb"][value="a"]').checked = true;
+        document.querySelector('input[name="searchaorb"][value="b"]').checked = false;
+    }
+    else{
+        document.querySelector('input[name="searchaorb"][value="a"]').checked = false;
+        document.querySelector('input[name="searchaorb"][value="b"]').checked = true;
+    }
+}
+
+function clearCookies() {
+    let allCookies = document.cookie.split(';');
+    
+    for (let i = 0; i < allCookies.length; i++) {
+        let cookie = allCookies[i];
+        let eqPos = cookie.indexOf("=");
+        let name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+    }
+    console.log("All cookies cleared!");
 }
 </script>
 

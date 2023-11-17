@@ -37,7 +37,7 @@
     <table id="myTable"></table>
 
     <div id="footer">
-        <button onclick="clearCookies()">cookieを消去</button><p>定義ファイル {{ qur }}</p>
+        <p>定義ファイル {{ qur }}</p>
         <p>再起動から{{ count }}人目の訪問者</p>
         <p>現在の更新レート：5分毎</p>
     </div>
@@ -120,10 +120,12 @@
                     console.log("rowgun type:", typeof rowgun);
                 }
         
-                // フリーワード検索の条件（freewordValueが空でない場合のみ）
-                if (freewordValue && buttonText === "ﾌﾘｰﾜｰﾄﾞ検索") {
-                    let regex = new RegExp(freewordValue);
-                    return regex.test(item["時間割名"]);
+                // フリーワード検索(まえ)の条件（freewordValueが空でない場合のみ）
+                if (cookies.searchaorb == "b") {
+                    if (freewordValue && buttonText === "ﾌﾘｰﾜｰﾄﾞ検索") {
+                        let regex = new RegExp(freewordValue);
+                        return regex.test(item["時間割名"]);
+                    }
                 }
         
                 // フリーワード検索でない場合の日程によるフィルタリング
@@ -227,10 +229,23 @@
                     }
                 }
                 return newItem;
-            });
+            })
+            
+            .filter(item => {
+                // フリーワード検索(あと)の条件（freewordValueが空でない場合のみ）
+                if (cookies.searchaorb == "a") {
+                    if (freewordValue && buttonText === "ﾌﾘｰﾜｰﾄﾞ検索") {
+                        let regex = new RegExp(freewordValue);
+                        return regex.test(item["時間割名"]);
+                    }
+                }
+                return true;
+            })
+        
         //console.log("toshowdata")
         //console.log(toshowdata)
         createTableFromLines(displayData, localKeyOrder);
+        console.log(cookies)
     }
 
     let tiplist = [ "", "適正人数", "全志望者", "優先指定", "第１希望", "第２希望", "第３希望", "第４希望", "第５希望"]
@@ -329,19 +344,6 @@
     }
 
 
-
-    function clearCookies() {
-        let allCookies = document.cookie.split(';');
-    
-        for (let i = 0; i < allCookies.length; i++) {
-            let cookie = allCookies[i];
-            let eqPos = cookie.indexOf("=");
-            let name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
-        }
-        console.log("All cookies cleared!");
-    }
-
     let cookies = {};
     let roleDict = {};
     let data = [];
@@ -359,11 +361,20 @@
 
         //console.log("[CoockieReader]")
         //console.log(document.cookie)
-        let kidi = document.cookie;
-        let kata = kidi.split('; ');
+        // Cookie を読み込む部分
+        const kidi = document.cookie;
+        const kata = kidi.split('; ');
         for (let i = 0; i < kata.length; i++) {
             let parts = kata[i].split('=');
             cookies[parts[0]] = parts[1];
+        }
+
+    // searchaorb キーの確認と設定
+        if (!cookies.hasOwnProperty('searchaorb')) {
+            cookies['searchaorb'] = 'b';
+            let expirationDate = new Date();
+            expirationDate.setFullYear(expirationDate.getFullYear() + 1); // 1年後に有効期限を設定
+            document.cookie = 'searchaorb=a; expires=' + expirationDate.toUTCString() + '; path=/';
         }
 
         const rolelist = {{ rolelist|tojson|safe }}.map(item => item.replace(/^ART/, ""));
@@ -461,6 +472,13 @@
 
 
 
+    });
+
+    document.getElementById("freeword").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault(); // デフォルトのエンターキーの挙動を防ぐ
+            handleButtonClick({ target: { textContent: 'ﾌﾘｰﾜｰﾄﾞ検索' } });
+        }
     });
 </script>
 
