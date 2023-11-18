@@ -13,22 +13,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 import time
 import  requests
 import  os
+import  json
 
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-smtpserver = 'smtp.gmail.com'
-smtpport = 587
-
-
-
-text = '🦖🦖🦖Selenium_Stoped!!!!!!!!!!'
-msg = MIMEText(text)
-msg['Subject'] = '🦖🦖🦖🦖🦖Selenium_Stoped!!!!!!!!!!'
-msg['From'] = os.environ["GMAIL"]
-msg['To'] = os.environ["GMAIL"]
-msg['date'] = time.strftime('%a, %d %b %Y %H:%M:%S %z')
-
+toggle = 0
 
 try:
     while True:
@@ -145,10 +132,20 @@ try:
             #time.sleep(10)
 
             current_second = time.localtime().tm_sec
-
             sleeptime = 60 - current_second
-
             time.sleep(sleeptime)
+
+            #死活監視
+            with open('deadoralive.json', 'r', encoding='utf-8') as f:
+                deadoralive = json.load(f)
+            
+            deadoralive['01seleniumer' + toggle] = time.time()
+
+            with open('deadoralive.json', 'w', encoding='utf-8') as f:
+                json.dump(deadoralive, f, indent=4)
+
+            toggle = 1 - toggle
+
         
         
         #time.sleep(1000)
@@ -157,11 +154,5 @@ try:
 except:
     driver.quit()
 
-    server = smtplib.SMTP(smtpserver, smtpport)
-    server.starttls()
-    server.login(os.environ["GMAIL"], os.environ["GMAILPASS"])
-    
-    server.send_message(msg)
-    server.close()
     print('error')
 
