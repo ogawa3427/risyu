@@ -35,7 +35,7 @@ try:
         #os.mkdir('screenshots')
         # Setup Chrome options
         options = Options()
-        #options.add_argument("--headless") # Ensure GUI is off. Remove this line if you want to see the browser navigating.
+        options.add_argument("--headless") # Ensure GUI is off. Remove this line if you want to see the browser navigating.
         
         # Set path to chromedriver as a service
         webdriver_service = Service(ChromeDriverManager().install())
@@ -141,8 +141,14 @@ try:
             all_handles = driver.window_handles
             driver.switch_to.window(all_handles[-1])
         
-            time.sleep(60 * 5)
+            #time.sleep(60 * 5)
             #time.sleep(10)
+
+            current_second = time.localtime().tm_sec
+
+            sleeptime = 60 - current_second
+
+            time.sleep(sleeptime)
         
         
         #time.sleep(1000)
