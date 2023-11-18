@@ -85,7 +85,7 @@
 
         //フィルターはじめっか
         //console.log("data")
-        console.log(data)
+        //console.log(data)
         //1
         const displayData = data
             .filter(item => {
@@ -97,10 +97,7 @@
                 }
                 
                 // 時間割番号のフィルタリング
-                console.log(rowgun)
-                console.log(typeof rowgun)
                 if (rowgun !== "0") {
-                    console.log("HOGEHOGE")
                     let regex;
                     //if (whonlygs) {
                     //    regex = new RegExp("^" + rowgun + ".*");
@@ -111,9 +108,6 @@
                     if (!regex.test(item["時間割番号"])) {
                         return false;
                     }
-                    console.log("FUGAFUGA");
-                    console.log("rowgun:", rowgun);
-                    console.log("rowgun type:", typeof rowgun);
                 }
         
                 // フリーワード検索(まえ)の条件（freewordValueが空でない場合のみ）
@@ -145,7 +139,7 @@
             
             .map(item => {
                 const newItem = {...item};
-                console.log(newItem['時間割名']);
+                //console.log(newItem['時間割名']);
                 // 担当教員名を削除（条件1）
                 if (whotea === true) {
                     delete newItem["教員名"];
@@ -241,9 +235,16 @@
         if (existingTable) {
             existingTable.remove();
         }
-        
+      
+        let specialHeaders = ["適正人数", "全登録数", "優先指定", "第１希望", "第２希望", "第３希望", "第４希望", "第５希望"];
+        let specialTexts = ["適正", "全", "優先", "第1", "2", "3", "4", "5"];
 
-        
+        let newRow = {};
+        keyOrder.forEach(key => {
+            newRow[key] = specialHeaders.includes(key) ? specialTexts[specialHeaders.indexOf(key)] : "";
+        });
+// 新しい行をtoshowdataの先頭に追加
+        toshowdata.unshift(newRow);
         
         for (let item of toshowdata) {
             //console.log(item['onechar'])
@@ -398,7 +399,7 @@
         const theline = "{{ theline }}".replace(/&amp;/g, '&')
         //console.log(theline)
         const rows = theline.trim().split('eskape').map(row => row.split(','));
-        console.log(rows)
+        //console.log(rows)
         //const headers = rows.shift();
         let headers = "{{ header }}"
         headers = headers.split(',')
@@ -409,7 +410,7 @@
             });
             return obj;
         });
-        console.log(data)
+        //console.log(data)
         data.forEach(item => {
             const firstMinusYusen = parseInt(item["第１希望"], 10) - parseInt(item["優先指定"], 10);
             item.firstMinusYusen = firstMinusYusen;
