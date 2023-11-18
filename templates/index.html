@@ -28,7 +28,7 @@
         <div><button class="day-button">月1</button><button class="day-button">火1</button><button class="day-button">水1</button><button class="day-button">木1</button><button class="day-button">金1</button><label><input type="checkbox" id="check1">GSのみ</label></div>
         <div><button class="day-button">月2</button><button class="day-button">火2</button><button class="day-button">水2</button><button class="day-button">木2</button><button class="day-button">金2</button><label><input type="checkbox" id="teaomit">教員名を省略</label></div>
         <div><button class="day-button">月3</button><button class="day-button">火3</button><button class="day-button">水3</button><button class="day-button">木3</button><button class="day-button">金3</button><label><input type="checkbox" id="check3">時間割番号を省略</label></div>
-        <div><button class="day-button">月4</button><button class="day-button">火4</button><button class="day-button">水4</button><button class="day-button">木4</button><button class="day-button">金4</button><label><input type="checkbox" id="check4">優先・限定を簡略化</label></div>
+        <div><button class="day-button">月4</button><button class="day-button">火4</button><button class="day-button">水4</button><button class="day-button">木4</button><button class="day-button">金4</button><label><input type="checkbox" id="check4">対象学生を簡略化</label></div>
         <div><button class="day-button">月5</button><button class="day-button">火5</button><button class="day-button">水5</button><button class="day-button">木5</button><button class="day-button">金5</button><label><input type="checkbox" id="check5">時間割名を省略</label></div>
         <div><button class="day-button">6限</button><button class="day-button">7限</button><button class="day-button">8限</button><button class="day-button">集中</button><select id="dropdown"><option value="0">全群</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option></select></div>
         <div><input type="text" id="freeword"><button class="day-button">ﾌﾘｰﾜｰﾄﾞ検索</button></div>
@@ -38,8 +38,9 @@
 
     <div id="footer">
         <p>定義ファイル {{ qur }}</p>
-        <p>再起動から{{ count }}人目の訪問者</p>
+        <p>このバージョンでは{{ count }}人目の訪問者</p>
         <p>現在の更新レート：5分毎</p>
+<!--        <button onclick="shareOnTwitter()">Tweet Now</button> -->
     </div>
 
 <script>
@@ -61,10 +62,6 @@
         //console.log(document.cookie)
     }
 
-    function gyomodifier(name, themat) {
-        //console.log("fun[gyomodifier]")
-        
-    }
     let toshowdata = [];
     let keyOrder = ['時間割番号', '科目区分', '時間割名', '曜日時限', '教員名', '対象学生', 'onechar', '適正人数', '全登録数', '優先指定', '第１希望', '第２希望', '第３希望', '第４希望', '第５希望'];
     function handleButtonClick(event) {
@@ -98,7 +95,6 @@
                 } else if (rowgun !== "0" && item["科目区分"] !== "ＧＳ科目") {
                     return false;
                 }
-
                 
                 // 時間割番号のフィルタリング
                 console.log(rowgun)
@@ -124,7 +120,7 @@
                 if (cookies.searchaorb == "b") {
                     if (freewordValue && buttonText === "ﾌﾘｰﾜｰﾄﾞ検索") {
                         let regex = new RegExp(freewordValue);
-                        return regex.test(item["時間割名"]);
+                        return Object.values(item).some(value => regex.test(value));
                     }
                 }
         
@@ -147,8 +143,6 @@
                 return true;
             })
             
-            //console.log(item["時間割名"])
-
             .map(item => {
                 const newItem = {...item};
                 console.log(newItem['時間割名']);
@@ -192,11 +186,6 @@
                 }
                 // 5
                 if (whoname) {
-                    //console.log(weakdict)
-                    //console.log(strodict)
-        
-                    //console.log("UWAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-                    //console.log(newItem['時間割名'])
             // 科目名について、weakdict を使用して置換
                     const weakdict = {{ weakdict|tojson|safe }};
                     if (cookies.digree == "w") {
@@ -210,10 +199,7 @@
                                 }
                             }
                         }
-                    }   
-        
-            // cookies.digree が "s" の場合、strodict を使用して置換
-            
+                    }  
                     const strodict = {{ strodict|tojson|safe }};
                     if (cookies.digree == "s") {
                         for (let key in strodict) {
@@ -236,14 +222,11 @@
                 if (cookies.searchaorb == "a") {
                     if (freewordValue && buttonText === "ﾌﾘｰﾜｰﾄﾞ検索") {
                         let regex = new RegExp(freewordValue);
-                        return regex.test(item["時間割名"]);
+                        return Object.values(item).some(value => regex.test(value));
                     }
                 }
                 return true;
             })
-        
-        //console.log("toshowdata")
-        //console.log(toshowdata)
         createTableFromLines(displayData, localKeyOrder);
         console.log(cookies)
     }
@@ -252,12 +235,15 @@
     function createTableFromLines(data, keyOrder) {
         console.log("fun[createTableFromLines]")
         toshowdata = data;
+        let table = document.createElement('table');
+
         let existingTable = document.querySelector("table");
         if (existingTable) {
             existingTable.remove();
         }
-    
-        let table = document.createElement('table');
+        
+
+        
         
         for (let item of toshowdata) {
             //console.log(item['onechar'])
@@ -302,7 +288,6 @@
                             hideTooltip();
                         });
                     }
-
                     if (key === "onechar") {
                         cell.addEventListener('mouseover', function() {
                             // ここでツールチップを表示
@@ -316,7 +301,6 @@
                 }
             }
         }
-        
         document.body.appendChild(table);
         let footer = document.getElementById("footer");
         document.body.insertBefore(table, footer);
@@ -343,13 +327,27 @@
         tooltips.forEach(tooltip => tooltip.remove());
     }
 
+//    function shareOnTwitter() {
+//        var text = "";
+//        var hashtags = "risyu";
+//        var twitterUrl = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(text) + "&hashtags=" + encodeURIComponent(hashtags);
+//
+//        // ポップアップウィンドウのサイズと位置を指定
+//        var width = 550;  // 幅
+//        var height = 420; // 高さ
+//        var left = (window.innerWidth - width) / 2;
+//        var top = (window.innerHeight - height) / 2;
+//
+//        var windowFeatures = "width=" + width + ",height=" + height + ",top=" + top + ",left=" + left;
+//        window.open(twitterUrl, 'sharer', windowFeatures);
+//    }
+
 
     let cookies = {};
     let roleDict = {};
     let data = [];
 
     
-
     window.addEventListener("DOMContentLoaded", function() {
         console.log("hogehoge")
 
@@ -394,7 +392,7 @@
             document.getElementById("check3").checked = true;
             document.getElementById("check4").checked = true;
             document.getElementById("check5").checked = false;
-            alert("「所属設定」を行うことで\n「優先・限定を簡略化」が動作するようになります")
+            alert("「所属設定」を行うことで\n「対象学生を簡略化」が動作するようになります")
         } 
 
         const theline = "{{ theline }}".replace(/&amp;/g, '&')
@@ -453,10 +451,6 @@
         //const openeddata = data;
     
         let freewordValue = "";
-
-
-        //console.log("fugafuga")
-
         
         let buttons = document.querySelectorAll(".day-button");
             buttons.forEach(button => {
@@ -469,9 +463,6 @@
         buttons.forEach(function(button) {
             button.addEventListener("click", handleButtonClick);
         });
-
-
-
     });
 
     document.getElementById("freeword").addEventListener("keypress", function(event) {
