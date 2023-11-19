@@ -40,7 +40,16 @@ def get_example():
         'asof': asof
     }
 
+    with open('recieved.json', 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
     return jsonify(data)
+
+@app.route('/deadoralive', methods=['GET'])
+def get_deadoralive():
+    with open('deadoralive.json', 'r', encoding='utf-8') as f:
+        deadoralive = json.load(f)
+    return jsonify(deadoralive)
 
 if __name__ == '__main__':
     app.run(debug=False, host='0.0.0.0', port=5000)
