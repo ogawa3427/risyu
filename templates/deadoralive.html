@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>risyu - 死活監視</title>
+<script>
+// この関数はAPIからデータを取得して画面に表示します。
+function fetchAndUpdateTime() {
+  // fetch() を使用してAPIからデータを取得する。ここでのURLは例です。
+  let url = 'https://kurisyushien.org/deadoralive_api'
+  //let url = 'http://127.0.0.1:5000/deadoralive_api'
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      // JSONから必要なデータを抽出
+      let currentTime = data['time_now']; // 現在時刻
+      let time0 = data['21data_make']['21data_make0'];
+      let time1 = data['21data_make']['21data_make1'];
+
+      let former = Math.max(time0, time1);
+      let latter = Math.min(time0, time1);
+
+      let a_b_diff = Math.abs(currentTime - former);
+      let b_c_diff = Math.abs(former - latter);
+
+      // HTML要素に値を設定
+      document.getElementById('currentTime').textContent = `現在時刻：A ${currentTime}`;
+      document.getElementById('a_b_diff').textContent = `A-B ${a_b_diff}`;
+      document.getElementById('former').textContent = `前回の実行時刻：B ${former}`;
+      document.getElementById('b_c_diff').textContent = `B-C ${b_c_diff}`;
+      document.getElementById('latter').textContent = `前々回の実行時刻：C ${latter}`;
+    })
+    .catch(error => console.error('Fetching data failed:', error));
+}
+
+// ページが読み込まれたら、すぐに時間を更新し、その後1分ごとに更新を続けます。
+window.onload = function() {
+  fetchAndUpdateTime();
+  setInterval(fetchAndUpdateTime, 60000); // 60000ミリ秒で1分
+};
+</script>
+</head>
+<body>
+<h3>金大のrisyuを動かしているサーバーの動作状況を確認できます</h3>
+<p>B-AやC-Bが公称のデータ更新間隔よりも長い場合はデータ取得と更新の動作が停止している可能性があります<br>なお、このWEBページが見られないということはWEBページを公開する機能が停止しているかサーバー丸ごと機能停止している可能性があります</p>
+<div id="timeContainer">
+  <p id="currentTime">現在時刻：A undefined</p>
+  <p id="a_b_diff">A-B undefined</p>
+  <p id="former">前回の実行時刻：B undefined</B></p>
+  <p id="b_c_diff">B-C undefined</p>
+  <p id="latter">前々回の実行時刻：C undefined</p>
+</div>
+</body>
+</html>

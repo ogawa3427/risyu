@@ -78,18 +78,25 @@ def get_example():
         recieved = json.load(f)
     return jsonify(recieved)
 
+@app.route('/deadoralive')
+def deadoralive():
+    return render_template(
+        'deadoralive.html'
+        )
+
 @app.route('/deadoralive_api', methods=['GET'])
 def get_deadoralive():
     with open('deadoralive.json', 'r', encoding='utf-8') as f:
         deadoralive = json.load(f)
 
     time_now = int(time.time()/1)
+    deadoralive['time_now'] = time_now
 
     former = deadoralive['21data_make']['21data_make0']
     latter = deadoralive['21data_make']['21data_make1']
 
-    conpared = max(former, latter)
-    diff = abs(conpared - time_now)
+    conpared = max(int(former), int(latter))
+    diff = abs(int(conpared) - int(time_now))
 
     deadoralive['21data_make']['diff_now'] = diff
     return jsonify(deadoralive)
