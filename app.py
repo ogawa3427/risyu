@@ -76,7 +76,9 @@ def man():
 def get_example():
     with open('recieved.json', 'r', encoding='utf-8') as f:
         recieved = json.load(f)
-    return jsonify(recieved)
+    res = jsonify(recieved)
+    res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
 
 @app.route('/deadoralive')
 def deadoralive():
@@ -99,7 +101,9 @@ def get_deadoralive():
     diff = abs(int(conpared) - int(time_now))
 
     deadoralive['21data_make']['diff_now'] = diff
-    return jsonify(deadoralive)
+    res = jsonify(deadoralive)
+    res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80)
