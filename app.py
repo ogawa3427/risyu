@@ -2,10 +2,17 @@ from flask import Flask, render_template, redirect
 import os
 import re
 import json
+import csv
+import time
+from flask import jsonify
 
 app = Flask(__name__)
 
 qur = '2023q4.json'
+
+app.json.ensure_ascii = False
+
+csvs_directory = os.path.join(os.path.expanduser('~'), 'risyu', 'csvs')
 
 count = 0
 
@@ -38,7 +45,7 @@ def index():
         'index.html',
         theline=theline,
         asof=asof,
-        header=header,
+        header="時間割番号,科目区分,時間割名,曜日時限,教員名,対象学生,適正人数,全登録数,優先指定,第１希望,第２希望,第３希望,第４希望,第５希望",
         rolelist=keys_list,
         weakdict=weakdict,
         strodict=strodict,
@@ -65,9 +72,29 @@ def man():
         'man.html'
         )
 
-@app.route('/api')
-def api():
-    return redirect('http://20.78.138.195:5000/api')
+@app.route('/api', methods=['GET'])
+def get_example():
+    with open('recieved.json', 'r', encoding='utf-8') as f:
+        recieved = json.load(f)
+    return jsonify(recieved)
+
+@app.route('/deadoralive_api', methods=['GET'])
+def get_deadoralive():
+    with open('deadoralive.json', 'r', encoding='utf-8') as f:
+        deadoralive = json.load(f)
+
+    time_now = int(time.time()/1)
+
+    former = deadoralive['21data_make']['21data_make0']
+    latter = deadoralive['21data_make']['21data_make1']
+
+    conpared = max(former, latter)
+    diff = abs(conpared - time_now)
+
+    deadoralive['21data_make']['diff_now'] = diff
+    return jsonify(deadoralive)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80)
+
+    app = Flask(__name__)

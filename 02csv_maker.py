@@ -6,25 +6,11 @@ import json
 import csv
 import time
 
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-smtpserver = 'smtp.gmail.com'
-smtpport = 587
-
-server = smtplib.SMTP(smtpserver, smtpport)
-server.starttls()
-server.login(os.environ["GMAIL"], os.environ["GMAILPASS"])
-
-text = '🦝🦝🦝🦝🦝CSVMaker_ERROR!!!!!!!!!!'
-msg = MIMEText(text)
-msg['Subject'] = '🦝🦝🦝🦝🦝CSVERROR!!!!!!!!!!'
-msg['From'] = os.environ["GMAIL"]
-msg['To'] = os.environ["GMAIL"]
-msg['date'] = time.strftime('%a, %d %b %Y %H:%M:%S %z')
-
 #source = "金沢大学教務システム - 抽選科目登録状況.htm"
 source = 'page_source.html'
+
+toggle = 0
+scptname = '02csv_maker'
 
 while True:
 	try:
@@ -80,9 +66,23 @@ while True:
 		print('CSV_made_sucsessfuly')
 		print(path)
 
-		time.sleep(50)
+		with open('deadoralive.json', 'r', encoding='utf-8') as f:
+			deadoralive = json.load(f)
+		
+		deadoralive[scptname][scptname + str(toggle)] = int(time.time()/1)
+
+		diff01 = abs(deadoralive[scptname][scptname + '0'] - deadoralive[scptname][scptname + '1'])
+		deadoralive[scptname][scptname + '_diff'] = diff01
+
+		with open('deadoralive.json', 'w', encoding='utf-8') as f:
+			json.dump(deadoralive, f, indent=4)
+
+		toggle = 1 - toggle
+
+		current_second = time.localtime().tm_sec
+		sleeptime = 60 - current_second
+		time.sleep(sleeptime)    
 	except:
-		server.send_message(msg)
-		server.close()
+
 		print('CSV_error')
 
