@@ -46,6 +46,7 @@ for item in kamoku:
 
     # 優先指定から第5希望までの数を累積
     preferences_all = resampled_data_all[['Priority', '1st Preference', '2nd Preference', '3rd Preference', '4th Preference', '5th Preference']].cumsum(axis=1)
+    preferences_all['1st Preference'] = preferences_all['1st Preference'] - preferences_all['Priority']
 
     # 色の強さと線の太さを設定
     color_strengths = np.linspace(0.8, 0.1, num=len(preferences_all.columns))
@@ -90,7 +91,7 @@ for item in kamoku:
     plt.tight_layout()
 
     # グラフを保存
-    plot_file_path = f'/home/ogawa27/risyu/static/imgs/{item}.png'
+    plot_file_path = f'~/risyu/static/imgs/{item}.png'
     plt.savefig(plot_file_path)
 
     # グラフの表示は省略（すべてのグラフを表示するのは効率的でないため）
