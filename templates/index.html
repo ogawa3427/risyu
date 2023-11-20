@@ -383,63 +383,55 @@
 
     window.addEventListener("DOMContentLoaded", function () {
         console.log("hogehoge")
+        getCSV().then(gotData => {
+            data = gotData;
+            //document.cookie = "role" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+            let asof = data["asof"];
+            let asofdisp = document.getElementById("dateDisplay");
+            asofdisp.textContent = asof;
 
-        // PAGE INIT
-        //document.cookie = "role" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-        let asof = "{{ asof }}";
-        let asofdisp = document.getElementById("dateDisplay");
-        asofdisp.textContent = asof;
-
-        //console.log("[CoockieReader]")
-        //console.log(document.cookie)
-        // Cookie を読み込む部分
-        const kidi = document.cookie;
-        const kata = kidi.split('; ');
-        for (let i = 0; i < kata.length; i++) {
-            let parts = kata[i].split('=');
-            cookies[parts[0]] = parts[1];
-        }
-
-        // searchaorb キーの確認と設定
-        if (!cookies.hasOwnProperty('searchaorb')) {
-            cookies['searchaorb'] = 'b';
-            let expirationDate = new Date();
-            expirationDate.setFullYear(expirationDate.getFullYear() + 1); // 1年後に有効期限を設定
-            document.cookie = 'searchaorb=a; expires=' + expirationDate.toUTCString() + '; path=/';
-        }
-
-        const rolelist = {{ rolelist| tojson | safe}}.map(item => item.replace(/^ART/, ""));
-        if (typeof cookies.role !== "undefined" && cookies.role !== "") {
-            //console.log("NOTnewperson")
-            for (let i = 0; i < rolelist.length; i++) {
-                roleDict[rolelist[i]] = parseInt(cookies.role.charAt(i), 10);
+            //console.log("[CoockieReader]")
+            //console.log(document.cookie)
+            const kidi = document.cookie;
+            const kata = kidi.split('; ');
+            for (let i = 0; i < kata.length; i++) {
+                let parts = kata[i].split('=');
+                cookies[parts[0]] = parts[1];
             }
-            document.getElementById("check1").checked = cookies.whonlygs == 1;
-            document.getElementById("teaomit").checked = cookies.whotea == 1;
-            document.getElementById("check3").checked = cookies.whono == 1;
-            document.getElementById("check4").checked = cookies.whrya == 1;
-            document.getElementById("check5").checked = cookies.whoname == 1;
-        } else {
-            document.getElementById("check1").checked = true;
-            document.getElementById("teaomit").checked = false;
-            document.getElementById("check3").checked = true;
-            document.getElementById("check4").checked = true;
-            document.getElementById("check5").checked = false;
-            alert("「所属設定」を行うことで\n「対象学生を簡略化」が動作するようになります")
-        }
 
-        getCSV().then(data => {
+            // searchaorb キーの確認と設定
+            if (!cookies.hasOwnProperty('searchaorb')) {
+                cookies['searchaorb'] = 'b';
+                let expirationDate = new Date();
+                expirationDate.setFullYear(expirationDate.getFullYear() + 1); // 1年後に有効期限を設定
+                document.cookie = 'searchaorb=a; expires=' + expirationDate.toUTCString() + '; path=/';
+            }
+
+            const rolelist = {{ rolelist| tojson | safe}}.map(item => item.replace(/^ART/, ""));
+            if (typeof cookies.role !== "undefined" && cookies.role !== "") {
+                //console.log("NOTnewperson")
+                for (let i = 0; i < rolelist.length; i++) {
+                    roleDict[rolelist[i]] = parseInt(cookies.role.charAt(i), 10);
+                }
+                document.getElementById("check1").checked = cookies.whonlygs == 1;
+                document.getElementById("teaomit").checked = cookies.whotea == 1;
+                document.getElementById("check3").checked = cookies.whono == 1;
+                document.getElementById("check4").checked = cookies.whrya == 1;
+                document.getElementById("check5").checked = cookies.whoname == 1;
+            } else {
+                document.getElementById("check1").checked = true;
+                document.getElementById("teaomit").checked = false;
+                document.getElementById("check3").checked = true;
+                document.getElementById("check4").checked = true;
+                document.getElementById("check5").checked = false;
+                alert("「所属設定」を行うことで\n「対象学生を簡略化」が動作するようになります")
+            }
             
             console.log(data)
-            theline = data["csv"];
+            theline = data["csv"].replace(/&amp;/g, '&');
             headers = data["header"];
-        
-            //const theline = "{{ theline }}".replace(/&amp;/g, '&')
-            //console.log(theline)
+
             const rows = theline.trim().split('eskape').map(row => row.split(','));
-            //console.log(rows)
-            //const headers = rows.shift();
-            //let headers = "{{ header }}"
             headers = headers.split(',')
             data = rows.map(row => {
                 const obj = {};
@@ -448,13 +440,10 @@
                 });
                 return obj;
             });
-            //console.log(data)
             data.forEach(item => {
                 const firstMinusYusen = parseInt(item["第１希望"], 10) - parseInt(item["優先指定"], 10);
                 item.firstMinusYusen = firstMinusYusen;
             });
-            //console.log("hogehogehogehogehogehogehogehogehogehogehogehogehoge")
-            //console.log(data)
 
             const flowlooper = ["優先指定", "firstMinusYusen", "第２希望", "第３希望", "第４希望", "第５希望"];
             data.forEach(item => {
@@ -497,9 +486,7 @@
                     handleButtonClick(event, data);
                 });
             });
-            //console.log("fun[onload]")
-            // すべての.day-buttonを取得
-            // 各ボタンにクリックイベントリスナーを追加
+
             document.getElementById("freeword").addEventListener("keypress", function (event) {
                 if (event.key === "Enter") {
                     event.preventDefault(); // デフォルトのエンターキーの挙動を防ぐ
