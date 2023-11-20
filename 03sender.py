@@ -39,10 +39,6 @@ def get_example():
         'csv': theline,
         'asof': asof
     }
-
-    with open('recieved.json', 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=4)
-
     return jsonify(data)
 
 @app.route('/deadoralive', methods=['GET'])

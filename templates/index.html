@@ -277,51 +277,62 @@
                 let key = keyOrder[i];
                 if (key !== "firstMinusYusen") {
                     let cell = row.insertCell();
-                    let celltext = item[key];
 
-                    if (celltext && typeof celltext !== 'string') {
-                        celltext = celltext.toString();
-                    } else if (!celltext) {
-                        // celltext が undefined の場合は、何らかのデフォルト値を設定
-                        celltext = "";
-                    }
+                    if (i === 0) {
+                        //let link = document.createElement('a');
+                        let linka = 'https://kurisyushien.org/'
+                        let linka = 'http://127.0.0.1:5000/img/'
+                        let linkb = item[key]
+                        link.href = linka + linkb;
+                        link.textContent = item[key];
+                        cell.appendChild(link);
+                    } else {
+                        let celltext = item[key];
 
-                    if (celltext.includes("英語クラス")) {
-                        celltext = celltext.replace("（英語クラス）", "");
-                        celltext = '[英]' + celltext;
-                    }
+                        if (celltext && typeof celltext !== 'string') {
+                            celltext = celltext.toString();
+                        } else if (!celltext) {
+                            // celltext が undefined の場合は、何らかのデフォルト値を設定
+                            celltext = "";
+                        }
 
-                    if (celltext.includes("GREI")) {
-                        celltext = celltext.replace("GREI", "");
-                        cell.style.color = "#c0c0c0";
-                    } else if (celltext.includes("OBER")) {
-                        celltext = celltext.replace("OBER", "");
-                        cell.style.color = "#dc143c";
-                        cell.style.fontWeight = "bold";
-                    }
+                        if (celltext.includes("英語クラス")) {
+                            celltext = celltext.replace("（英語クラス）", "");
+                            celltext = '[英]' + celltext;
+                        }
 
-                    cell.textContent = celltext;
+                        if (celltext.includes("GREI")) {
+                            celltext = celltext.replace("GREI", "");
+                            cell.style.color = "#c0c0c0";
+                        } else if (celltext.includes("OBER")) {
+                            celltext = celltext.replace("OBER", "");
+                            cell.style.color = "#dc143c";
+                            cell.style.fontWeight = "bold";
+                        }
 
-                    // 特定のキーのときにツールチップ用のイベントリスナーを設定
-                    if (tiplist.includes(key)) {
-                        cell.addEventListener('mouseover', function () {
-                            // ここでツールチップを表示
-                            showTooltip(cell, keyOrder[i]);
-                        });
-                        cell.addEventListener('mouseout', function () {
-                            // ここでツールチップを非表示
-                            hideTooltip();
-                        });
-                    }
-                    if (key === "onechar") {
-                        cell.addEventListener('mouseover', function () {
-                            // ここでツールチップを表示
-                            showTooltip(cell, item["対象学生"]);
-                        });
-                        cell.addEventListener('mouseout', function () {
-                            // ここでツールチップを非表示
-                            hideTooltip();
-                        });
+                        cell.textContent = celltext;
+
+                        // 特定のキーのときにツールチップ用のイベントリスナーを設定
+                        if (tiplist.includes(key)) {
+                            cell.addEventListener('mouseover', function () {
+                                // ここでツールチップを表示
+                                showTooltip(cell, keyOrder[i]);
+                            });
+                            cell.addEventListener('mouseout', function () {
+                                // ここでツールチップを非表示
+                                hideTooltip();
+                            });
+                        }
+                        if (key === "onechar") {
+                            cell.addEventListener('mouseover', function () {
+                                // ここでツールチップを表示
+                                showTooltip(cell, item["対象学生"]);
+                            });
+                            cell.addEventListener('mouseout', function () {
+                                // ここでツールチップを非表示
+                                hideTooltip();
+                            });
+                        }
                     }
                 }
             }

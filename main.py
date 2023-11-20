@@ -26,6 +26,10 @@ with open(os.path.join(os.path.expanduser('~'), 'risyu', 'sv_admin', qur), 'r', 
     rolelist = json.load(f)
 keys_list = list(rolelist.keys())
 
+with open('dns.json', 'r', encoding='utf-8') as f:
+    dns = json.load(f)
+    #print(dns)
+
 @app.route('/')
 def index():
     global count
@@ -41,6 +45,19 @@ def index():
         qur=qur,
         count=count
     )
+
+@app.route('/img/<string:id>')
+def img(id):
+    img_path = f'/imgs/{id}.png'
+    print(img_path)
+
+    fullname = dns[id]
+    return render_template(
+        'img.html',
+        id=id,
+        img_path=img_path,
+        fullname=fullname
+        )
 
 @app.route('/set')
 def set():
