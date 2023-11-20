@@ -29,23 +29,12 @@ keys_list = list(rolelist.keys())
 @app.route('/')
 def index():
     global count
-    with open('recieved.json', 'r', encoding='utf-8') as f:
-        recieved = json.load(f)
-
-    theline = recieved['csv']
-    asof = recieved['asof']
-    header = recieved['header']
-    #print(theline)
-
     with open(os.path.join(os.path.expanduser('~'), 'risyu', 'counter.txt'), 'w', encoding='utf-8') as f:
         count += 1
         f.write(str(count))
 
     return render_template(
         'index.html',
-        theline=theline,
-        asof=asof,
-        header="時間割番号,科目区分,時間割名,曜日時限,教員名,対象学生,適正人数,全登録数,優先指定,第１希望,第２希望,第３希望,第４希望,第５希望",
         rolelist=keys_list,
         weakdict=weakdict,
         strodict=strodict,
@@ -76,7 +65,9 @@ def man():
 def get_example():
     with open('recieved.json', 'r', encoding='utf-8') as f:
         recieved = json.load(f)
-    return jsonify(recieved)
+    res = jsonify(recieved)
+    res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
 
 @app.route('/deadoralive')
 def deadoralive():
@@ -99,7 +90,9 @@ def get_deadoralive():
     diff = abs(int(conpared) - int(time_now))
 
     deadoralive['21data_make']['diff_now'] = diff
-    return jsonify(deadoralive)
+    res = jsonify(deadoralive)
+    res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80)
