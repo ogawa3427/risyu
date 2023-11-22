@@ -4,6 +4,9 @@ import matplotlib.dates as mdates
 import numpy as np
 import os
 
+my_path = os.path.expanduser('~')
+
+
 directory = 'ind_csvs'
 os.makedirs(directory, exist_ok=True)
 
@@ -47,6 +50,10 @@ for item in kamoku:
     # 優先指定から第5希望までの数を累積
     preferences_all = resampled_data_all[['Priority', '1st Preference', '2nd Preference', '3rd Preference', '4th Preference', '5th Preference']].cumsum(axis=1)
     preferences_all['1st Preference'] = preferences_all['1st Preference'] - preferences_all['Priority']
+    preferences_all['2nd Preference'] = preferences_all['2nd Preference'] - preferences_all['1st Preference']
+    preferences_all['3rd Preference'] = preferences_all['3rd Preference'] - preferences_all['2nd Preference']
+    preferences_all['4th Preference'] = preferences_all['4th Preference'] - preferences_all['3rd Preference']
+    preferences_all['5th Preference'] = preferences_all['5th Preference'] - preferences_all['4th Preference']
 
     # 色の強さと線の太さを設定
     color_strengths = np.linspace(0.8, 0.1, num=len(preferences_all.columns))
@@ -91,7 +98,7 @@ for item in kamoku:
     plt.tight_layout()
 
     # グラフを保存
-    plot_file_path = f'~/risyu/static/imgs/{item}.png'
+    plot_file_path = f{my_path}/risyu/static/imgs/{item}.png'
     plt.savefig(plot_file_path)
 
     # グラフの表示は省略（すべてのグラフを表示するのは効率的でないため）
