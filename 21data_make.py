@@ -185,9 +185,6 @@ while True:
                 json.dump(data, f, indent=4, ensure_ascii=False)
             print('json_made_sucsessfuly')
         
-            #time.sleep(60 * 5)
-            #time.sleep(10)
-
             #死活監視
             with open('deadoralive.json', 'r', encoding='utf-8') as f:
                 deadoralive = json.load(f)
@@ -203,8 +200,8 @@ while True:
             toggle = 1 - toggle
 
             current_second = time.localtime().tm_sec
-            sleeptime = 60 - current_second
-            time.sleep(sleeptime)       
+            sleeptime = 300 - current_second
+            time.sleep(sleeptime)
     
     except:
         driver.quit()
