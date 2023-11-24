@@ -174,10 +174,7 @@
                         localKeyOrder = localKeyOrder.filter(key => key !== "科目区分");
                     }
 
-                    // 時間割番号の2,3文字目のみ残す（条件3）
-                    if (whono === true && newItem["時間割番号"]) {
-                        newItem["時間割番号"] = newItem["時間割番号"].substring(1, 3);
-                    }
+//時間割番号の跡地
 
                     // 4
                     if (whrya === true) {
@@ -249,7 +246,13 @@
         console.log(cookies)
     }
 
-    let tiplist = ["", "適正人数", "全志望者", "優先指定", "第１希望", "第２希望", "第３希望", "第４希望", "第５希望"]
+    let mode = "{{ mode }}"
+    let tiplist = [];
+    if (mode === "toro") {
+        tiplist = ["", "適正人数", "全志望者", "優先指定", "第１希望", "第２希望", "第３希望", "第４希望", "第５希望"]
+    } else {
+        tiplist = ["", "適正人数", "登録数", "残数"]
+    }
     function createTableFromLines(data, keyOrder) {
         console.log("fun[createTableFromLines]")
         toshowdata = data;
@@ -260,9 +263,15 @@
             existingTable.remove();
         }
 
-        let specialHeaders = ["適正人数", "全登録数", "優先指定", "第１希望", "第２希望", "第３希望", "第４希望", "第５希望"];
-        let specialTexts = ["適正", "全", "優先", "第1", "2", "3", "4", "5"];
-
+        let specialHeaders = [];
+        let specialTexts = [];
+        if (mode == "hose") {
+            specialHeaders = ["適正人数", "登録数", "残数"]
+            specialTexts = ["適正", "登録", "残"]
+        } else {
+            specialHeaders = ["適正人数", "全登録数", "優先指定", "第１希望", "第２希望", "第３希望", "第４希望", "第５希望"];
+            specialTexts = ["適正", "全", "優先", "第1", "2", "3", "4", "5"];
+        }
         let newRow = {};
         keyOrder.forEach(key => {
             newRow[key] = specialHeaders.includes(key) ? specialTexts[specialHeaders.indexOf(key)] : "";
@@ -279,11 +288,14 @@
                     let cell = row.insertCell();
 
                     if (i === 0) {
-                        //let link = document.createElement('a');
-                        let linka = 'https://kurisyushien.org/img/'
-                        //let linka = 'http://127.0.0.1:5000/img/'
+                        let link = document.createElement('a');
+                        let linka = "{{ linka }}"
                         let linkb = item[key]
                         link.href = linka + linkb;
+                        //引っ越し先 時間割番号の2,3文字目のみ残す（条件3）
+                        if (document.getElementById("check3").checked) {
+                            item[key] = item[key].substring(1, 3);
+                        }
                         link.textContent = item[key];
                         cell.appendChild(link);
                     } else {
@@ -379,7 +391,9 @@
         //    }
 
     async function getCSV() {
-        let res = await fetch('https://kurisyushien.org/api');
+        fetcher = "{{ fetcher }}"
+        console.log(fetcher)
+        let res = await fetch(fetcher);
         got = await res.json();
         return got;
     }
@@ -392,8 +406,12 @@
     let theline = "";
     let headers = "";
 
+    
+
     window.addEventListener("DOMContentLoaded", function () {
         console.log("hogehoge")
+        let mode = "{{ mode }}"
+
         getCSV().then(gotData => {
             data = gotData;
             //document.cookie = "role" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
@@ -441,6 +459,7 @@
             console.log(data)
             theline = data["csv"].replace(/&amp;/g, '&');
             headers = data["header"];
+            console.log(headers)
 
             const rows = theline.trim().split('eskape').map(row => row.split(','));
             headers = headers.split(',')
@@ -451,34 +470,37 @@
                 });
                 return obj;
             });
-            data.forEach(item => {
-                const firstMinusYusen = parseInt(item["第１希望"], 10) - parseInt(item["優先指定"], 10);
-                item.firstMinusYusen = firstMinusYusen;
-            });
+            mode = "{{ mode }}" 
+            if (mode == "toro") {
+                data.forEach(item => {
+                    const firstMinusYusen = parseInt(item["第１希望"], 10) - parseInt(item["優先指定"], 10);
+                    item.firstMinusYusen = firstMinusYusen;
+                });
 
-            const flowlooper = ["優先指定", "firstMinusYusen", "第２希望", "第３希望", "第４希望", "第５希望"];
-            data.forEach(item => {
-                let ruiseki = 0;
-                let flowflag = false;
+                const flowlooper = ["優先指定", "firstMinusYusen", "第２希望", "第３希望", "第４希望", "第５希望"];
+                data.forEach(item => {
+                    let ruiseki = 0;
+                    let flowflag = false;
 
-                for (const key of flowlooper) {
-                    if (flowflag) {
-                        item[key] = "GREI" + item[key];
-                        if (key === "firstMinusYusen") {
-                            item["第１希望"] = "GREI" + item["第１希望"];
+                    for (const key of flowlooper) {
+                        if (flowflag) {
+                            item[key] = "GREI" + item[key];
+                            if (key === "firstMinusYusen") {
+                                item["第１希望"] = "GREI" + item["第１希望"];
+                            }
+                            continue;
                         }
-                        continue;
-                    }
-                    ruiseki += parseInt(item[key], 10);
-                    if (ruiseki > parseInt(item["適正人数"], 10)) {
-                        item[key] = "OBER" + item[key];
-                        flowflag = true;
-                        if (key === "firstMinusYusen") {
-                            item["第１希望"] = "OBER" + item["第１希望"];
+                        ruiseki += parseInt(item[key], 10);
+                        if (ruiseki > parseInt(item["適正人数"], 10)) {
+                            item[key] = "OBER" + item[key];
+                            flowflag = true;
+                            if (key === "firstMinusYusen") {
+                                item["第１希望"] = "OBER" + item["第１希望"];
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
 
             data.forEach(item => {
                 //console.log(roleDict)
