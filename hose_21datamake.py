@@ -177,8 +177,7 @@ while True:
         #reader = csv.reader(lines)
         #jsondata = json.dumps(list(reader), ensure_ascii=False)
             data = {
-                #'header' : "時間割番号,科目区分,時間割名,曜日時限,教員名,対象学生,適正人数,全登録数,優先指定,第１希望,第２希望,第３希望,第４希望,第５希望",
-                'header' : "時間割番号,科目区分,時間割名,曜日時限,教員名,対象学生,適正人数,登録数,残数",
+                'header' : "時間割番号,科目区分,時間割名,曜日時限,教員名,対象学生,適正人数,全登録数,優先指定,第１希望,第２希望,第３希望,第４希望,第５希望",
                 'csv': theline,
                 'asof': asof
             }
@@ -186,6 +185,9 @@ while True:
                 json.dump(data, f, indent=4, ensure_ascii=False)
             print('json_made_sucsessfuly')
         
+            #time.sleep(60 * 5)
+            #time.sleep(10)
+
             #死活監視
             with open('deadoralive.json', 'r', encoding='utf-8') as f:
                 deadoralive = json.load(f)
@@ -201,12 +203,14 @@ while True:
             toggle = 1 - toggle
 
             current_second = time.localtime().tm_sec
-            sleeptime = 300 - current_second
-            time.sleep(sleeptime)
+            sleeptime = 60 - current_second
+            time.sleep(sleeptime)       
     
     except:
         driver.quit()
-        print(2/0)
+        current_second = time.localtime().tm_sec
+        sleeptime = 60 - current_second
+        time.sleep(sleeptime)   
 
         print('error')
 

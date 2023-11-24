@@ -30,6 +30,15 @@ with open('dns.json', 'r', encoding='utf-8') as f:
     dns = json.load(f)
     #print(dns)
 
+with open(os.path.join(os.path.expanduser('~'), 'risyu', 'sv_admin', 'depander.json'), 'r', encoding='utf-8') as f:
+    parent_depander = json.load(f)
+if str(os.environ.get('RISYU_ENV')):
+    depander = parent_depander['dev']
+    print('dev')
+else:
+    depander = parent_depander['prod']
+    print('prod')
+
 @app.route('/')
 def index():
     global count
@@ -43,7 +52,10 @@ def index():
         weakdict=weakdict,
         strodict=strodict,
         qur=qur,
-        count=count
+        count=count,
+        linka = depander['linka'],
+        fetcher = depander['fetcher'],
+        mode = 'hose'
     )
 
 @app.route('/img/<string:id>')
@@ -82,6 +94,7 @@ def man():
 def get_example():
     with open('recieved.json', 'r', encoding='utf-8') as f:
         recieved = json.load(f)
+        recieved['header'] = "時間割番号,科目区分,時間割名,曜日時限,教員名,対象学生,適正人数,登録数,残数"
     res = jsonify(recieved)
     res.headers.add('Access-Control-Allow-Origin', '*')
     return res

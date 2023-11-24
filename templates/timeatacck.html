@@ -87,17 +87,11 @@
         }
 
         let toshowdata = [];
-        let keyOrder = [];
-        let mode = "{{ mode }}";
-        if (mode === "toro") {
-            keyOrder = ['時間割番号', '科目区分', '時間割名', '曜日時限', '教員名', '対象学生', 'onechar', '適正人数', '全登録数', '優先指定', '第１希望', '第２希望', '第３希望', '第４希望', '第５希望', 'firstMinusYusen'];
-        } else {
-            keyOrder = ['時間割番号', '科目区分', '時間割名', '曜日時限', '教員名', '対象学生', 'onechar', '適正人数', '登録数', '残数'];
-        }
-        
+        let keyOrder = ['時間割番号', '科目区分', '時間割名', '曜日時限', '教員名', '対象学生', 'onechar', '適正人数', '全登録数', '優先指定', '第１希望', '第２希望', '第３希望', '第４希望', '第５希望'];
         function handleButtonClick(event) {
-            //console.log("fun[handleButtonClick]")
+            console.log("fun[handleButtonClick]")
             console.log(data)
+            console.log("fun[handleButtonClick]")
             buttonText = event.target.textContent;
             let freewordValue = document.getElementById("freeword").value;
             let whonlygs = document.getElementById("check1").checked;
@@ -180,8 +174,11 @@
                         localKeyOrder = localKeyOrder.filter(key => key !== "科目区分");
                     }
 
-//時間割番号の跡地
-                    
+                    // 時間割番号の2,3文字目のみ残す（条件3）
+                    if (whono === true && newItem["時間割番号"]) {
+                        newItem["時間割番号"] = newItem["時間割番号"].substring(1, 3);
+                    }
+
                     // 4
                     if (whrya === true) {
                         localKeyOrder = localKeyOrder.filter(key => key !== "対象学生");
@@ -204,38 +201,37 @@
                             newItem['onechar'] = "GREI" + newItem['onechar'];
                         }
                     }
-                
                     // 5
                     if (whoname) {
                         // 科目名について、weakdict を使用して置換
                         const weakdict = {{ weakdict| tojson | safe
                         }};
-                        if (cookies.digree == "w") {
-                            for (let key in weakdict) {
-                                if (newItem['時間割名'].includes(key)) {
-                                    newItem['時間割名'] = newItem['時間割名'].replace(key, weakdict[key]);
-                                }
-                                if (!whotea) {
-                                    if (newItem['教員名'].includes(key)) {
-                                        newItem['教員名'] = newItem['教員名'].replace(key, weakdict[key]);
-                                    }
-                                }   
+                    if (cookies.digree == "w") {
+                        for (let key in weakdict) {
+                            if (newItem['時間割名'].includes(key)) {
+                                newItem['時間割名'] = newItem['時間割名'].replace(key, weakdict[key]);
                             }
-                        }
-                        const strodict = {{ strodict| tojson | safe}};
-                        if (cookies.digree == "s") {
-                            for (let key in strodict) {
-                                if (newItem['時間割名'].includes(key)) {
-                                    newItem['時間割名'] = newItem['時間割名'].replace(key, strodict[key]);
+                            if (!whotea) {
+                                if (newItem['教員名'].includes(key)) {
+                                    newItem['教員名'] = newItem['教員名'].replace(key, weakdict[key]);
                                 }
-                                if (!whotea) {
-                                    if (newItem['教員名'].includes(key)) {
-                                        newItem['教員名'] = newItem['教員名'].replace(key, strodict[key]);
-                                    }
+                            }   
+                        }
+                    }
+                    const strodict = {{ strodict| tojson | safe}};
+                    if (cookies.digree == "s") {
+                        for (let key in strodict) {
+                            if (newItem['時間割名'].includes(key)) {
+                                newItem['時間割名'] = newItem['時間割名'].replace(key, strodict[key]);
+                            }
+                            if (!whotea) {
+                                if (newItem['教員名'].includes(key)) {
+                                    newItem['教員名'] = newItem['教員名'].replace(key, strodict[key]);
                                 }
                             }
                         }
                     }
+                }
                 return newItem;
                 })
             
@@ -253,13 +249,9 @@
         console.log(cookies)
     }
 
-    let tiplist = [];
-    if (mode === "toro") {
-        tiplist = ["", "適正人数", "全志望者", "優先指定", "第１希望", "第２希望", "第３希望", "第４希望", "第５希望"]
-    } else {
-        tiplist = ["", "適正人数", "登録数", "残数"]
-    }
+    let tiplist = ["", "適正人数", "全志望者", "優先指定", "第１希望", "第２希望", "第３希望", "第４希望", "第５希望"]
     function createTableFromLines(data, keyOrder) {
+        console.log("fun[createTableFromLines]")
         toshowdata = data;
         let table = document.createElement('table');
 
@@ -268,41 +260,30 @@
             existingTable.remove();
         }
 
-        let specialHeaders = [];
-        let specialTexts = [];
-        if (mode == "hose") {
-            specialHeaders = ["適正人数", "登録数", "残数"]
-            specialTexts = ["適正", "登録", "残"]
-        } else {
-            specialHeaders = ["適正人数", "全登録数", "優先指定", "第１希望", "第２希望", "第３希望", "第４希望", "第５希望"];
-            specialTexts = ["適正", "全", "優先", "第1", "2", "3", "4", "5"];
-        }
+        let specialHeaders = ["適正人数", "全登録数", "優先指定", "第１希望", "第２希望", "第３希望", "第４希望", "第５希望"];
+        let specialTexts = ["適正", "全", "優先", "第1", "2", "3", "4", "5"];
+
         let newRow = {};
         keyOrder.forEach(key => {
             newRow[key] = specialHeaders.includes(key) ? specialTexts[specialHeaders.indexOf(key)] : "";
         });
         // 新しい行をtoshowdataの先頭に追加
         toshowdata.unshift(newRow);
+
         for (let item of toshowdata) {
-            console.log(item)
             //console.log(item['onechar'])
             let row = table.insertRow();
-            //console.log(row)
             for (let i = 0; i < keyOrder.length; i++) {
                 let key = keyOrder[i];
-                console.log(key)
                 if (key !== "firstMinusYusen") {
                     let cell = row.insertCell();
 
                     if (i === 0) {
                         let link = document.createElement('a');
-                        let linka = "{{ linka }}"
+                        let linka = 'https://kurisyushien.org/img/'
+                        //let linka = 'http://127.0.0.1:5000/img/'
                         let linkb = item[key]
                         link.href = linka + linkb;
-                        //引っ越し先 時間割番号の2,3文字目のみ残す（条件3）
-                        if (document.getElementById("check3").checked) {
-                            item[key] = item[key].substring(1, 3);
-                        }
                         link.textContent = item[key];
                         cell.appendChild(link);
                     } else {
@@ -322,97 +303,27 @@
 
                         if (celltext.includes("GREI")) {
                             celltext = celltext.replace("GREI", "");
-                            cell.style.color = "#c0c0c0";
+                            cell.style.color = "#000000";
+                            cell.style.fontWeight = "bold";
                         } else if (celltext.includes("OBER")) {
                             celltext = celltext.replace("OBER", "");
                             cell.style.color = "#dc143c";
-                            cell.style.fontWeight = "bold";
-                        }
-
-                        if (celltext.includes("IPPAI")) {
-                            celltext = celltext.replace("IPPAI", "");
-                            cell.style.color = "#F0c0c0";
-                        } else if (celltext.includes("OUKE")) {
-                            celltext = celltext.replace("OUKE", "");
-                            cell.style.color = "#0c14Fc";
-                            cell.style.fontWeight = "bold";
                         }
 
                         cell.textContent = celltext;
 
-                        // 特定のキーのときにツールチップ用のイベントリスナーを設定
-                        if (tiplist.includes(key)) {
-                            cell.addEventListener('mouseover', function () {
-                                // ここでツールチップを表示
-                                showTooltip(cell, keyOrder[i]);
-                            });
-                            cell.addEventListener('mouseout', function () {
-                                // ここでツールチップを非表示
-                                hideTooltip();
-                            });
-                        }
-                        if (key === "onechar") {
-                            cell.addEventListener('mouseover', function () {
-                                // ここでツールチップを表示
-                                showTooltip(cell, item["対象学生"]);
-                            });
-                            cell.addEventListener('mouseout', function () {
-                                // ここでツールチップを非表示
-                                hideTooltip();
-                            });
                         }
                     }
                 }
             }
-        }
+        
         document.body.appendChild(table);
         let footer = document.getElementById("footer");
         document.body.insertBefore(table, footer);
+
     }
 
-    // ツールチップを表示する関数
-    function showTooltip(element, text) {
-        let tooltip = document.createElement("div");
-        tooltip.className = "tooltip";  // CSSクラスを適用
-        tooltip.innerText = text;
 
-        // ツールチップの位置を計算
-        let rect = element.getBoundingClientRect();
-        tooltip.style.left = rect.left + window.scrollX + "px";
-        tooltip.style.top = rect.bottom + window.scrollY + "px";
-
-        // ツールチップを文書に追加
-        document.body.appendChild(tooltip);
-    }
-
-    // ツールチップを非表示にする関数
-    function hideTooltip() {
-        let tooltips = document.querySelectorAll(".tooltip");
-        tooltips.forEach(tooltip => tooltip.remove());
-    }
-
-        //    function shareOnTwitter() {
-        //        var text = "";
-        //        var hashtags = "risyu";
-        //        var twitterUrl = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(text) + "&hashtags=" + encodeURIComponent(hashtags);
-        //
-        //        // ポップアップウィンドウのサイズと位置を指定
-        //        var width = 550;  // 幅
-        //        var height = 420; // 高さ
-        //        var left = (window.innerWidth - width) / 2;
-        //        var top = (window.innerHeight - height) / 2;
-        //
-        //        var windowFeatures = "width=" + width + ",height=" + height + ",top=" + top + ",left=" + left;
-        //        window.open(twitterUrl, 'sharer', windowFeatures);
-        //    }
-
-    async function getCSV() {
-        fetcher = "{{ fetcher }}"
-        console.log(fetcher)
-        let res = await fetch(fetcher);
-        got = await res.json();
-        return got;
-    }
 
 
     let cookies = {};
@@ -422,16 +333,14 @@
     let theline = "";
     let headers = "";
 
-    
-
     window.addEventListener("DOMContentLoaded", function () {
         console.log("hogehoge")
-        let mode = "{{ mode }}"
-
-        getCSV().then(gotData => {
-            data = gotData;
+        {% set theline = hoselines %}
+        data = theline
+        
             //document.cookie = "role" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-            const asof = data["asof"];
+            //let asof = data["asof"];
+            asof = '20231122130602'
             let asofdisp = document.getElementById("dateDisplay");
             asofdisp.textContent = asof;
 
@@ -472,9 +381,12 @@
                 alert("「所属設定」を行うことで\n「対象学生を簡略化」が動作するようになります")
             }
             
+            console.log(data)
+            //theline = data["csv"].replace(/&amp;/g, '&');
+           
+            //headers = data["header"];
 
-            theline = data["csv"].replace(/&amp;/g, '&');
-            headers = data["header"];
+            headers = headers
 
             const rows = theline.trim().split('eskape').map(row => row.split(','));
             headers = headers.split(',')
@@ -485,54 +397,40 @@
                 });
                 return obj;
             });
+            data.forEach(item => {
+                const firstMinusYusen = parseInt(item["第１希望"], 10) - parseInt(item["優先指定"], 10);
+                item.firstMinusYusen = firstMinusYusen;
+            });
 
-            mode = "{{ mode }}" 
-            if (mode == "toro") {
-                data.forEach(item => {
-                    const firstMinusYusen = parseInt(item["第１希望"], 10) - parseInt(item["優先指定"], 10);
-                    item.firstMinusYusen = firstMinusYusen;
-                });
+            const flowlooper = ["優先指定", "firstMinusYusen", "第２希望", "第３希望", "第４希望", "第５希望"];
+            data.forEach(item => {
+                let ruiseki = 0;
+                let flowflag = false;
 
-                const flowlooper = ["優先指定", "firstMinusYusen", "第２希望", "第３希望", "第４希望", "第５希望"];
-                data.forEach(item => {
-                    let ruiseki = 0;
-                    let flowflag = false;
-
-                    for (const key of flowlooper) {
-                        if (flowflag) {
-                            item[key] = "GREI" + item[key];
-                            if (key === "firstMinusYusen") {
-                                item["第１希望"] = "GREI" + item["第１希望"];
-                            }
-                            continue;
+                for (const key of flowlooper) {
+                    if (flowflag) {
+                        item[key] = "GREI" + item[key];
+                        if (key === "firstMinusYusen") {
+                            item["第１希望"] = "GREI" + item["第１希望"];
                         }
-                        ruiseki += parseInt(item[key], 10);
-                        if (ruiseki > parseInt(item["適正人数"], 10)) {
-                            item[key] = "OBER" + item[key];
-                            flowflag = true;
-                            if (key === "firstMinusYusen") {
-                                item["第１希望"] = "OBER" + item["第１希望"];
-                            }
+                        continue;
+                    }
+                    ruiseki += parseInt(item[key], 10);
+                    if (ruiseki > parseInt(item["適正人数"], 10)) {
+                        item[key] = "OBER" + item[key];
+                        flowflag = true;
+                        if (key === "firstMinusYusen") {
+                            item["第１希望"] = "OBER" + item["第１希望"];
                         }
                     }
-                });
-            } else {
-                data.forEach(item => {
-                    if (item["残数"] == 0) {
-                        item["残数"] = "IPPAI" + item["残数"];
-                        item["登録数"] = "IPPAI" + item["登録数"];
-                    } else {
-                        item["残数"] = "OUKE" + item["残数"];
-                        item["登録数"] = "OUKE" + item["登録数"];
-                        item["時間割名"] = "OUKE" + item["時間割名"];
-                    }
-                });
-            }
+                }
+            });
 
             data.forEach(item => {
                 //console.log(roleDict)
                 //console.log(item["対象学生"])
                 if (roleDict.hasOwnProperty(item["対象学生"])) {
+                    //console.log("HELLO")
                     item['onechar'] = roleDict[item["対象学生"]];
                 }
             });
@@ -556,7 +454,7 @@
             console.log(data)
 
         });
-    });
+    
 
     </script>
 
