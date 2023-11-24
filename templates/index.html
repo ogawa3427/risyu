@@ -87,11 +87,17 @@
         }
 
         let toshowdata = [];
-        let keyOrder = ['時間割番号', '科目区分', '時間割名', '曜日時限', '教員名', '対象学生', 'onechar', '適正人数', '全登録数', '優先指定', '第１希望', '第２希望', '第３希望', '第４希望', '第５希望'];
+        let keyOrder = [];
+        let mode = "{{ mode }}";
+        if (mode === "toro") {
+            keyOrder = ['時間割番号', '科目区分', '時間割名', '曜日時限', '教員名', '対象学生', 'onechar', '適正人数', '全登録数', '優先指定', '第１希望', '第２希望', '第３希望', '第４希望', '第５希望', 'firstMinusYusen'];
+        } else {
+            keyOrder = ['時間割番号', '科目区分', '時間割名', '曜日時限', '教員名', '対象学生', 'onechar', '適正人数', '登録数', '残数'];
+        }
+        
         function handleButtonClick(event) {
-            console.log("fun[handleButtonClick]")
+            //console.log("fun[handleButtonClick]")
             console.log(data)
-            console.log("fun[handleButtonClick]")
             buttonText = event.target.textContent;
             let freewordValue = document.getElementById("freeword").value;
             let whonlygs = document.getElementById("check1").checked;
@@ -175,7 +181,7 @@
                     }
 
 //時間割番号の跡地
-
+                    
                     // 4
                     if (whrya === true) {
                         localKeyOrder = localKeyOrder.filter(key => key !== "対象学生");
@@ -198,37 +204,38 @@
                             newItem['onechar'] = "GREI" + newItem['onechar'];
                         }
                     }
+                
                     // 5
                     if (whoname) {
                         // 科目名について、weakdict を使用して置換
                         const weakdict = {{ weakdict| tojson | safe
                         }};
-                    if (cookies.digree == "w") {
-                        for (let key in weakdict) {
-                            if (newItem['時間割名'].includes(key)) {
-                                newItem['時間割名'] = newItem['時間割名'].replace(key, weakdict[key]);
-                            }
-                            if (!whotea) {
-                                if (newItem['教員名'].includes(key)) {
-                                    newItem['教員名'] = newItem['教員名'].replace(key, weakdict[key]);
+                        if (cookies.digree == "w") {
+                            for (let key in weakdict) {
+                                if (newItem['時間割名'].includes(key)) {
+                                    newItem['時間割名'] = newItem['時間割名'].replace(key, weakdict[key]);
                                 }
-                            }   
-                        }
-                    }
-                    const strodict = {{ strodict| tojson | safe}};
-                    if (cookies.digree == "s") {
-                        for (let key in strodict) {
-                            if (newItem['時間割名'].includes(key)) {
-                                newItem['時間割名'] = newItem['時間割名'].replace(key, strodict[key]);
-                            }
-                            if (!whotea) {
-                                if (newItem['教員名'].includes(key)) {
-                                    newItem['教員名'] = newItem['教員名'].replace(key, strodict[key]);
-                                }
+                                if (!whotea) {
+                                    if (newItem['教員名'].includes(key)) {
+                                        newItem['教員名'] = newItem['教員名'].replace(key, weakdict[key]);
+                                    }
+                                }   
                             }
                         }
+                        const strodict = {{ strodict| tojson | safe}};
+                        if (cookies.digree == "s") {
+                            for (let key in strodict) {
+                                if (newItem['時間割名'].includes(key)) {
+                                    newItem['時間割名'] = newItem['時間割名'].replace(key, strodict[key]);
+                                }
+                                if (!whotea) {
+                                    if (newItem['教員名'].includes(key)) {
+                                        newItem['教員名'] = newItem['教員名'].replace(key, strodict[key]);
+                                    }
+                                }
+                            }
+                        }
                     }
-                }
                 return newItem;
                 })
             
@@ -246,7 +253,6 @@
         console.log(cookies)
     }
 
-    let mode = "{{ mode }}"
     let tiplist = [];
     if (mode === "toro") {
         tiplist = ["", "適正人数", "全志望者", "優先指定", "第１希望", "第２希望", "第３希望", "第４希望", "第５希望"]
@@ -254,7 +260,6 @@
         tiplist = ["", "適正人数", "登録数", "残数"]
     }
     function createTableFromLines(data, keyOrder) {
-        console.log("fun[createTableFromLines]")
         toshowdata = data;
         let table = document.createElement('table');
 
@@ -278,12 +283,14 @@
         });
         // 新しい行をtoshowdataの先頭に追加
         toshowdata.unshift(newRow);
-
         for (let item of toshowdata) {
+            console.log(item)
             //console.log(item['onechar'])
             let row = table.insertRow();
+            //console.log(row)
             for (let i = 0; i < keyOrder.length; i++) {
                 let key = keyOrder[i];
+                console.log(key)
                 if (key !== "firstMinusYusen") {
                     let cell = row.insertCell();
 
@@ -319,6 +326,15 @@
                         } else if (celltext.includes("OBER")) {
                             celltext = celltext.replace("OBER", "");
                             cell.style.color = "#dc143c";
+                            cell.style.fontWeight = "bold";
+                        }
+
+                        if (celltext.includes("IPPAI")) {
+                            celltext = celltext.replace("IPPAI", "");
+                            cell.style.color = "#F0c0c0";
+                        } else if (celltext.includes("OUKE")) {
+                            celltext = celltext.replace("OUKE", "");
+                            cell.style.color = "#0c14Fc";
                             cell.style.fontWeight = "bold";
                         }
 
@@ -415,7 +431,7 @@
         getCSV().then(gotData => {
             data = gotData;
             //document.cookie = "role" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-            let asof = data["asof"];
+            const asof = data["asof"];
             let asofdisp = document.getElementById("dateDisplay");
             asofdisp.textContent = asof;
 
@@ -456,10 +472,9 @@
                 alert("「所属設定」を行うことで\n「対象学生を簡略化」が動作するようになります")
             }
             
-            console.log(data)
+
             theline = data["csv"].replace(/&amp;/g, '&');
             headers = data["header"];
-            console.log(headers)
 
             const rows = theline.trim().split('eskape').map(row => row.split(','));
             headers = headers.split(',')
@@ -470,6 +485,7 @@
                 });
                 return obj;
             });
+
             mode = "{{ mode }}" 
             if (mode == "toro") {
                 data.forEach(item => {
@@ -500,13 +516,23 @@
                         }
                     }
                 });
+            } else {
+                data.forEach(item => {
+                    if (item["残数"] == 0) {
+                        item["残数"] = "IPPAI" + item["残数"];
+                        item["登録数"] = "IPPAI" + item["登録数"];
+                    } else {
+                        item["残数"] = "OUKE" + item["残数"];
+                        item["登録数"] = "OUKE" + item["登録数"];
+                        item["時間割名"] = "OUKE" + item["時間割名"];
+                    }
+                });
             }
 
             data.forEach(item => {
                 //console.log(roleDict)
                 //console.log(item["対象学生"])
                 if (roleDict.hasOwnProperty(item["対象学生"])) {
-                    //console.log("HELLO")
                     item['onechar'] = roleDict[item["対象学生"]];
                 }
             });

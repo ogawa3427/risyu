@@ -46,10 +46,6 @@ def index():
         count += 1
         f.write(str(count))
 
-    with open('20231122130602.csv', 'r', encoding='utf-8') as f:
-        hosei = ''.join(line for line in f if True)
-        hosei = re.sub('\n','eskape', hosei)
-
     return render_template(
         'index.html',
         rolelist=keys_list,
@@ -87,22 +83,6 @@ def aff():
         qur=qur,
         rowlist=rolelist
         )
-
-@app.route('/index')
-def index2():
-    global count
-    with open(os.path.join(os.path.expanduser('~'), 'risyu', 'counter.txt'), 'w', encoding='utf-8') as f:
-        count += 1
-        f.write(str(count))
-
-    return render_template(
-        'index.html',
-        rolelist=keys_list,
-        weakdict=weakdict,
-        strodict=strodict,
-        qur=qur,
-        count=count
-    )
 
 @app.route('/man')
 def man():
