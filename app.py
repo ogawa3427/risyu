@@ -34,8 +34,10 @@ with open(os.path.join(os.path.expanduser('~'), 'risyu', 'sv_admin', 'depander.j
     parent_depander = json.load(f)
 if str(os.environ.get('RISYU_ENV')):
     depander = parent_depander['dev']
+    print('dev')
 else:
     depander = parent_depander['prod']
+    print('prod')
 
 @app.route('/')
 def index():
@@ -49,7 +51,7 @@ def index():
         hosei = re.sub('\n','eskape', hosei)
 
     return render_template(
-        'timeatacck.html',
+        'index.html',
         rolelist=keys_list,
         weakdict=weakdict,
         strodict=strodict,
