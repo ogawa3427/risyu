@@ -32,7 +32,7 @@ with open('dns.json', 'r', encoding='utf-8') as f:
 
 with open(os.path.join(os.path.expanduser('~'), 'risyu', 'sv_admin', 'depander.json'), 'r', encoding='utf-8') as f:
     parent_depander = json.load(f)
-if str(os.environ.get('RISYU_ENV')):
+if (str(os.environ.get('RISYU_ENV')) == 'dev'):
     depander = parent_depander['dev']
     print('dev')
 else:
