@@ -3,7 +3,7 @@
 *.gif
 *.png
 *.css
-*.js
+.js
 lib
 lib64
 bin

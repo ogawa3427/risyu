@@ -114,14 +114,9 @@
 
                     // 時間割番号のフィルタリング
                     if (rowgun !== "0") {
-                        let regex;
-                        //if (whonlygs) {
-                        //    regex = new RegExp("^" + rowgun + ".*");
-                        //} else {
-                        regex = new RegExp("^7" + rowgun + ".*");
-                        //}
-                        console.log("regex:", regex);
-                        if (!regex.test(item["時間割番号"])) {
+                        let rowgunRegex = "^7" + rowgun + ".*";
+                        // allfilter関数を使用して特定のプロパティに対してフィルタリング
+                        if (!allfilter({ "時間割番号": item["時間割番号"] }, rowgunRegex, true)) {
                             return false;
                         }
                     }
@@ -134,20 +129,16 @@
 
                     // フリーワード検索でない場合の日程によるフィルタリング
                     if (buttonText !== 'ﾌﾘｰﾜｰﾄﾞ検索') {
+                        let limitexp;
                         if (buttonText === '6限' || buttonText === '7限' || buttonText === '8限') {
-                            if (buttonText === '6限') {
-                                limitexp = "[月火水木金]6";
-                            } else if (buttonText === '7限') {
-                                limitexp = "[月火水木金]7";
-                            } else if (buttonText === '8限') {
-                                limitexp = "[月火水木金]8";
-                            }
+                            limitexp = `[月火水木金]${buttonText.charAt(0)}`;
                         } else {
                             limitexp = buttonText;
                         }
-                        let regex = new RegExp(limitexp);
-                        return regex.test(item["曜日時限"]);
+                        // allfilter関数を使用して特定のプロパティに対してフィルタリング
+                        return allfilter({ "曜日時限": item["曜日時限"] }, limitexp, true);
                     }
+
                     return true;
                 })
 
@@ -168,27 +159,15 @@
                     //時間割番号の跡地
                     
                     // 4
+                    let taisyodict = { "0": " - ", "1": "限", "2": "優", "3": "GREI", "4": "他", "5": "次"};
+                    newItem['onechar'] = dictioner(String(newItem['onechar']), taisyodict, whrya);
+
                     if (whrya === true) {
                         localKeyOrder = localKeyOrder.filter(key => key !== "対象学生");
-                        if (newItem['onechar'] === "0") {
-                            newItem['onechar'] = " - ";
-                        } else if (newItem['onechar'] === 1) {
-                            newItem['onechar'] = "限";
-                        } else if (newItem['onechar'] === 2) {
-                            newItem['onechar'] = "優";
-                        } else if (newItem['onechar'] === 3) {
-                            newItem['onechar'] = "GREI" + newItem['onechar'];
-                        } else if (newItem['onechar'] === 4) {
-                            newItem['onechar'] = "他";
-                        } else if (newItem['onechar'] === 5) {
-                            newItem['onechar'] = "次";
-                        }
                     } else {
                         localKeyOrder = localKeyOrder.filter(key => key !== "onechar");
-                        if (newItem['onechar'] === "3") {
-                            newItem['onechar'] = "GREI" + newItem['onechar'];
-                        }
                     }
+
                     console.log(data)
                     // 5
                         // 科目名について、weakdict を使用して置換
