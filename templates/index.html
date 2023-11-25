@@ -32,19 +32,19 @@
     <div id="buttons">
         <div><button class="day-button">月1</button><button class="day-button">火1</button><button
                 class="day-button">水1</button><button class="day-button">木1</button><button
-                class="day-button">金1</button><label><input type="checkbox" id="check1">GSのみ</label></div>
+                class="day-button">金1</button><label><input type="checkbox" id="whonlygs">GSのみ</label></div>
         <div><button class="day-button">月2</button><button class="day-button">火2</button><button
                 class="day-button">水2</button><button class="day-button">木2</button><button
-                class="day-button">金2</button><label><input type="checkbox" id="teaomit">教員名を省略</label></div>
+                class="day-button">金2</button><label><input type="checkbox" id="whotea">教員名を非表示</label></div>
         <div><button class="day-button">月3</button><button class="day-button">火3</button><button
                 class="day-button">水3</button><button class="day-button">木3</button><button
-                class="day-button">金3</button><label><input type="checkbox" id="check3">時間割番号を省略</label></div>
+                class="day-button">金3</button><label><input type="checkbox" id="whono">時間割番号を省略</label></div>
         <div><button class="day-button">月4</button><button class="day-button">火4</button><button
                 class="day-button">水4</button><button class="day-button">木4</button><button
-                class="day-button">金4</button><label><input type="checkbox" id="check4">対象学生を簡略化</label></div>
+                class="day-button">金4</button><label><input type="checkbox" id="whrya">対象学生を簡略化</label></div>
         <div><button class="day-button">月5</button><button class="day-button">火5</button><button
                 class="day-button">水5</button><button class="day-button">木5</button><button
-                class="day-button">金5</button><label><input type="checkbox" id="check5">時間割名を省略</label></div>
+                class="day-button">金5</button><label><input type="checkbox" id="whoname">時間割名を省略</label></div>
         <div><button class="day-button">6限</button><button class="day-button">7限</button><button
                 class="day-button">8限</button><button class="day-button">集中</button><select id="dropdown">
                 <option value="0">全群</option>
@@ -67,24 +67,9 @@
         <!--        <button onclick="shareOnTwitter()">Tweet Now</button> -->
     </div>
 
+    <script src="{{ url_for('static', filename='logic.js') }}"></script>
     <script>
-        function cookiewriter() {
-            //console.log("Wfun[CookieWriter]")
-            cookies.whonlygs = document.getElementById("check1").checked ? 1 : 0;
-            cookies.whotea = document.getElementById("teaomit").checked ? 1 : 0;
-            cookies.whono = document.getElementById("check3").checked ? 1 : 0;
-            cookies.whrya = document.getElementById("check4").checked ? 1 : 0;
-            cookies.whoname = document.getElementById("check5").checked ? 1 : 0;
-
-            let expirationDate = new Date();
-            expirationDate.setFullYear(expirationDate.getFullYear() + 1); // 1年後に有効期限を設定
-            let expires = "expires=" + expirationDate.toUTCString();
-
-            for (let [key, value] of Object.entries(cookies)) {
-                document.cookie = `${key}=${value}; ${expires}; path=/`;
-            }
-            //console.log(document.cookie)
-        }
+        
 
         let toshowdata = [];
         let keyOrder = [];
@@ -96,19 +81,20 @@
         }
         
         function handleButtonClick(event) {
+            console.log(cookies)
             //console.log("fun[handleButtonClick]")
-            console.log(data)
+            //console.log(data)
             buttonText = event.target.textContent;
             let freewordValue = document.getElementById("freeword").value;
-            let whonlygs = document.getElementById("check1").checked;
-            let whotea = document.getElementById("teaomit").checked;
-            let whono = document.getElementById("check3").checked;
-            let whrya = document.getElementById("check4").checked;
-            let whoname = document.getElementById("check5").checked;
+            let whonlygs = document.getElementById("whonlygs").checked;
+            let whotea = document.getElementById("whotea").checked;
+            let whono = document.getElementById("whono").checked;
+            let whrya = document.getElementById("whrya").checked;
+            let whoname = document.getElementById("whoname").checked;
             rowgun = document.getElementById("dropdown").value;
 
             //console.log(buttonText)
-            cookiewriter()
+            cookiewriter(["whonlygs", "whotea", "whono", "whrya", "whoname"])
             //console.log(cookies);
             //console.log(rowgun);
 
@@ -118,10 +104,11 @@
             //1
             const displayData = data
                 .filter(item => {
-                    // 科目区分がGS科目である者のみ残す（条件2）
-                    if (whonlygs === true && item["科目区分"] !== "ＧＳ科目") {
-                        return false;
-                    } else if (rowgun !== "0" && item["科目区分"] !== "ＧＳ科目") {
+                    return !Object.values(item).some(value => value === undefined);
+                })
+                .filter(item => {
+                    //（条件2
+                    if (!itemfilter(item["科目区分"], "ＧＳ科目", whonlygs)) {
                         return false;
                     }
 
@@ -139,12 +126,10 @@
                         }
                     }
 
-                    // フリーワード検索(まえ)の条件（freewordValueが空でない場合のみ）
-                    if (cookies.searchaorb == "b") {
-                        if (freewordValue && buttonText === "ﾌﾘｰﾜｰﾄﾞ検索") {
-                            let regex = new RegExp(freewordValue);
-                            return Object.values(item).some(value => regex.test(value));
-                        }
+
+                    // (まえ)
+                    if (!allfilter(item, freewordValue, (buttonText === "ﾌﾘｰﾜｰﾄﾞ検索" && (cookies.searchaorb == "b")))) {
+                        return false;
                     }
 
                     // フリーワード検索でない場合の日程によるフィルタリング
@@ -180,7 +165,7 @@
                         localKeyOrder = localKeyOrder.filter(key => key !== "科目区分");
                     }
 
-//時間割番号の跡地
+                    //時間割番号の跡地
                     
                     // 4
                     if (whrya === true) {
@@ -204,51 +189,25 @@
                             newItem['onechar'] = "GREI" + newItem['onechar'];
                         }
                     }
-                
+                    console.log(data)
                     // 5
-                    if (whoname) {
                         // 科目名について、weakdict を使用して置換
-                        const weakdict = {{ weakdict| tojson | safe
-                        }};
-                        if (cookies.digree == "w") {
-                            for (let key in weakdict) {
-                                if (newItem['時間割名'].includes(key)) {
-                                    newItem['時間割名'] = newItem['時間割名'].replace(key, weakdict[key]);
-                                }
-                                if (!whotea) {
-                                    if (newItem['教員名'].includes(key)) {
-                                        newItem['教員名'] = newItem['教員名'].replace(key, weakdict[key]);
-                                    }
-                                }   
-                            }
-                        }
-                        const strodict = {{ strodict| tojson | safe}};
-                        if (cookies.digree == "s") {
-                            for (let key in strodict) {
-                                if (newItem['時間割名'].includes(key)) {
-                                    newItem['時間割名'] = newItem['時間割名'].replace(key, strodict[key]);
-                                }
-                                if (!whotea) {
-                                    if (newItem['教員名'].includes(key)) {
-                                        newItem['教員名'] = newItem['教員名'].replace(key, strodict[key]);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                return newItem;
+                    const weakdict = {{ weakdict| tojson | safe}};
+                    newItem['時間割名'] = dictioner(newItem['時間割名'], weakdict, (cookies.digree == "s") && whoname);
+                    newItem['教員名'] = dictioner(newItem['教員名'], weakdict, (((cookies.digree == "s") && whoname)&&(!whotea)));
+
+                    const strodict = {{ strodict| tojson | safe}};
+                    newItem['時間割名'] = dictioner(newItem['時間割名'], strodict, (cookies.digree == "s") && whoname);
+                    newItem['教員名'] = dictioner(newItem['教員名'], strodict, (((cookies.digree == "s") && whoname)&&(!whotea)));
+                    return newItem;
                 })
+                
             
                 .filter(item => {
-            // フリーワード検索(あと)の条件（freewordValueが空でない場合のみ）
-                if (cookies.searchaorb == "a") {
-                    if (freewordValue && buttonText === "ﾌﾘｰﾜｰﾄﾞ検索") {
-                        let regex = new RegExp(freewordValue);
-                        return Object.values(item).some(value => regex.test(value));
-                    }
-                }
-                return true;
-            })
+                // (あと)
+                    return allfilter(item, freewordValue, (buttonText === "ﾌﾘｰﾜｰﾄﾞ検索" && (cookies.searchaorb == "a")));
+                    return true;
+                })
         createTableFromLines(displayData, localKeyOrder);
         console.log(cookies)
     }
@@ -284,13 +243,13 @@
         // 新しい行をtoshowdataの先頭に追加
         toshowdata.unshift(newRow);
         for (let item of toshowdata) {
-            console.log(item)
+            //console.log(item)
             //console.log(item['onechar'])
             let row = table.insertRow();
             //console.log(row)
             for (let i = 0; i < keyOrder.length; i++) {
                 let key = keyOrder[i];
-                console.log(key)
+                //console.log(key)
                 if (key !== "firstMinusYusen") {
                     let cell = row.insertCell();
 
@@ -300,7 +259,7 @@
                         let linkb = item[key]
                         link.href = linka + linkb;
                         //引っ越し先 時間割番号の2,3文字目のみ残す（条件3）
-                        if (document.getElementById("check3").checked) {
+                        if (document.getElementById("whono").checked) {
                             item[key] = item[key].substring(1, 3);
                         }
                         link.textContent = item[key];
@@ -435,22 +394,10 @@
             let asofdisp = document.getElementById("dateDisplay");
             asofdisp.textContent = asof;
 
-            //console.log("[CoockieReader]")
-            //console.log(document.cookie)
-            const kidi = document.cookie;
-            const kata = kidi.split('; ');
-            for (let i = 0; i < kata.length; i++) {
-                let parts = kata[i].split('=');
-                cookies[parts[0]] = parts[1];
-            }
+            cookies = cookiereader()
 
-            // searchaorb キーの確認と設定
-            if (!cookies.hasOwnProperty('searchaorb')) {
-                cookies['searchaorb'] = 'b';
-                let expirationDate = new Date();
-                expirationDate.setFullYear(expirationDate.getFullYear() + 1); // 1年後に有効期限を設定
-                document.cookie = 'searchaorb=a; expires=' + expirationDate.toUTCString() + '; path=/';
-            }
+            let defo = [true, true, false, true, true]
+            swsetter(["whonlygs", "whotea", "whono", "whrya", "whoname"], cookies, defo)
 
             const rolelist = {{ rolelist| tojson | safe}}.map(item => item.replace(/^ART/, ""));
             if (typeof cookies.role !== "undefined" && cookies.role !== "") {
@@ -458,17 +405,7 @@
                 for (let i = 0; i < rolelist.length; i++) {
                     roleDict[rolelist[i]] = parseInt(cookies.role.charAt(i), 10);
                 }
-                document.getElementById("check1").checked = cookies.whonlygs == 1;
-                document.getElementById("teaomit").checked = cookies.whotea == 1;
-                document.getElementById("check3").checked = cookies.whono == 1;
-                document.getElementById("check4").checked = cookies.whrya == 1;
-                document.getElementById("check5").checked = cookies.whoname == 1;
             } else {
-                document.getElementById("check1").checked = true;
-                document.getElementById("teaomit").checked = false;
-                document.getElementById("check3").checked = true;
-                document.getElementById("check4").checked = true;
-                document.getElementById("check5").checked = false;
                 alert("「所属設定」を行うことで\n「対象学生を簡略化」が動作するようになります")
             }
             
