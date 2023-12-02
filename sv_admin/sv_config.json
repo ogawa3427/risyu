@@ -1,0 +1,47 @@
+{
+    "season": {
+        "name": "2023q4",
+        "term1": {
+            "label": "登録期間",
+            "start": "202311140700",
+            "end": "202311182359",
+            "frequency": "300"
+        },
+        "term2": {
+            "label": "登録期間",
+            "start": "202311190000",
+            "end": "202311192359",
+            "frequency": "60"
+        },
+        "term3": {
+            "label": "補正期間１",
+            "start": "202311221230",
+            "end": "202311262359",
+            "frequency": "300"
+        },
+        "term4": {
+            "label": "補正期間２",
+            "start": "202312080700",
+            "end": "202312142359",
+            "frequency": "300"
+        }
+    },
+    "selenium": {
+        "direct_access": "True",
+        "url": "https://eduweb.sta.kanazawa-u.ac.jp/portal/Public/Regist/RegistrationStatus.aspx?year=2023&lct_term_cd=21"
+    },
+    "depender": {
+        "prod": {
+            "linka": "https://kurisyushien.org/img/",
+            "fetcher": "https://kurisyushien.org/api",
+            "hoge": "fuga",
+            "piyo": "hogehoge"
+        },
+        "dev": {
+            "linka": "http://127.0.0.1:5000/img/",
+            "fetcher": "http://127.0.0.1:5000/api",
+            "hoge": "fuga",
+            "piyo": "hogehoge"
+        }
+    }
+}
