@@ -24,7 +24,7 @@ csvs_directory = os.path.join(os.getcwd(), 'csvs')
 while True:
     try:
         options = Options()
-        options.add_argument("--headless") # Ensure GUI is off. Remove this line if you want to see the browser navigating.
+#        options.add_argument("--headless") # Ensure GUI is off. Remove this line if you want to see the browser navigating.
         
         webdriver_service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=webdriver_service, options=options)
@@ -51,7 +51,13 @@ while True:
         #link = driver.find_element(By.LINK_TEXT, "既に回答しました")
         #link.click()
         
-        element = driver.find_element(By.XPATH,"//a[span[text()='学務情報サービス']]")
+        try:
+            element = driver.find_element(By.XPATH,"//a[span[text()='学務情報サービス']]")
+        except selenium.common.exceptions.NoSuchElementException:
+            element = driver.find_element(By.XPATH, "/html/body/div[2]/div/div[3]/ul[2]/li[2]")
+            dirver.execute_script("arguments[0].click();", element)
+
+            element = driver.find_element(By.XPATH,"//a[span[text()='学務情報サービス']]")
         driver.execute_script("arguments[0].click();", element)
         
         all_handles = driver.window_handles
