@@ -32,7 +32,7 @@ with open('dns.json', 'r', encoding='utf-8') as f:
 
 with open(os.path.join(os.path.expanduser('~'), 'risyu', 'sv_admin', 'depander.json'), 'r', encoding='utf-8') as f:
     parent_depander = json.load(f)
-if str(os.environ.get('RISYU_ENV')):
+if (str(os.environ.get('RISYU_ENV')) == 'dev'):
     depander = parent_depander['dev']
     print('dev')
 else:
@@ -123,6 +123,18 @@ def get_deadoralive():
     res = jsonify(deadoralive)
     res.headers.add('Access-Control-Allow-Origin', '*')
     return res
+
+@app.route('/tests')
+def tests():
+    return render_template(
+        'tests.html'
+        )
+
+@app.route('/yugo_table')
+def yugo_table():
+    return render_template(
+        'yugo_table.html'
+        )
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80)

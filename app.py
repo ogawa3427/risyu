@@ -124,6 +124,18 @@ def get_deadoralive():
     res.headers.add('Access-Control-Allow-Origin', '*')
     return res
 
+@app.route('/tests')
+def tests():
+    return render_template(
+        'tests.html'
+        )
+
+@app.route('/yugo_table')
+def yugo_table():
+    return render_template(
+        'yugo_table.html'
+        )
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80)
 
