@@ -5,6 +5,7 @@ import json
 import csv
 import time
 from flask import jsonify
+from markupsafe import Markup
 
 app = Flask(__name__)
 
@@ -29,6 +30,9 @@ keys_list = list(rolelist.keys())
 with open('dns.json', 'r', encoding='utf-8') as f:
     dns = json.load(f)
     #print(dns)
+
+with open("course_info.json", "r", encoding="utf-8") as f:
+    course_info = json.load(f)
 
 with open(os.path.join(os.path.expanduser('~'), 'risyu', 'sv_admin', 'depander.json'), 'r', encoding='utf-8') as f:
     parent_depander = json.load(f)
@@ -132,9 +136,16 @@ def tests():
 
 @app.route('/yugo_table')
 def yugo_table():
+    # course_infoをJSON文字列に変換
+    course_info_json = json.dumps(course_info, ensure_ascii=False)
+    # JSON文字列を安全なマークアップとしてマーク
+    course_info_safe = Markup(course_info_json)
+    course_info_safe = course_info_safe.replace('^\"', "")
+    course_info_safe = course_info_safe.replace("\"$", "")
     return render_template(
-        'yugo_table.html'
-        )
+        'yugo_table.html',
+        course_info=course_info_safe
+    )
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80)

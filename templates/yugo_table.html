@@ -1,12 +1,54 @@
 <!DOCTYPE html>
 <html lang="ja">
-    <head>
-        <meta charset="UTF-8">
-        <title>risyu - yugo_table</title>
-    </head>
-    <body>
-        <h1>【非公式】融合学域時間割表(機能テスト中)</h1>
-        
-    </body>
-</html>
+    <script>
+        console.log('{{ course_info | tojson }}');
+        const courseInfoStr = '{{ course_info | tojson }}'.replace(/^"|"$/g, '');
+        const r_course_info = JSON.parse(courseInfoStr);
 
+        console.log(r_course_info);
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const tableBody = document.getElementById('courseTableBody');
+            Object.keys(r_course_info).forEach(key => {
+                const course = r_course_info[key];
+                const row = document.createElement('tr');
+                
+                // 曜日と時限を分割
+                console.log(course);
+                console.log(course.day_period);
+                const [day, period] = course.day_period.split('');
+                const dayIndex = "月火水木金".indexOf(day) + 1; // 曜日に対応する列番号を取得
+                
+                // 行と列を作成
+                for (let i = 0; i < 6; i++) {
+                    const cell = document.createElement('td');
+                    if (i === dayIndex) {
+                        cell.textContent = course.ja_title; // コース名をセルに設定
+                    }
+                    row.appendChild(cell);
+                }
+                
+                tableBody.appendChild(row); // 行をテーブルに追加
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>【非公式】融合学域時間割表(機能テスト中)</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>時間／日</th>
+                <th>月</th>
+                <th>火</th>
+                <th>水</th>
+                <th>木</th>
+                <th>金</th>
+            </tr>
+        </thead>
+        <tbody id="courseTableBody">
+            <!-- JavaScriptで動的に行が追加されます -->
+        </tbody>
+    </table>
+</body>
+</html>
