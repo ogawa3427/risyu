@@ -1,49 +1,206 @@
 <!DOCTYPE html>
 <html lang="ja">
     <script>
-        console.log('{{ course_info | tojson }}');
+        //console.log('{{ course_info | tojson }}');
         const courseInfoStr = '{{ course_info | tojson }}'.replace(/^"|"$/g, '');
-        const r_course_info = JSON.parse(courseInfoStr);
+        var r_course_info = JSON.parse(courseInfoStr);
+        const course_info = JSON.parse(courseInfoStr);
 
         console.log(r_course_info);
 
         document.addEventListener('DOMContentLoaded', (event) => {
             const tableBody = document.getElementById('courseTableBody');
-            Object.keys(r_course_info).forEach(key => {
-                const course = r_course_info[key];
-                const row = document.createElement('tr');
-                
-                // 曜日と時限を分割
-                console.log(course);
-                console.log(course.day_period);
-                const [day, period] = course.day_period.split('');
-                const dayIndex = "月火水木金".indexOf(day) + 1; // 曜日に対応する列番号を取得
-                
-                // 行と列を作成
-                for (let i = 0; i < 6; i++) {
-                    const cell = document.createElement('td');
-                    if (i === dayIndex) {
-                        cell.textContent = course.ja_title; // コース名をセルに設定
+            const showAllCoursesCheckbox = document.getElementById('showAllCourses');
+            const quarterRadios = document.getElementsByName('quarter');
+            const sendoCheckbox = document.getElementById('sendo');
+            const kandCheckbox = document.getElementById('kand');
+            const sumaCheckbox = document.getElementById('suma');
+
+            const getSelectedQuarter = () => {
+                for (const radio of quarterRadios) {
+                    if (radio.checked) {
+                        return radio.value;
                     }
-                    row.appendChild(cell);
                 }
+                return null; // 何も選択されていない場合
+            };
+
+            const drawTable = () => {
+                const ids = ['M1', 'T1', 'W1', 'Th1', 'F1', 'M2', 'T2', 'W2', 'Th2', 'F2', 'M3', 'T3', 'W3', 'Th3', 'F3', 'M4', 'T4', 'W4', 'Th4', 'F4', 'M5', 'T5', 'W5', 'Th5', 'F5', 'M6', 'T6', 'W6', 'Th6', 'F6', 'M7', 'T7', 'W7', 'Th7', 'F7', 'SP'];
+                for (const id of ids) {
+                    const cell = document.getElementById(id);
+                    if (cell) {
+                        cell.innerHTML = '';
+                    }
+                }
+                tableBody.innerHTML = '';
+                r_course_info = Object.values(course_info);
+                console.log(r_course_info);
+
+                console.log(getSelectedQuarter());
+                console.log(r_course_info[0].quarter);
+
+                r_course_info = r_course_info.filter((course) => {
+                    return course.quarter == getSelectedQuarter();
+                });
+
+
+                for (item in r_course_info) {
+                    //console.log(r_course_info[item]);
+                    const spl = r_course_info[item].day_period.split('');
+                    const day = spl[0];
+                    const period = spl[1];
+
+                    var day_alp = '';
+                    var id = '';
+
+                    switch (day) {
+                        case '月':
+                            day_alp = 'M';
+                            break;
+                        case '火':
+                            day_alp = 'T';
+                            break;
+                        case '水':
+                            day_alp = 'W';
+                            break;
+                        case '木':
+                            day_alp = 'Th';
+                            break;
+                        case '金':
+                            day_alp = 'F';
+                            break;
+                    }
+
+                    if (spl == '集中') {
+                        day_alp = 'SP';
+                    } else {
+                        id = day_alp + period;
+                    }
+
+                    const courseElement = document.createElement('div');
+                    //courseElement.href = r_course_info[item].link;
+                    courseElement.className = "course";
+                    courseElement.innerHTML = `
+                        <a class="title" href="${r_course_info[item].link}">${r_course_info[item].ja_title}</a>
+                        <p class="teacher">${r_course_info[item].ja_teacher}</p>
+                    `;
+
+                    const cell = document.getElementById(id);
+                    if (cell) {
+                        cell.appendChild(courseElement);
+                    }                  
+                } 
+
                 
-                tableBody.appendChild(row); // 行をテーブルに追加
-            });
+            };
+
+            // チェックボックスの状態が変わったら表を再描画
+            showAllCoursesCheckbox.addEventListener('change', drawTable);
+            quarterRadios.forEach(radio => radio.addEventListener('change', drawTable));
+            sendoCheckbox.addEventListener('change', drawTable);
+            kandCheckbox.addEventListener('change', drawTable);
+            sumaCheckbox.addEventListener('change', drawTable);
+            // 初期描画
+            drawTable();
         });
     </script>
 </head>
+<style>
+    .course {
+        border: 1px solid #000;
+    }
+</style>
 <body>
     <h1>【非公式】融合学域時間割表(機能テスト中)</h1>
+    <input type="checkbox" id="showAllCourses" checked>導入系の科目を非表示</input>
+    <input type="radio" id="quarter" name="quarter" value="Q1" checked>Q1</input>
+    <input type="radio" id="quarter" name="quarter" value="Q2">Q2</input>
+    <input type="radio" id="quarter" name="quarter" value="Q3">Q3</input>
+    <input type="radio" id="quarter" name="quarter" value="Q4">Q4</input>
+    <input type="checkbox" id="sendo">先導</input>
+    <input type="checkbox" id="kand">観デザ</input>
+    <input type="checkbox" id="suma">スマ創</input>
     <table border="1">
         <thead>
             <tr>
-                <th>時間／日</th>
-                <th>月</th>
-                <th>火</th>
-                <th>水</th>
-                <th>木</th>
-                <th>金</th>
+                <th></th>
+                <td>月</td>
+                <td>火</td>
+                <td>水</td>
+                <td>木</td>
+                <td>金</td>
+                <td>集中</td>
+            </tr>
+                
+            <tr>
+                <th>1</th>
+                <td id="M1"></td>
+                <td id="T1"></td>
+                <td id="W1"></td>
+                <td id="Th1"></td>
+                <td id="F1"></td>
+                <td id="SP"></td>
+            </tr>
+            
+            <tr>
+                <th>2</th>
+                <td id="M2"></td>
+                <td id="T2"></td>
+                <td id="W2"></td>
+                <td id="Th2"></td>
+                <td id="F2"></td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <th>3</th>
+                <td id="M3"></td>
+                <td id="T3"></td>
+                <td id="W3"></td>
+                <td id="Th3"></td>
+                <td id="F3"></td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <th>4</th>
+                <td id="M4"></td>
+                <td id="T4"></td>
+                <td id="W4"></td>
+                <td id="Th4"></td>
+                <td id="F4"></td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <th>5</th>
+                <td id="M5"></td>
+                <td id="T5"></td>
+                <td id="W5"></td>
+                <td id="Th5"></td>
+                <td id="F5"></td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <th>6</th>
+                <td id="M6"></td>
+                <td id="T6"></td>
+                <td id="W6"></td>
+                <td id="Th6"></td>
+                <td id="F6"></td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <th>7</th>
+                <td id="M7"></td>
+                <td id="T7"></td>
+                <td id="W7"></td>
+                <td id="Th7"></td>
+                <td id="F7"></td>
+                <td></td>
             </tr>
         </thead>
         <tbody id="courseTableBody">
