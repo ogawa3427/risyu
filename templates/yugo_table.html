@@ -6,6 +6,13 @@
         var r_course_info = JSON.parse(courseInfoStr);
         const course_info = JSON.parse(courseInfoStr);
 
+        const donyu = [
+            'アカデミックスキル',
+            'プレゼン・ディベート論',
+            '数理・データサイエンス基礎及び演習',
+            'アントレプレナー基礎'
+        ]
+
         console.log(r_course_info);
 
         document.addEventListener('DOMContentLoaded', (event) => {
@@ -42,6 +49,35 @@
 
                 r_course_info = r_course_info.filter((course) => {
                     return course.quarter == getSelectedQuarter();
+                });
+
+                r_course_info = r_course_info.filter((course) => {
+                    if (!sendoCheckbox.checked) {
+                        return course.rui != '先導学類';
+                    } else {
+                        return true;
+                    }
+                });
+                r_course_info = r_course_info.filter((course) => {
+                    if (!kandCheckbox.checked) {
+                        return course.rui != '観光デザイン学類';
+                    } else {
+                        return true;
+                    }
+                });
+                r_course_info = r_course_info.filter((course) => {
+                    if (!sumaCheckbox.checked) {
+                        return course.rui != 'スマート創成科学類';
+                    } else {
+                        return true;
+                    }
+                });
+
+                r_course_info = r_course_info.filter((course) => {
+                    if (showAllCoursesCheckbox.checked) {
+                        return !donyu.includes(course.ja_title);
+                    }
+                    return true;
                 });
 
 
@@ -83,8 +119,34 @@
                     courseElement.className = "course";
                     courseElement.innerHTML = `
                         <a class="title" href="${r_course_info[item].link}">${r_course_info[item].ja_title}</a>
-                        <p class="teacher">${r_course_info[item].ja_teacher}</p>
                     `;
+
+                    if (r_course_info[item].rui == '先導学類') {
+                        courseElement.innerHTML += `
+                            <div style="display: flex; flex-flow: row;">
+                                <p class="sendo">先導</p>
+                                <p class="teacher">${r_course_info[item].ja_teacher}</p>
+                            </div>
+                        `;
+                    } else if (r_course_info[item].rui == '観光デザイン学類') {
+                        courseElement.innerHTML += `
+                            <div style="display: flex; flex-flow: row;">
+                                <p class="kand">観デザ</p>
+                                <p class="teacher">${r_course_info[item].ja_teacher}</p>
+                            </div>
+                        `;
+                    } else if (r_course_info[item].rui == 'スマート創成科学類') {
+                        courseElement.innerHTML += `
+                            <div style="display: flex; flex-flow: row;">
+                                <p class="suma">スマ創</p>
+                                <p class="teacher">${r_course_info[item].ja_teacher}</p>
+                            </div>
+                        `;
+                    } else {
+                        courseElement.innerHTML += `
+                            <p class="teacher">${r_course_info[item].ja_teacher}</p>
+                        `;
+                    }
 
                     const cell = document.getElementById(id);
                     if (cell) {
@@ -109,6 +171,66 @@
 <style>
     .course {
         border: 1px solid #000;
+        padding: 5px;
+        margin: 5px;
+        align-items: flex-start;
+    }
+    div {
+        background-color: #FFFFFF;
+    }
+    .sendo {
+        background-color: #008800;
+        color: #FFFFFF;
+        margin: 5px;
+        border-radius: 3px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 3px;
+    }
+    .kand {
+        background-color: #AA0000;
+        color: #FFFFFF;
+        margin: 5px;
+        border-radius: 3px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 3px;
+    }
+    .suma {
+        background-color: #0000AA;
+        color: #FFFFFF;
+        margin: 5px;
+        border-radius: 3px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: flex-start;
+        padding: 3px;
+        margin: 5px;
+    }
+    td {
+        background-color: #666666;
+    }
+    td > div {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start; /* 左寄せにする場合 */
+        justify-content: flex-start; /* 上から詰める */
+        height: 100%; /* セルの高さに合わせて伸ばす */
+    }
+    .day {
+        background-color: #EEEEEE;
+        padding: 10px;
+        font-weight: bold;
+        text-align: center;
+        font-size: 20px;
     }
 </style>
 <body>
@@ -118,23 +240,23 @@
     <input type="radio" id="quarter" name="quarter" value="Q2">Q2</input>
     <input type="radio" id="quarter" name="quarter" value="Q3">Q3</input>
     <input type="radio" id="quarter" name="quarter" value="Q4">Q4</input>
-    <input type="checkbox" id="sendo">先導</input>
-    <input type="checkbox" id="kand">観デザ</input>
-    <input type="checkbox" id="suma">スマ創</input>
+    <input type="checkbox" id="sendo" checked>先導</input>
+    <input type="checkbox" id="kand" checked>観デザ</input>
+    <input type="checkbox" id="suma" checked>スマ創</input>
     <table border="1">
         <thead>
             <tr>
-                <th></th>
-                <td>月</td>
-                <td>火</td>
-                <td>水</td>
-                <td>木</td>
-                <td>金</td>
-                <td>集中</td>
+                <th class="day"></th>
+                <td class="day">月</td>
+                <td class="day">火</td>
+                <td class="day">水</td>
+                <td class="day">木</td>
+                <td class="day">金</td>
+                <td class="day">集中</td>
             </tr>
                 
             <tr>
-                <th>1</th>
+                <th class="day">1</th>
                 <td id="M1"></td>
                 <td id="T1"></td>
                 <td id="W1"></td>
@@ -144,7 +266,7 @@
             </tr>
             
             <tr>
-                <th>2</th>
+                <th class="day">2</th>
                 <td id="M2"></td>
                 <td id="T2"></td>
                 <td id="W2"></td>
@@ -154,7 +276,7 @@
             </tr>
 
             <tr>
-                <th>3</th>
+                <th class="day">3</th>
                 <td id="M3"></td>
                 <td id="T3"></td>
                 <td id="W3"></td>
@@ -164,7 +286,7 @@
             </tr>
 
             <tr>
-                <th>4</th>
+                <th class="day">4</th>
                 <td id="M4"></td>
                 <td id="T4"></td>
                 <td id="W4"></td>
@@ -174,7 +296,7 @@
             </tr>
 
             <tr>
-                <th>5</th>
+                <th class="day">5</th>
                 <td id="M5"></td>
                 <td id="T5"></td>
                 <td id="W5"></td>
@@ -184,7 +306,7 @@
             </tr>
 
             <tr>
-                <th>6</th>
+                <th class="day">6</th>
                 <td id="M6"></td>
                 <td id="T6"></td>
                 <td id="W6"></td>
@@ -194,7 +316,7 @@
             </tr>
 
             <tr>
-                <th>7</th>
+                <th class="day">7</th>
                 <td id="M7"></td>
                 <td id="T7"></td>
                 <td id="W7"></td>

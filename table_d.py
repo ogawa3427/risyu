@@ -42,6 +42,7 @@ for html_name in html_names:
         "tt_number": soup.find(id="ctl00_phContents_Detail_lbl_lct_cd").get_text(strip=True),
         "lct_style": soup.find(id="ctl00_phContents_Detail_lbl_lct_type_name").get_text(strip=True),
         "iki": soup.find(id="ctl00_phContents_Detail_lbl_faculty_name").get_text(strip=True),
+        "rui": links_data[html_name.replace('.html', '')]["rui"],
         "teisei": soup.find(id="ctl00_phContents_Detail_lbl_class_size_disp").get_text(strip=True),
         "quarter": soup.find(id="ctl00_phContents_Detail_lbl_lct_term_name").get_text(strip=True),
         "day_period": soup.find(id="ctl00_phContents_Detail_lbl_day_period").get_text(strip=True),
