@@ -10,7 +10,8 @@
             'アカデミックスキル',
             'プレゼン・ディベート論',
             '数理・データサイエンス基礎及び演習',
-            'アントレプレナー基礎'
+            'アントレプレナー基礎',
+            'デザイン思考'
         ]
 
         console.log(r_course_info);
@@ -166,8 +167,19 @@
             // 初期描画
             drawTable();
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const donyu = [
+                'アカデミックスキル',
+                'プレゼン・ディベート論',
+                '数理・データサイエンス基礎及び演習',
+                'アントレプレナー基礎',
+                'デザイン思考'
+            ];
+            const s_donyu = donyu.join('、');
+            document.getElementById('showAllCourses').setAttribute('title', s_donyu);
+        });
     </script>
-</head>
 <style>
     .course {
         border: 1px solid #000;
@@ -288,7 +300,7 @@
     <h1>【非公式】融合学域時間割表(機能テスト中)</h1>
     <p style="font-size: 20px">あまり信用するなよ！！！　　　最終更新2024/03/01</p>
     <a href="https://github.com/ogawa3427/risyu/issues">苦情はここ(GitHub)</a>
-    <input type="checkbox" id="showAllCourses" checked>導入系の科目を非表示</input>
+    <input type="checkbox" id="showAllCourses" checked class="hov">導入系の科目を非表示</input>
     <input type="radio" id="quarter" name="quarter" value="Q1" checked>Q1</input>
     <input type="radio" id="quarter" name="quarter" value="Q2">Q2</input>
     <input type="radio" id="quarter" name="quarter" value="Q3">Q3</input>
