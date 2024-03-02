@@ -39,7 +39,8 @@
                 }
             }
             console.log(cookies);
-            if (cookies["kand"] == "undefined") {
+            console.log(cookies["kand"]);
+            if (cookies["kand"] == "undefined" || cookies["kand"] == undefined) {
                 console.log('cookieがない');
                 cookies["kand"] = 'true';
                 cookies["sendo"] = 'true';
