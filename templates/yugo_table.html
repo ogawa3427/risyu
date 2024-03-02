@@ -58,6 +58,9 @@
         const course_info = JSON.parse(courseInfoStr);
         //console.log(document.cookie);
 
+        const rui_name = '{{ rui_name }}'.replace(/^"|"$/g, '');
+        const ruis_aff = rui_name.split(',');
+
         const donyu = [
             'アカデミックスキル',
             'プレゼン・ディベート論',
@@ -141,13 +144,19 @@
                         return true;
                     }
                 });
-                r_course_info = r_course_info.filter((course) => {
-                    if (!denjoCheckbox.checked) {
-                        return course.rui != '電子情報通信学類';
-                    } else {
-                        return true;
-                    }
-                });
+                console.log(ruis_aff);
+                console.log(r_course_info);
+                for (const rui of ruis_aff) {
+                    r_course_info = r_course_info.filter((course) => {
+                        if (!denjoCheckbox.checked) {
+                            console.log(course.rui);
+                            console.log(rui);
+                            return course.rui != rui;
+                        } else {
+                            return true;
+                        }
+                    });
+                }
 
                 r_course_info = r_course_info.filter((course) => {
                     if (showAllCoursesCheckbox.checked) {
@@ -218,17 +227,20 @@
                                 <p class="teacher">${r_course_info[item].ja_teacher}</p>
                             </div>
                         `;
-                    } else if (r_course_info[item].rui == '電子情報通信学類') {
-                        courseElement.innerHTML += `
-                            <div style="display: flex; flex-flow: row;">
-                                <p class="denjo">電情</p>
-                                <p class="teacher">${r_course_info[item].ja_teacher}</p>
-                            </div>
-                        `;
                     } else {
-                        courseElement.innerHTML += `
-                            <p class="teacher">${r_course_info[item].ja_teacher}</p>
-                        `;
+                        let matchedRui = ruis_aff.find(rui => r_course_info[item].rui === rui);
+                        if (matchedRui) {
+                            courseElement.innerHTML += `
+                                <div style="display: flex; flex-flow: row;">
+                                    <p class="denjo">${matchedRui}</p>
+                                    <p class="teacher">${r_course_info[item].ja_teacher}</p>
+                                </div>
+                            `;
+                        } else {
+                            courseElement.innerHTML += `
+                                <p class="teacher">${r_course_info[item].ja_teacher}</p>
+                            `;
+                        }
                     }
 
                     const cell = document.getElementById(id);
@@ -254,8 +266,9 @@
     .course {
         border: 1px solid #000;
         padding: 5px;
-        margin: 5px;
+        margin: 9px;
         align-items: flex-start;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
     }
     div {
         background-color: #FFFFFF;
@@ -311,7 +324,7 @@
         margin: 5px;
     }
     td {
-        background-color: #666666;
+        background-color: #F5F5F5;
     }
     td > div {
         display: flex;
@@ -378,14 +391,133 @@
         border: 1px solid #000; /* チェックボックスの境界線を明示的に指定 */
         background-color: #fff; /* 背景色を白に */
     }
+    .links {
+        display: none;
+        overflow: hidden;
+    }
 </style>
 <body>
-    <h1>【非公式】融合学域時間割表(機能テスト中)</h1>
-    <p style="font-size: 20px">あまり信用するなよ！！！　　　最終更新2024/03/01</p>
+    <h1>【非公式】金沢大学シラバスから引いてる時間割表(機能テスト中)</h1>
+    <p style="font-size: 20px">融合の一部必修科目など、検索結果に単純に現れなかった科目は表示できません。ご注意ください。　　　最終更新2024/03/02</p>
     <a href="https://github.com/ogawa3427/risyu/issues">苦情はここ(GitHub)</a>
     <br>
     <a href="https://github.com/ogawa3427/risyu/blob/main/course_info.json">学士課程の全データ(たぶん)</a>
     <br>
+    <button id="toggleButton" style="padding: 15px;">学類選択</button>
+    <div id="expandableContent" class="content" style="width: 100%; ">
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>融合学域あり</th>
+                    <th>なし</th>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=51_00&yugo=1">人社共通</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=51_00&yugo=0">人社共通</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=51_01&yugo=1">人文学類</a></td>4
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=51_01&yugo=0">人文学類</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=51_02&yugo=1">法学類</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=51_02&yugo=0">法学類</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=51_03&yugo=1">経済学類</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=51_03&yugo=0">経済学類</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=51_04&yugo=1">学教</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=51_04&yugo=0">学教</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=51_05&yugo=1">地域創造学類</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=51_05&yugo=0">地域創造学類</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=51_06&yugo=1">国際学類</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=51_06&yugo=0">国際学類</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=51_99&yugo=1">教職・資格(人社)</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=51_99&yugo=0">教職・資格(人社)</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=52_00&yugo=1">理工共通</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=52_00&yugo=0">理工共通</a></td>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=52_10&yugo=1">理工一括</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=52_10&yugo=0">理工一括</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=52_01&yugo=1">数物科学類</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=52_01&yugo=0">数物科学類</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=52_02&yugo=1">物質化学類</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=52_02&yugo=0">物質化学類</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=52_11&yugo=1">機械工学類</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=52_11&yugo=0">機械工学類</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=52_12&yugo=1">フロンティア工学類</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=52_12&yugo=0">フロンティア工学類</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=52_13&yugo=1">電子情報通信学類</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=52_13&yugo=0">電子情報通信学類</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=52_14&yugo=1">地球社会基盤学類</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=52_14&yugo=0">地球社会基盤学類</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=52_15&yugo=1">生命理工学類</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=52_15&yugo=0">生命理工学類</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=52_99&yugo=1">教職・資格(理工)</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=52_99&yugo=0">教職・資格(理工)</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=53_00&yugo=1">医薬保共通</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=53_00&yugo=0">医薬保共通</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=53_01&yugo=1">医学類</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=53_01&yugo=0">医学類</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=53_03&yugo=1">保健学類</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=53_03&yugo=0">保健学類</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=53_04&yugo=1">薬学類</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=53_04&yugo=0">薬学類</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=53_05&yugo=1">医薬科学類</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=53_05&yugo=0">医薬科学類</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=00_00&yugo=1">総合教育部</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=00_00&yugo=0">総合教育部</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=--_--&yugo=1">共通教育</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=--_--&yugo=0">共通教育</a></td>
+                </tr>
+                <tr>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=46_91&yugo=1">国際機構</a></td>
+                    <td><a href="https://kurisyushien.org/yugo_table?aff=46_91&yugo=0">国際機構</a></td>
+                </tr>
+
+            </thead>
+        </table>
+    </div>
     <input type="checkbox" id="showAllCourses" checked class="hov">導入系の科目を非表示</input>
     <input type="radio" id="quarter" name="quarter" value="Q1" checked>Q1</input>
     <input type="radio" id="quarter" name="quarter" value="Q2">Q2</input>
@@ -395,7 +527,7 @@
     <input type="checkbox" id="sendo" checked>先導</input>
     <input type="checkbox" id="kand" checked>観デザ</input>
     <input type="checkbox" id="suma" checked>スマ創</input>
-    <input type="checkbox" id="denjo" checked>電情</input>
+    <input type="checkbox" id="denjo" checked>"{{ rui_name }}"</input>
     <button id="reset">cookieを消す</button>
     <table border="1">
         <thead>
@@ -513,6 +645,21 @@
             }
             return null; // 何も選択されていない場合
         };
+        document.addEventListener('DOMContentLoaded', function() {
+            var content = document.getElementById('expandableContent');
+            content.style.display = 'none'; // ページを開いた状態で隠します
+            document.getElementById('toggleButton').textContent = '学類選択';
+
+            document.getElementById('toggleButton').addEventListener('click', function() {
+                if (content.style.display === 'block') {
+                    content.style.display = 'none';
+                    this.textContent = '学類選択';
+                } else {
+                    content.style.display = 'block';
+                    this.textContent = '学類選択を隠す';
+                }
+            });
+        });
     </script>
 </body>
 </html>
