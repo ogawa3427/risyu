@@ -1,10 +1,61 @@
 <!DOCTYPE html>
 <html lang="ja">
     <script>
-        console.log('{{ course_info | tojson }}');
+        const quarterRadios = document.getElementsByName('quarter');
+        function setCookie(isReset) {
+            if (!isReset) {
+                cookies["kand"] = document.getElementById('kand').checked.toString();
+                cookies["sendo"] = document.getElementById('sendo').checked.toString();
+                cookies["suma"] = document.getElementById('suma').checked.toString();
+                console.log(cookies["suma"]);
+                cookies["denjo"] = document.getElementById('denjo').checked.toString();
+                cookies["showAllCourses"] = document.getElementById('showAllCourses').checked.toString();
+                cookies["quarter"] = getSelectedQuarter();
+                console.log('NOREset');
+            } else {
+                console.log('reset');
+            }
+            console.log(cookies);
+            var d = new Date();
+            d.setTime(d.getTime() + (7*24*60*60*1000));
+            var expires = "expires="+ d.toUTCString();
+            for (var key in cookies) {
+                var cookie_str = key + "=" + cookies[key] + "; " + expires + "; path=/";
+                document.cookie = cookie_str;
+            }
+            console.log(document.cookie);
+        }
+        var cookies = {};
+        function getCookie() {
+            const p_cookie = document.cookie;
+            //console.log(p_cookie);
+            var list_cookies = p_cookie.split(';');
+            var cookies = {};
+            for (var i = 0; i < list_cookies.length; i++) {
+                c = list_cookies[i].replace(/ /g, '');
+                var dc = c.split('=');
+                if (dc.length > 1) {
+                    cookies[dc[0]] = dc[1];
+                }
+            }
+            console.log(cookies);
+            if (cookies["kand"] == "undefined") {
+                console.log('cookieがない');
+                cookies["kand"] = 'true';
+                cookies["sendo"] = 'true';
+                cookies["suma"] = 'true';
+                cookies["denjo"] = 'true';
+                cookies["showAllCourses"] = 'true';
+            }
+            console.log(cookies);
+            
+            return cookies;
+        }
+        //console.log('{{ course_info | tojson }}');
         const courseInfoStr = '{{ course_info | tojson }}'.replace(/^"|"$/g, '');
         var r_course_info = JSON.parse(courseInfoStr);
         const course_info = JSON.parse(courseInfoStr);
+        //console.log(document.cookie);
 
         const donyu = [
             'アカデミックスキル',
@@ -14,25 +65,40 @@
             'デザイン思考'
         ]
 
-        console.log(r_course_info);
+        //console.log(r_course_info);
 
         document.addEventListener('DOMContentLoaded', (event) => {
             const tableBody = document.getElementById('courseTableBody');
             const showAllCoursesCheckbox = document.getElementById('showAllCourses');
-            const quarterRadios = document.getElementsByName('quarter');
+            
             const sendoCheckbox = document.getElementById('sendo');
             const kandCheckbox = document.getElementById('kand');
             const sumaCheckbox = document.getElementById('suma');
             const denjoCheckbox = document.getElementById('denjo');
 
-            const getSelectedQuarter = () => {
-                for (const radio of quarterRadios) {
-                    if (radio.checked) {
-                        return radio.value;
-                    }
-                }
-                return null; // 何も選択されていない場合
-            };
+            // 状態をクッキーから読み込み
+            cookies = getCookie();
+            if (cookies["quarter"]) {
+                document.querySelector(`input[name="quarter"][value="${cookies["quarter"]}"]`).checked = true;
+            }
+            ['showAllCourses', 'sendo', 'kand', 'suma', 'denjo'].forEach(id => {
+                const checked = cookies[id] === 'true';
+                document.getElementById(id).checked = checked;
+            });
+
+            if (cookies["selectedQuarter"]) {
+                document.querySelector(`input[name="quarter"][value="${cookies["selectedQuarter"]}"]`).checked = true;
+            }
+
+            // チェックボックスとラジオボタンの変更を監視
+            document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(input => {
+                input.addEventListener('change', () => {
+                    setCookie(false);
+                    drawTable(); // 表を再描画
+                });
+            });
+
+
 
             const drawTable = () => {
                 const ids = ['M1', 'T1', 'W1', 'Th1', 'F1', 'M2', 'T2', 'W2', 'Th2', 'F2', 'M3', 'T3', 'W3', 'Th3', 'F3', 'M4', 'T4', 'W4', 'Th4', 'F4', 'M5', 'T5', 'W5', 'Th5', 'F5', 'M6', 'T6', 'W6', 'Th6', 'F6', 'M7', 'T7', 'W7', 'Th7', 'F7', 'SP'];
@@ -44,10 +110,10 @@
                 }
                 tableBody.innerHTML = '';
                 r_course_info = Object.values(course_info);
-                console.log(r_course_info);
+                //console.log(r_course_info);
 
-                console.log(getSelectedQuarter());
-                console.log(r_course_info[0].quarter);
+               //console.log(getSelectedQuarter());
+                //console.log(r_course_info[0].quarter);
 
                 r_course_info = r_course_info.filter((course) => {
                     return course.quarter == getSelectedQuarter();
@@ -167,10 +233,8 @@
                     const cell = document.getElementById(id);
                     if (cell) {
                         cell.appendChild(courseElement);
-                    }                  
-                } 
-
-                
+                    }
+                }                
             };
 
             // チェックボックスの状態が変わったら表を再描画
@@ -183,18 +247,6 @@
 
             // 初期描画
             drawTable();
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const donyu = [
-                'アカデミックスキル',
-                'プレゼン・ディベート論',
-                '数理・データサイエンス基礎及び演習',
-                'アントレプレナー基礎',
-                'デザイン思考'
-            ];
-            const s_donyu = donyu.join('、');
-            document.getElementById('showAllCourses').setAttribute('title', s_donyu);
         });
     </script>
 <style>
@@ -343,6 +395,7 @@
     <input type="checkbox" id="kand" checked>観デザ</input>
     <input type="checkbox" id="suma" checked>スマ創</input>
     <input type="checkbox" id="denjo" checked>電情</input>
+    <button id="reset">cookieを消す</button>
     <table border="1">
         <thead>
             <tr>
@@ -429,5 +482,36 @@
             <!-- JavaScriptで動的に行が追加されます -->
         </tbody>
     </table>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const donyu = [
+                'アカデミックスキル',
+                'プレゼン・ディベート論',
+                '数理・データサイエンス基礎及び演習',
+                'アントレプレナー基礎',
+                'デザイン思考'
+            ];
+            const s_donyu = donyu.join('、');
+            document.getElementById('showAllCourses').setAttribute('title', s_donyu);
+        });
+
+        document.getElementById('reset').addEventListener('click', () => {
+            cookies = getCookie();
+            cookies["kand"] = undefined;
+            setCookie(true);
+            console.log(cookies);
+            console.log(document.cookie);
+            document.location.reload();
+        });
+
+        const getSelectedQuarter = () => {
+            for (const radio of quarterRadios) {
+                if (radio.checked) {
+                    return radio.value;
+                }
+            }
+            return null; // 何も選択されていない場合
+        };
+    </script>
 </body>
 </html>
