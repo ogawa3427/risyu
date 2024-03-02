@@ -195,7 +195,11 @@ def yugo_table():
             p_rui = other_dict[aff]
 
         filled = {}
-        if "_00" in aff:
+        if p_rui == "理工一括":
+            for key in course_info:
+                if course_info[key]['rui'] == "理工一括":
+                    filled[key] = course_info[key]
+        elif "_00" in aff:
             rui = "学域共通"
             for key in course_info:
                 if course_info[key]['iki'] == iki and course_info[key]['rui'] == rui:
