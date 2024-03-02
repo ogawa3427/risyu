@@ -139,7 +139,12 @@ def yugo_table():
     # course_infoをJSON文字列に変換
     course_info_json = json.dumps(course_info, ensure_ascii=False)
     # JSON文字列を安全なマークアップとしてマーク
-    course_info_safe = Markup(course_info_json)
+    to_send = {}
+    for key in course_info:
+        if course_info[key]['iki'] == '融合学域' or course_info[key]['rui'] == '電子情報通信学類':
+            to_send[key] = course_info[key]
+    to_send_json = json.dumps(to_send, ensure_ascii=False)
+    course_info_safe = Markup(to_send_json)
     course_info_safe = course_info_safe.replace('^\"', "")
     course_info_safe = course_info_safe.replace("\"$", "")
     return render_template(

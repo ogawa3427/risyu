@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
     <script>
-        //console.log('{{ course_info | tojson }}');
+        console.log('{{ course_info | tojson }}');
         const courseInfoStr = '{{ course_info | tojson }}'.replace(/^"|"$/g, '');
         var r_course_info = JSON.parse(courseInfoStr);
         const course_info = JSON.parse(courseInfoStr);
@@ -23,6 +23,7 @@
             const sendoCheckbox = document.getElementById('sendo');
             const kandCheckbox = document.getElementById('kand');
             const sumaCheckbox = document.getElementById('suma');
+            const denjoCheckbox = document.getElementById('denjo');
 
             const getSelectedQuarter = () => {
                 for (const radio of quarterRadios) {
@@ -69,6 +70,13 @@
                 r_course_info = r_course_info.filter((course) => {
                     if (!sumaCheckbox.checked) {
                         return course.rui != 'スマート創成科学類';
+                    } else {
+                        return true;
+                    }
+                });
+                r_course_info = r_course_info.filter((course) => {
+                    if (!denjoCheckbox.checked) {
+                        return course.rui != '電子情報通信学類';
                     } else {
                         return true;
                     }
@@ -143,6 +151,13 @@
                                 <p class="teacher">${r_course_info[item].ja_teacher}</p>
                             </div>
                         `;
+                    } else if (r_course_info[item].rui == '電子情報通信学類') {
+                        courseElement.innerHTML += `
+                            <div style="display: flex; flex-flow: row;">
+                                <p class="denjo">電情</p>
+                                <p class="teacher">${r_course_info[item].ja_teacher}</p>
+                            </div>
+                        `;
                     } else {
                         courseElement.innerHTML += `
                             <p class="teacher">${r_course_info[item].ja_teacher}</p>
@@ -164,6 +179,8 @@
             sendoCheckbox.addEventListener('change', drawTable);
             kandCheckbox.addEventListener('change', drawTable);
             sumaCheckbox.addEventListener('change', drawTable);
+            denjoCheckbox.addEventListener('change', drawTable);
+
             // 初期描画
             drawTable();
         });
@@ -216,6 +233,19 @@
     }
     .suma {
         background-color: #0000AA;
+        color: #FFFFFF;
+        margin: 5px;
+        border-radius: 3px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: flex-start;
+        padding: 3px;
+        margin: 5px;
+    }
+    .denjo {
+        background-color: #222222;
         color: #FFFFFF;
         margin: 5px;
         border-radius: 3px;
@@ -309,6 +339,7 @@
     <input type="checkbox" id="sendo" checked>先導</input>
     <input type="checkbox" id="kand" checked>観デザ</input>
     <input type="checkbox" id="suma" checked>スマ創</input>
+    <input type="checkbox" id="denjo" checked>電情</input>
     <table border="1">
         <thead>
             <tr>
