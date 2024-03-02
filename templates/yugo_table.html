@@ -69,7 +69,7 @@
             'デザイン思考'
         ]
 
-        //console.log(r_course_info);
+        console.log(r_course_info);
 
         document.addEventListener('DOMContentLoaded', (event) => {
             const tableBody = document.getElementById('courseTableBody');
@@ -116,12 +116,14 @@
                 r_course_info = Object.values(course_info);
                 //console.log(r_course_info);
 
-               //console.log(getSelectedQuarter());
-                //console.log(r_course_info[0].quarter);
+                console.log(getSelectedQuarter());
+                console.log(r_course_info[0].quarter);
 
                 r_course_info = r_course_info.filter((course) => {
-                    return course.quarter == getSelectedQuarter();
+                    const qs = course.quarter.split(',');
+                    return qs.includes(getSelectedQuarter());
                 });
+                console.log(r_course_info);
 
                 r_course_info = r_course_info.filter((course) => {
                     if (!sendoCheckbox.checked) {
@@ -148,15 +150,17 @@
                 console.log(r_course_info);
                 for (const rui of ruis_aff) {
                     r_course_info = r_course_info.filter((course) => {
+                        //console.log(course.rui);
+                        //console.log(rui);
                         if (!denjoCheckbox.checked) {
-                            console.log(course.rui);
-                            console.log(rui);
                             return course.rui != rui;
                         } else {
                             return true;
                         }
                     });
                 }
+
+                //console.log(r_course_info);
 
                 r_course_info = r_course_info.filter((course) => {
                     if (showAllCoursesCheckbox.checked) {
@@ -175,29 +179,33 @@
                     var day_alp = '';
                     var id = '';
 
-                    switch (day) {
-                        case '月':
-                            day_alp = 'M';
-                            break;
-                        case '火':
-                            day_alp = 'T';
-                            break;
-                        case '水':
-                            day_alp = 'W';
-                            break;
-                        case '木':
-                            day_alp = 'Th';
-                            break;
-                        case '金':
-                            day_alp = 'F';
-                            break;
+                    if (r_course_info[item].day_period == '集中') {
+                        day_alp = 'SP';
+                        console.log('集中');
+                        id = 'SP';
+                    } else {
+                        switch (day) {
+                            case '月':
+                                day_alp = 'M';
+                                break;
+                            case '火':
+                                day_alp = 'T';
+                                break;
+                            case '水':
+                                day_alp = 'W';
+                                break;
+                            case '木':
+                                day_alp = 'Th';
+                                break;
+                            case '金':
+                                day_alp = 'F';
+                                break;
+                        }
+                                    id = day_alp + period;
+                                    console.log(id);
                     }
 
-                    if (spl == '集中') {
-                        day_alp = 'SP';
-                    } else {
-                        id = day_alp + period;
-                    }
+                    //console.log(r_course_info)
 
                     const courseElement = document.createElement('div');
                     //courseElement.href = r_course_info[item].link;
@@ -228,8 +236,11 @@
                             </div>
                         `;
                     } else {
+                        //console.log(ruis_aff);
+                        //console.log(r_course_info[item].rui);
                         let matchedRui = ruis_aff.find(rui => r_course_info[item].rui === rui);
                         if (matchedRui) {
+                            //console.log(matchedRui);
                             courseElement.innerHTML += `
                                 <div style="display: flex; flex-flow: row;">
                                     <p class="denjo">${matchedRui}</p>

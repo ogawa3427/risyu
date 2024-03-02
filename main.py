@@ -45,9 +45,9 @@ rk_dict = {
 md_dict = {
     '53_00': '学域共通',
     '53_01': '医学類',
-    '53_02': '保健学類',
+    '53_03': '保健学類',
     '53_04': '薬学類',
-    '53_95': '医薬科学類'
+    '53_05': '医薬科学類'
 }
 
 other_dict = {
@@ -194,6 +194,10 @@ def yugo_table():
             iki = "other"
             p_rui = other_dict[aff]
 
+        if p_rui == "機械工学類":
+            p_rui = "機械工学類（新）"
+
+
         filled = {}
         if p_rui == "理工一括":
             for key in course_info:
@@ -206,18 +210,18 @@ def yugo_table():
                     filled[key] = course_info[key]
         elif iki == "other":
             for key in course_info:
-                print("!--")
-                print(course_info[key]['rui'])
-                print(rui)
+                #print("!--")
+                #print(course_info[key]['rui'])
+                #print(rui)
                 if course_info[key]['iki'] == p_rui:
                     filled[key] = course_info[key]
         else:
             ruis = p_rui.split(",")
             for rui in ruis:
                 for key in course_info:
-                    print("---")
-                    print(course_info[key]['rui'])
-                    print(rui)
+                    #print("---")
+                    #print(course_info[key]['rui'])
+                    #print(rui)
                     if course_info[key]['rui'] == rui:
                         filled[key] = course_info[key]
             #for key in course_info:
@@ -236,8 +240,8 @@ def yugo_table():
         course_info_safe = course_info_safe.replace('^\"', "")
         course_info_safe = course_info_safe.replace("\"$", "")
 
-        print(iki)
-        print(p_rui)
+        #print(iki)
+        #print(p_rui)
 
         return render_template(
             'yugo_table.html',
