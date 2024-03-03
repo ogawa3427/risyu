@@ -176,86 +176,86 @@ def tests():
 
 @app.route('/yugo_table')
 def yugo_table():
-    try:
-        iswith = request.args.get('yugo')
-        aff = request.args.get('aff')
-        iki = ""
+    #try:
+    iswith = request.args.get('yugo', "1")
+    aff = request.args.get('aff', "52_13")
+    iki = ""
 
-        if "51_" in aff:
-            iki = "人間社会学域"
-            p_rui = jb_dict[aff]
-        elif "52_" in aff:
-            iki = "理工学域"
-            p_rui = rk_dict[aff]
-        elif "53_" in aff:
-            iki = "医薬保健学域"
-            p_rui = md_dict[aff]
-        else:
-            iki = "other"
-            p_rui = other_dict[aff]
+    if "51_" in aff:
+        iki = "人間社会学域"
+        p_rui = jb_dict[aff]
+    elif "52_" in aff:
+        iki = "理工学域"
+        p_rui = rk_dict[aff]
+    elif "53_" in aff:
+        iki = "医薬保健学域"
+        p_rui = md_dict[aff]
+    else:
+        iki = "other"
+        p_rui = other_dict[aff]
 
-        if p_rui == "機械工学類":
-            p_rui = "機械工学類（新）"
+    if p_rui == "機械工学類":
+        p_rui = "機械工学類（新）"
 
 
-        filled = {}
-        if p_rui == "理工一括":
+    filled = {}
+    if p_rui == "理工一括":
+        for key in course_info:
+            if course_info[key]['rui'] == "理工一括":
+                filled[key] = course_info[key]
+    elif p_rui == "総合教育部":
+        for key in course_info:
+            if course_info[key]['iki'] == "総合教育部":
+                filled[key] = course_info[key]
+                filled[key]['rui'] = "総合教育部"
+    elif "_00" in aff:
+        rui = "学域共通"
+        for key in course_info:
+            if course_info[key]['iki'] == iki and course_info[key]['rui'] == rui:
+                filled[key] = course_info[key]
+    elif iki == "other":
+        for key in course_info:
+            #print("!--")
+            #print(course_info[key]['rui'])
+            #print(rui)
+            if course_info[key]['iki'] == p_rui:
+                filled[key] = course_info[key]
+    else:
+        ruis = p_rui.split(",")
+        for rui in ruis:
             for key in course_info:
-                if course_info[key]['rui'] == "理工一括":
-                    filled[key] = course_info[key]
-        elif p_rui == "総合教育部":
-            for key in course_info:
-                if course_info[key]['iki'] == "総合教育部":
-                    filled[key] = course_info[key]
-                    filled[key]['rui'] = "総合教育部"
-        elif "_00" in aff:
-            rui = "学域共通"
-            for key in course_info:
-                if course_info[key]['iki'] == iki and course_info[key]['rui'] == rui:
-                    filled[key] = course_info[key]
-        elif iki == "other":
-            for key in course_info:
-                #print("!--")
+                #print("---")
                 #print(course_info[key]['rui'])
                 #print(rui)
-                if course_info[key]['iki'] == p_rui:
+                if course_info[key]['rui'] == rui:
                     filled[key] = course_info[key]
-        else:
-            ruis = p_rui.split(",")
-            for rui in ruis:
-                for key in course_info:
-                    #print("---")
-                    #print(course_info[key]['rui'])
-                    #print(rui)
-                    if course_info[key]['rui'] == rui:
-                        filled[key] = course_info[key]
-            #for key in course_info:
-            #    if course_info[key]['iki'] == iki and course_info[key]['rui'] == aff:
-            #        filled[key] = course_info[key]
+        #for key in course_info:
+        #    if course_info[key]['iki'] == iki and course_info[key]['rui'] == aff:
+        #        filled[key] = course_info[key]
 
-        if iswith == "1":
-            for key in course_info:
-                if course_info[key]['iki'] == "融合学域":
-                    filled[key] = course_info[key]
-        
-        # course_infoをJSON文字列に変換
-        to_send_json = json.dumps(filled, ensure_ascii=False)
+    if iswith == "1":
+        for key in course_info:
+            if course_info[key]['iki'] == "融合学域":
+                filled[key] = course_info[key]
+    
+    # course_infoをJSON文字列に変換
+    to_send_json = json.dumps(filled, ensure_ascii=False)
 
-        course_info_safe = Markup(to_send_json)
-        course_info_safe = course_info_safe.replace('^\"', "")
-        course_info_safe = course_info_safe.replace("\"$", "")
+    course_info_safe = Markup(to_send_json)
+    course_info_safe = course_info_safe.replace('^\"', "")
+    course_info_safe = course_info_safe.replace("\"$", "")
 
-        #print(iki)
-        #print(p_rui)
+    #print(iki)
+    #print(p_rui)
 
-        return render_template(
-            'yugo_table.html',
-            course_info=course_info_safe,
-            rui_name=p_rui
-        )
-    except Exception as e:
-        print(e)
-        return redirect('/yugo_table?aff=52_13&yugo=1')
+    return render_template(
+        'yugo_table.html',
+        course_info=course_info_safe,
+        rui_name=p_rui
+    )
+    #except Exception as e:
+   #     print(e)
+   #     return redirect('/yugo_table?aff=52_13&yugo=1')
         
 
 if __name__ == "__main__":
