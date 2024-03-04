@@ -67,7 +67,7 @@
         "rui": "先導学類",
         "iki": "融合学域",
         "title": "数理・データサイエンス基礎及び演習[Introduction and Practicum for Mathematical Data Science]",
-        "teacher": "中山　晶一朗[NAKAYAMA, Shoichiro]",
+        "teacher": "中山　晶一朗[NAKAYAMA, Shoichiro], 南保　英孝[NAMBO, Hidetaka]",
         "q": "Q3",
         "dp": "火4〜5"
     },
@@ -175,7 +175,7 @@
         "rui": "観光デザイン学類",
         "iki": "融合学域",
         "title": "数理・データサイエンス基礎及び演習[Introduction and Practicum for Mathematical Data Science]",
-        "teacher": "中山　晶一朗[NAKAYAMA, Shoichiro]",
+        "teacher": "中山　晶一朗[NAKAYAMA, Shoichiro], 南保　英孝[NAMBO, Hidetaka]",
         "q": "Q3",
         "dp": "火4〜5"
     },
@@ -265,7 +265,7 @@
         "rui": "スマート創成科学類",
         "iki": "融合学域",
         "title": "数理・データサイエンス基礎及び演習[Introduction and Practicum for Mathematical Data Science]",
-        "teacher": "中山　晶一朗[NAKAYAMA, Shoichiro]",
+        "teacher": "中山　晶一朗[NAKAYAMA, Shoichiro], 南保　英孝[NAMBO, Hidetaka]",
         "q": "Q3",
         "dp": "火4〜5"
     },
@@ -26707,7 +26707,7 @@
         "rui": "学域共通",
         "iki": "理工学域",
         "title": "学域ＧＳ言語科目Ⅰ（理工系英語Ⅰ）[GS English Language for Undergraduates I (English for Science and Engineering)]",
-        "teacher": "教務委員[kyomuiin], 黒田　浩介[KURODA, Kosuke], 小林　功[KOBAYASHI, Isao]",
+        "teacher": "教務委員[kyomuiin], 黒田　浩介[KURODA, Kosuke], 亀井　宏泰[KAMEI, Hiroyasu]",
         "q": "Q1",
         "dp": "木6"
     },
@@ -26761,7 +26761,7 @@
         "rui": "学域共通",
         "iki": "理工学域",
         "title": "学域ＧＳ言語科目Ⅱ（理工系英語Ⅱ）[GS English Language for Undergraduates II (English for Science and Engineering)]",
-        "teacher": "教務委員[kyomuiin], 小林　功[KOBAYASHI, Isao], 黒田　浩介[KURODA, Kosuke]",
+        "teacher": "教務委員[kyomuiin], 亀井　宏泰[KAMEI, Hiroyasu], 黒田　浩介[KURODA, Kosuke]",
         "q": "Q2",
         "dp": "木6"
     },
@@ -30667,7 +30667,7 @@
         "rui": "フロンティア工学類",
         "iki": "理工学域",
         "title": "熱力学Ａ[Thermodynamics A]",
-        "teacher": "多田　薫[TADA, Kaoru]",
+        "teacher": "多田　薫[TADA, Kaoru], 内田　博久[UCHIDA, Hirohisa]",
         "q": "Q3",
         "dp": "木4"
     },
@@ -30676,7 +30676,7 @@
         "rui": "フロンティア工学類",
         "iki": "理工学域",
         "title": "熱力学Ｂ[Thermodynamics B]",
-        "teacher": "内田　博久[UCHIDA, Hirohisa]",
+        "teacher": "内田　博久[UCHIDA, Hirohisa], 多田　薫[TADA, Kaoru]",
         "q": "Q4",
         "dp": "木4"
     },
@@ -30703,7 +30703,7 @@
         "rui": "フロンティア工学類",
         "iki": "理工学域",
         "title": "化学反応速度論Ａ[Chemical Reacting Kinetics A]",
-        "teacher": "内田　博久[UCHIDA, Hirohisa]",
+        "teacher": "内田　博久[UCHIDA, Hirohisa], 比江嶋　祐介[HIEJIMA, Yusuke]",
         "q": "Q3",
         "dp": "木2"
     },
@@ -30712,7 +30712,7 @@
         "rui": "フロンティア工学類",
         "iki": "理工学域",
         "title": "化学反応速度論Ｂ[Chemical Reacting Kinetics B]",
-        "teacher": "内田　博久[UCHIDA, Hirohisa]",
+        "teacher": "内田　博久[UCHIDA, Hirohisa], 比江嶋　祐介[HIEJIMA, Yusuke]",
         "q": "Q4",
         "dp": "木2"
     },
@@ -31486,7 +31486,7 @@
         "rui": "フロンティア工学類",
         "iki": "理工学域",
         "title": "結晶化工学Ａ[Crystallization Engineering A]",
-        "teacher": "内田　博久[UCHIDA, Hirohisa]",
+        "teacher": "内田　博久[UCHIDA, Hirohisa], 比江嶋　祐介[HIEJIMA, Yusuke]",
         "q": "Q1",
         "dp": "水2"
     },
@@ -31495,7 +31495,7 @@
         "rui": "フロンティア工学類",
         "iki": "理工学域",
         "title": "結晶化工学Ｂ[Crystallization Engineering B]",
-        "teacher": "内田　博久[UCHIDA, Hirohisa]",
+        "teacher": "内田　博久[UCHIDA, Hirohisa], 比江嶋　祐介[HIEJIMA, Yusuke]",
         "q": "Q2",
         "dp": "水2"
     },
@@ -36670,7 +36670,7 @@
         "rui": "保健学類",
         "iki": "医薬保健学域",
         "title": "臨床薬学論[Basic and Clinical Pharmacology]",
-        "teacher": "崔　吉道[SAI, Yoshimichi], 嶋田　努[SHIMADA, Tsutomu], 田中　浩二[TANAKA, Koji], 大江　真琴[OE, Makoto]",
+        "teacher": "崔　吉道[SAI, Yoshimichi], 田中　浩二[TANAKA, Koji], 大江　真琴[OE, Makoto]",
         "q": "Q3,Q4",
         "dp": "月2"
     },
@@ -37750,7 +37750,7 @@
         "rui": "保健学類",
         "iki": "医薬保健学域",
         "title": "母性看護技術演習[Maternity Nursing: Skills Laboratory]",
-        "teacher": "毎田　佳子[MAIDA, Yoshiko], 鏡　真美[KAGAMI, Naomi], 南　香奈[MINAMI, Kana], 太田　良子[OTA, Yoshiko], 小西　佳世乃[KONISHI, Kayono], 宮西　美幸[MIYANISHI, Miyuki]",
+        "teacher": "毎田　佳子[MAIDA, Yoshiko], 鏡　真美[KAGAMI, Naomi], 小西　佳世乃[KONISHI, Kayono], 南　香奈[MINAMI, Kana], 太田　良子[OTA, Yoshiko], 宮西　美幸[MIYANISHI, Miyuki]",
         "q": "Q1,Q2",
         "dp": "集中"
     },
@@ -55399,7 +55399,7 @@
         "rui": "導入",
         "iki": "共通教育",
         "title": "大学・社会生活論[Lecture on Life in Campus and Society]",
-        "teacher": "坂本　敏夫[SAKAMOTO, Toshio], 和田　隆志[WADA, Takashi], 未定[MITEI], 馬場　絢子[BABA, Ayako]",
+        "teacher": "仁宮　一章[NINOMIYA, Kazuaki], 和田　隆志[WADA, Takashi], 馬場　絢子[BABA, Ayako]",
         "q": "Q1",
         "dp": "月1"
     },
@@ -55741,7 +55741,7 @@
         "rui": "導入",
         "iki": "共通教育",
         "title": "地域概論[Introduction to Region-studies]",
-        "teacher": "深田　宰史[FUKADA, Saiji], 日比野　剛, 畑　光彦[HATA, Mitsuhiko], 沈　振江[SHEN, Zhenjiang], 楳田　真也[UMEDA, Shinya], 村田　晶[MURATA, Akira]",
+        "teacher": "深田　宰史[FUKADA, Saiji], 日比野　剛, 畑　光彦[HATA, Mitsuhiko], 沈　振江[SHEN, Zhenjiang], 楳田　真也[UMEDA, Shinya], 村田　晶[MURATA, Akira], 平松　良浩[HIRAMATSU, Yoshihiro]",
         "q": "Q2",
         "dp": "月1"
     },
@@ -56472,6 +56472,1293 @@
         "title": "現代日本文学―戦後から現代まで　（概論 1）[Contemporary Japanese Literature： From the World War Ⅱ to the Present　 (Survey 1）]",
         "teacher": "SEN RAJ LAKHI[SEN, Raj Lakhi]",
         "q": "Q2",
+        "dp": "水3"
+    },
+    "51-10064": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-10064&je_cd=1&lct_idx=A000000000180918",
+        "rui": "学域共通",
+        "iki": "人間社会学域",
+        "title": "国際貿易の理論とデータ",
+        "teacher": "加藤　篤行[KATO, Atsuyuki]",
+        "q": "Q1",
+        "dp": "火1"
+    },
+    "51-12006": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-12006&je_cd=1&lct_idx=A000000000166364",
+        "rui": "法学類",
+        "iki": "人間社会学域",
+        "title": "政治学Ｂ[Political Science B]",
+        "teacher": "未定[MITEI]",
+        "q": "Q2",
+        "dp": "木5"
+    },
+    "51-12BBB1": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-12BBB1&je_cd=1&lct_idx=A000000000167068",
+        "rui": "学校教育学類共同教員養成課程",
+        "iki": "人間社会学域",
+        "title": "教職と学校",
+        "teacher": "平石　晃樹[HIRAISHI, Koki], 上森　さくら[Uemori, Sakura], 鳥居　和代[TORII, Kazuyo], 土屋　明広[TSUCHIYA, Akihiro], 原田　克巳[HARADA, Katsumi], 本所　恵[HONJO, Megumi], 森　慶惠[MORI, Yoshie]",
+        "q": "Q4",
+        "dp": "水5"
+    },
+    "51-12CCB1": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-12CCB1&je_cd=1&lct_idx=A000000000167095",
+        "rui": "学校教育学類共同教員養成課程",
+        "iki": "人間社会学域",
+        "title": "算数科基礎Ｂ（高学年）[Fundamentals of Mathematics at Primary School B]",
+        "teacher": "伊藤　伸也[ITOH, Shinya]",
+        "q": "Q2",
+        "dp": "月5"
+    },
+    "51-12DCA0": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-12DCA0&je_cd=1&lct_idx=A000000000167128",
+        "rui": "学校教育学類共同教員養成課程",
+        "iki": "人間社会学域",
+        "title": "初等算数科教育法Ⅰ",
+        "teacher": "伊藤　伸也[ITOH, Shinya]",
+        "q": "Q3",
+        "dp": "金4"
+    },
+    "51-12DCB0": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-12DCB0&je_cd=1&lct_idx=A000000000167130",
+        "rui": "学校教育学類共同教員養成課程",
+        "iki": "人間社会学域",
+        "title": "初等算数科教育法Ⅱ",
+        "teacher": "伊藤　伸也[ITOH, Shinya], 米田　力生[YONEDA, Rikio]",
+        "q": "Q4",
+        "dp": "金4"
+    },
+    "51-12JAC1": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-12JAC1&je_cd=1&lct_idx=A000000000167330",
+        "rui": "学校教育学類共同教員養成課程",
+        "iki": "人間社会学域",
+        "title": "数学科教育法Ⅲ（石川県の教育実践を含む）[Methods of Teaching Mathematics III]",
+        "teacher": "伊藤　伸也[ITOH, Shinya]",
+        "q": "Q3",
+        "dp": "月2"
+    },
+    "51-12JAD1": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-12JAD1&je_cd=1&lct_idx=A000000000167332",
+        "rui": "学校教育学類共同教員養成課程",
+        "iki": "人間社会学域",
+        "title": "数学科教育法Ⅳ（石川県の教育実践を含む）[Methods of Teaching Mathematics IV]",
+        "teacher": "伊藤　伸也[ITOH, Shinya]",
+        "q": "Q4",
+        "dp": "月2"
+    },
+    "51-12PDE0": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-12PDE0&je_cd=1&lct_idx=A000000000171802",
+        "rui": "学校教育学類共同教員養成課程",
+        "iki": "人間社会学域",
+        "title": "英作文Ⅲ(応用）[English Composition III]",
+        "teacher": "久保　拓也[KUBO, Takuya]",
+        "q": "Q1",
+        "dp": "月4"
+    },
+    "51-12PDG0": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-12PDG0&je_cd=1&lct_idx=A000000000171803",
+        "rui": "学校教育学類共同教員養成課程",
+        "iki": "人間社会学域",
+        "title": "英作文Ⅳ（応用）[English Composition IV]",
+        "teacher": "久保　拓也[KUBO, Takuya]",
+        "q": "Q2",
+        "dp": "月4"
+    },
+    "51-14004": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-14004&je_cd=1&lct_idx=A000000000165624",
+        "rui": "学校教育学類",
+        "iki": "人間社会学域",
+        "title": "生活科専門研究[Directed Research in Subject of Life]",
+        "teacher": "土井　妙子[DOI, Taeko]",
+        "q": "Q1,Q2",
+        "dp": "火1"
+    },
+    "51-16202": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-16202&je_cd=1&lct_idx=A000000000171940",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "国際学入門[Introduction to International Studies ]",
+        "teacher": "古泉　達矢[KOIZUMI, Tatsuya], 弁納　才一[BENNOU, Saiichi], 古畑　徹[FURUHATA, Toru]",
+        "q": "Q1",
+        "dp": "金1"
+    },
+    "51-16208": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-16208&je_cd=1&lct_idx=A000000000175557",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "国際貿易論1[International Trade 1]",
+        "teacher": "加藤　篤行[KATO, Atsuyuki]",
+        "q": "Q1",
+        "dp": "火1"
+    },
+    "51-16213.002": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-16213.002&je_cd=1&lct_idx=A000000000171942",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "日本史概説1[Introduction to Japanese History 1]",
+        "teacher": "山本　洋[YAMAMOTO, Hiroshi]",
+        "q": "Q1",
+        "dp": "水3"
+    },
+    "51-16213.102": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-16213.102&je_cd=1&lct_idx=A000000000172418",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "日本史概説1[Introduction to Japanese History 1]",
+        "teacher": "山本　洋[YAMAMOTO, Hiroshi]",
+        "q": "Q3",
+        "dp": "水3"
+    },
+    "51-16261": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-16261&je_cd=1&lct_idx=A000000000178284",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "国際貿易論1E[International Trade 1E]",
+        "teacher": "加藤　篤行[KATO, Atsuyuki]",
+        "q": "Q3",
+        "dp": "火1"
+    },
+    "51-16408": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-16408&je_cd=1&lct_idx=A000000000175938",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "国際貿易論2[International Trade 2]",
+        "teacher": "加藤　篤行[KATO, Atsuyuki]",
+        "q": "Q2",
+        "dp": "火1"
+    },
+    "51-16413.002": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-16413.002&je_cd=1&lct_idx=A000000000172196",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "日本史概説2[Introduction to Japanese History 2]",
+        "teacher": "山本　洋[YAMAMOTO, Hiroshi]",
+        "q": "Q2",
+        "dp": "水3"
+    },
+    "51-16413.102": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-16413.102&je_cd=1&lct_idx=A000000000172673",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "日本史概説2[Introduction to Japanese History 2]",
+        "teacher": "山本　洋[YAMAMOTO, Hiroshi]",
+        "q": "Q4",
+        "dp": "水3"
+    },
+    "51-16415.001": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-16415.001&je_cd=1&lct_idx=A000000000171962",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "日本史概論１[Introduction to Japanese History 1]",
+        "teacher": "山本　洋[YAMAMOTO, Hiroshi]",
+        "q": "Q1",
+        "dp": "水3"
+    },
+    "51-16416.001": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-16416.001&je_cd=1&lct_idx=A000000000172197",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "日本史概論２[Introduction to Japanese History 2]",
+        "teacher": "山本　洋[YAMAMOTO, Hiroshi]",
+        "q": "Q2",
+        "dp": "水3"
+    },
+    "51-16461": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-16461&je_cd=1&lct_idx=A000000000178460",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "国際貿易論2E[International Trade 2E]",
+        "teacher": "加藤　篤行[KATO, Atsuyuki]",
+        "q": "Q4",
+        "dp": "火1"
+    },
+    "51-16477.009": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-16477.009&je_cd=1&lct_idx=A000000000183956",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "日本文化体験C（現代アートとデザイン）[Practicum in Japanese Culture C]",
+        "teacher": "佐藤　智哉[SATO, Tomoya]",
+        "q": "Q2",
+        "dp": "集中"
+    },
+    "51-23100.253": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-23100.253&je_cd=1&lct_idx=A000000000165902",
+        "rui": "経済学類",
+        "iki": "人間社会学域",
+        "title": "演習／国際貿易論[Seminar]",
+        "teacher": "加藤　篤行[KATO, Atsuyuki]",
+        "q": "Q1,Q2,Q3,Q4",
+        "dp": "水4"
+    },
+    "51-31320": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-31320&je_cd=1&lct_idx=A000000000173205",
+        "rui": "人文学類",
+        "iki": "人間社会学域",
+        "title": "政治学Ｂ[Political Science B]",
+        "teacher": "未定[MITEI]",
+        "q": "Q2",
+        "dp": "木5"
+    },
+    "51-32139": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-32139&je_cd=1&lct_idx=A000000000175442",
+        "rui": "法学類",
+        "iki": "人間社会学域",
+        "title": "比較政治学1[Comparative Politics 1]",
+        "teacher": "未定[MITEI]",
+        "q": "Q2",
+        "dp": "集中"
+    },
+    "51-32140": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-32140&je_cd=1&lct_idx=A000000000175443",
+        "rui": "法学類",
+        "iki": "人間社会学域",
+        "title": "比較政治学2[Comparative Politics 2]",
+        "teacher": "未定[MITEI]",
+        "q": "Q2",
+        "dp": "集中"
+    },
+    "51-32252.124": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-32252.124&je_cd=1&lct_idx=A000000000166465",
+        "rui": "法学類",
+        "iki": "人間社会学域",
+        "title": "法理学演習[Seminar]",
+        "teacher": "足立　英彦[ADACHI, Hidehiko]",
+        "q": "Q1,Q2",
+        "dp": "月5"
+    },
+    "51-32252.224": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-32252.224&je_cd=1&lct_idx=A000000000166489",
+        "rui": "法学類",
+        "iki": "人間社会学域",
+        "title": "法理学演習[Seminar]",
+        "teacher": "足立　英彦[ADACHI, Hidehiko]",
+        "q": "Q3,Q4",
+        "dp": "月5"
+    },
+    "51-32254.04.1": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-32254.04.1&je_cd=1&lct_idx=A000000000166520",
+        "rui": "法学類",
+        "iki": "人間社会学域",
+        "title": "法理学演習[Seminar]",
+        "teacher": "足立　英彦[ADACHI, Hidehiko]",
+        "q": "Q1",
+        "dp": "月5"
+    },
+    "51-32254.04.2": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-32254.04.2&je_cd=1&lct_idx=A000000000166521",
+        "rui": "法学類",
+        "iki": "人間社会学域",
+        "title": "法理学演習[Seminar]",
+        "teacher": "足立　英彦[ADACHI, Hidehiko]",
+        "q": "Q2",
+        "dp": "月5"
+    },
+    "51-32254.04.3": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-32254.04.3&je_cd=1&lct_idx=A000000000166522",
+        "rui": "法学類",
+        "iki": "人間社会学域",
+        "title": "法理学演習[Seminar]",
+        "teacher": " ",
+        "q": "Q3",
+        "dp": "月5"
+    },
+    "51-32254.04.4": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-32254.04.4&je_cd=1&lct_idx=A000000000166523",
+        "rui": "法学類",
+        "iki": "人間社会学域",
+        "title": "法理学演習[Seminar]",
+        "teacher": "足立　英彦[ADACHI, Hidehiko]",
+        "q": "Q4",
+        "dp": "月5"
+    },
+    "51-33559": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-33559&je_cd=1&lct_idx=A000000000175259",
+        "rui": "経済学類",
+        "iki": "人間社会学域",
+        "title": "国際貿易論１[International Trade 1]",
+        "teacher": "加藤　篤行[KATO, Atsuyuki]",
+        "q": "Q1",
+        "dp": "火1"
+    },
+    "51-33561": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-33561&je_cd=1&lct_idx=A000000000175257",
+        "rui": "経済学類",
+        "iki": "人間社会学域",
+        "title": "国際貿易論１E[International Trade 1E]",
+        "teacher": "加藤　篤行[KATO, Atsuyuki]",
+        "q": "Q3",
+        "dp": "火1"
+    },
+    "51-33563": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-33563&je_cd=1&lct_idx=A000000000175258",
+        "rui": "経済学類",
+        "iki": "人間社会学域",
+        "title": "国際貿易論２[International Trade 2]",
+        "teacher": "加藤　篤行[KATO, Atsuyuki]",
+        "q": "Q2",
+        "dp": "火1"
+    },
+    "51-33565": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-33565&je_cd=1&lct_idx=A000000000175256",
+        "rui": "経済学類",
+        "iki": "人間社会学域",
+        "title": "国際貿易論２E[International Trade 2E]",
+        "teacher": "加藤　篤行[KATO, Atsuyuki]",
+        "q": "Q4",
+        "dp": "火1"
+    },
+    "51-33827": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-33827&je_cd=1&lct_idx=A000000000166072",
+        "rui": "経済学類",
+        "iki": "人間社会学域",
+        "title": "政治学Ｂ[Political Science B]",
+        "teacher": "未定[MITEI]",
+        "q": "Q2",
+        "dp": "木5"
+    },
+    "51-35C25": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-35C25&je_cd=1&lct_idx=A000000000165579",
+        "rui": "地域創造学類",
+        "iki": "人間社会学域",
+        "title": "国際協力体制[International Cooperation Systems]",
+        "teacher": "河内　幾帆[KOUCHI, Ikuho]",
+        "q": "Q2",
+        "dp": "水2"
+    },
+    "51-36002.100": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-36002.100&je_cd=1&lct_idx=A000000000172443",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "卒業論文（国際社会コース・3月卒）[Graduation thesis]",
+        "teacher": "加藤　篤行[KATO, Atsuyuki]",
+        "q": "Q3,Q4",
+        "dp": "集中"
+    },
+    "51-36002.110": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-36002.110&je_cd=1&lct_idx=A000000000171971",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "卒業論文（国際社会コース・9月卒）[Graduation thesis]",
+        "teacher": "加藤　篤行[KATO, Atsuyuki]",
+        "q": "Q1,Q2",
+        "dp": "集中"
+    },
+    "51-36328": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-36328&je_cd=1&lct_idx=A000000000172234",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "政治学Ｂ[Political Science B]",
+        "teacher": "未定[MITEI]",
+        "q": "Q2",
+        "dp": "木5"
+    },
+    "51-36613.104": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-36613.104&je_cd=1&lct_idx=A000000000171994",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "研究演習A1[Seminar A1]",
+        "teacher": "加藤　篤行[KATO, Atsuyuki]",
+        "q": "Q1",
+        "dp": "水4"
+    },
+    "51-36613.303": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-36613.303&je_cd=1&lct_idx=A000000000172003",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "研究演習A1[Seminar A1]",
+        "teacher": "古泉　達矢[KOIZUMI, Tatsuya]",
+        "q": "Q1",
+        "dp": "水3"
+    },
+    "51-36614.104": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-36614.104&je_cd=1&lct_idx=A000000000172240",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "研究演習A2[Seminar A2]",
+        "teacher": "加藤　篤行[KATO, Atsuyuki]",
+        "q": "Q2",
+        "dp": "水3"
+    },
+    "51-36614.303": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-36614.303&je_cd=1&lct_idx=A000000000172249",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "研究演習A2[Seminar A2]",
+        "teacher": "古泉　達矢[KOIZUMI, Tatsuya]",
+        "q": "Q2",
+        "dp": "水3"
+    },
+    "51-36615.104": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-36615.104&je_cd=1&lct_idx=A000000000172472",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "研究演習A3[Seminar A3]",
+        "teacher": "加藤　篤行[KATO, Atsuyuki]",
+        "q": "Q3",
+        "dp": "水3"
+    },
+    "51-36615.303": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-36615.303&je_cd=1&lct_idx=A000000000172484",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "研究演習A3[Seminar A3]",
+        "teacher": "古泉　達矢[KOIZUMI, Tatsuya]",
+        "q": "Q3",
+        "dp": "水3"
+    },
+    "51-36616.104": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-36616.104&je_cd=1&lct_idx=A000000000172705",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "研究演習A4[Seminar A4]",
+        "teacher": "加藤　篤行[KATO, Atsuyuki]",
+        "q": "Q4",
+        "dp": "水3"
+    },
+    "51-36616.303": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-36616.303&je_cd=1&lct_idx=A000000000172717",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "研究演習A4[Seminar A4]",
+        "teacher": "古泉　達矢[KOIZUMI, Tatsuya]",
+        "q": "Q4",
+        "dp": "水3"
+    },
+    "51-36617.104": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-36617.104&je_cd=1&lct_idx=A000000000172018",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "研究演習B1[Seminar B1]",
+        "teacher": "加藤　篤行[KATO, Atsuyuki]",
+        "q": "Q1",
+        "dp": "水5"
+    },
+    "51-36617.208": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-36617.208&je_cd=1&lct_idx=A000000000183330",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "研究演習B1[Seminar B1]",
+        "teacher": "山本　洋[YAMAMOTO, Hiroshi]",
+        "q": "Q1",
+        "dp": "水4"
+    },
+    "51-36617.303": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-36617.303&je_cd=1&lct_idx=A000000000172029",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "研究演習B1[Seminar B1]",
+        "teacher": "古泉　達矢[KOIZUMI, Tatsuya]",
+        "q": "Q1",
+        "dp": "水4"
+    },
+    "51-36618.104": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-36618.104&je_cd=1&lct_idx=A000000000172264",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "研究演習B2[Seminar B2]",
+        "teacher": "加藤　篤行[KATO, Atsuyuki]",
+        "q": "Q2",
+        "dp": "水4"
+    },
+    "51-36618.208": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-36618.208&je_cd=1&lct_idx=A000000000183331",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "研究演習B2[Seminar B2]",
+        "teacher": "山本　洋[YAMAMOTO, Hiroshi]",
+        "q": "Q2",
+        "dp": "水4"
+    },
+    "51-36618.303": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-36618.303&je_cd=1&lct_idx=A000000000172275",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "研究演習B2[Seminar B2]",
+        "teacher": "古泉　達矢[KOIZUMI, Tatsuya]",
+        "q": "Q2",
+        "dp": "水4"
+    },
+    "51-36619.104": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-36619.104&je_cd=1&lct_idx=A000000000172497",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "研究演習B3[Seminar B3]",
+        "teacher": "加藤　篤行[KATO, Atsuyuki]",
+        "q": "Q3",
+        "dp": "水4"
+    },
+    "51-36619.208": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-36619.208&je_cd=1&lct_idx=A000000000183332",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "研究演習B3[Seminar B3]",
+        "teacher": "山本　洋[YAMAMOTO, Hiroshi]",
+        "q": "Q3",
+        "dp": "水4"
+    },
+    "51-36619.303": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-36619.303&je_cd=1&lct_idx=A000000000172508",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "研究演習B3[Seminar B3]",
+        "teacher": "古泉　達矢[KOIZUMI, Tatsuya]",
+        "q": "Q3",
+        "dp": "水4"
+    },
+    "51-36620.104": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-36620.104&je_cd=1&lct_idx=A000000000172730",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "研究演習B4[Seminar B4]",
+        "teacher": "加藤　篤行[KATO, Atsuyuki]",
+        "q": "Q4",
+        "dp": "水4"
+    },
+    "51-36620.208": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-36620.208&je_cd=1&lct_idx=A000000000172736",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "研究演習B4[Seminar B4]",
+        "teacher": "山本　洋[YAMAMOTO, Hiroshi]",
+        "q": "Q4",
+        "dp": "水4"
+    },
+    "51-36620.303": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-36620.303&je_cd=1&lct_idx=A000000000172741",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "研究演習B4[Seminar B4]",
+        "teacher": "古泉　達矢[KOIZUMI, Tatsuya]",
+        "q": "Q4",
+        "dp": "水4"
+    },
+    "51-41134": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-41134&je_cd=1&lct_idx=A000000000175503",
+        "rui": "人文学類",
+        "iki": "人間社会学域",
+        "title": "社会情報学演習Ｂ[Seminar in Social Infomatics B]",
+        "teacher": "岩本　健良[IWAMOTO, Takeyoshi]",
+        "q": "Q1,Q2",
+        "dp": "木3"
+    },
+    "51-41177": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-41177&je_cd=1&lct_idx=A000000000175501",
+        "rui": "人文学類",
+        "iki": "人間社会学域",
+        "title": "ジェンダーと社会演習１[Seminar in Gender and Society 1]",
+        "teacher": "岩本　健良[IWAMOTO, Takeyoshi]",
+        "q": "Q1",
+        "dp": "木3"
+    },
+    "51-41178": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-41178&je_cd=1&lct_idx=A000000000175502",
+        "rui": "人文学類",
+        "iki": "人間社会学域",
+        "title": "ジェンダーと社会演習２[Seminar in Gender and Society 2]",
+        "teacher": "岩本　健良[IWAMOTO, Takeyoshi]",
+        "q": "Q2",
+        "dp": "木3"
+    },
+    "51-41372": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-41372&je_cd=1&lct_idx=A000000000175323",
+        "rui": "人文学類",
+        "iki": "人間社会学域",
+        "title": "倫理思想研究演習Ａ[Advanced Seminar in Ethical Thought A]",
+        "teacher": "平石　晃樹[HIRAISHI, Koki]",
+        "q": "Q1",
+        "dp": "水3"
+    },
+    "51-41373": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-41373&je_cd=1&lct_idx=A000000000175326",
+        "rui": "人文学類",
+        "iki": "人間社会学域",
+        "title": "倫理思想研究演習Ｂ[Advanced Seminar in Ethical Thought B]",
+        "teacher": "平石　晃樹[HIRAISHI, Koki]",
+        "q": "Q2",
+        "dp": "水3"
+    },
+    "51-42638": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-42638&je_cd=1&lct_idx=A000000000173682",
+        "rui": "人文学類",
+        "iki": "人間社会学域",
+        "title": "心理学概論Ｂ[General Psychology B]",
+        "teacher": "岡田　努[OKADA, Tsutomu]",
+        "q": "Q2",
+        "dp": "水1"
+    },
+    "51-45210": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-45210&je_cd=1&lct_idx=A000000000175261",
+        "rui": "経済学類",
+        "iki": "人間社会学域",
+        "title": "国際貿易論1E[International Trade 1E]",
+        "teacher": "加藤　篤行[KATO, Atsuyuki]",
+        "q": "Q3",
+        "dp": "火1"
+    },
+    "51-45211": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-45211&je_cd=1&lct_idx=A000000000175260",
+        "rui": "経済学類",
+        "iki": "人間社会学域",
+        "title": "国際貿易論2E[International Trade 2E]",
+        "teacher": "加藤　篤行[KATO, Atsuyuki]",
+        "q": "Q4",
+        "dp": "火1"
+    },
+    "51-51134.001": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-51134.001&je_cd=1&lct_idx=A000000000172289",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "海外日本語教育実習（ベトナム）[Practicum in Teaching Japanese Abroad to Speakers of Other Languages]",
+        "teacher": "山本　洋[YAMAMOTO, Hiroshi]",
+        "q": "Q2",
+        "dp": "集中"
+    },
+    "51-51134.002": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-51134.002&je_cd=1&lct_idx=A000000000172754",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "海外日本語教育実習（インドネシア）[Practicum in Teaching Japanese Abroad to Speakers of Other Languages]",
+        "teacher": "山本　洋[YAMAMOTO, Hiroshi]",
+        "q": "Q4",
+        "dp": "集中"
+    },
+    "51-52019": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-52019&je_cd=1&lct_idx=A000000000178417",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "比較政治学1E[Comparative Politics 1E]",
+        "teacher": "未定[MITEI]",
+        "q": "Q2",
+        "dp": "集中"
+    },
+    "51-52117": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-52117&je_cd=1&lct_idx=A000000000172557",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "日本語教育史1[History of Japanese Education 1]",
+        "teacher": "山本　洋[YAMAMOTO, Hiroshi]",
+        "q": "Q3",
+        "dp": "火4"
+    },
+    "51-52237.003": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-52237.003&je_cd=1&lct_idx=A000000000172297",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "アジア研究演習A3[Seminar in Asian Studies A3]",
+        "teacher": "古泉　達矢[KOIZUMI, Tatsuya]",
+        "q": "Q2",
+        "dp": "水3"
+    },
+    "51-52238.003": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-52238.003&je_cd=1&lct_idx=A000000000172761",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "アジア研究演習B1[Seminar in Asian Studies B1]",
+        "teacher": "古泉　達矢[KOIZUMI, Tatsuya]",
+        "q": "Q4",
+        "dp": "水3"
+    },
+    "51-52239.003": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-52239.003&je_cd=1&lct_idx=A000000000172301",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "アジア研究演習B3[Seminar in Asian Studies B3]",
+        "teacher": "古泉　達矢[KOIZUMI, Tatsuya]",
+        "q": "Q2",
+        "dp": "水4"
+    },
+    "51-52241": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-52241&je_cd=1&lct_idx=A000000000172094",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "現代中国論A1[Contemporary Chinese Culture A1]",
+        "teacher": "古泉　達矢[KOIZUMI, Tatsuya]",
+        "q": "Q1",
+        "dp": "月4"
+    },
+    "51-52242": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-52242&je_cd=1&lct_idx=A000000000172569",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "現代中国論B1[Contemporary Chinese Culture B1]",
+        "teacher": "古泉　達矢[KOIZUMI, Tatsuya]",
+        "q": "Q3",
+        "dp": "月4"
+    },
+    "51-52243": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-52243&je_cd=1&lct_idx=A000000000172570",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "現代中国論1E[Contemporary Chinese Culture 1E]",
+        "teacher": "古泉　達矢[KOIZUMI, Tatsuya]",
+        "q": "Q3",
+        "dp": "水5"
+    },
+    "51-52519": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-52519&je_cd=1&lct_idx=A000000000178418",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "比較政治学2E[Comparative Politics 2E]",
+        "teacher": "未定[MITEI]",
+        "q": "Q2",
+        "dp": "集中"
+    },
+    "51-52617": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-52617&je_cd=1&lct_idx=A000000000172792",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "日本語教育史2[History of Japanese Education 2]",
+        "teacher": "山本　洋[YAMAMOTO, Hiroshi]",
+        "q": "Q4",
+        "dp": "火4"
+    },
+    "51-52736.003": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-52736.003&je_cd=1&lct_idx=A000000000172158",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "アジア研究演習A2[Seminar in Asian Studies A2]",
+        "teacher": "古泉　達矢[KOIZUMI, Tatsuya]",
+        "q": "Q1",
+        "dp": "水3"
+    },
+    "51-52737.003": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-52737.003&je_cd=1&lct_idx=A000000000172637",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "アジア研究演習A4[Seminar in Asian Studies A4]",
+        "teacher": "古泉　達矢[KOIZUMI, Tatsuya]",
+        "q": "Q3",
+        "dp": "水3"
+    },
+    "51-52738.003": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-52738.003&je_cd=1&lct_idx=A000000000172162",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "アジア研究演習B2[Seminar in Asian Studies B2]",
+        "teacher": "古泉　達矢[KOIZUMI, Tatsuya]",
+        "q": "Q1",
+        "dp": "水4"
+    },
+    "51-52739.003": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-52739.003&je_cd=1&lct_idx=A000000000172641",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "アジア研究演習B4[Seminar in Asian Studies B4]",
+        "teacher": "古泉　達矢[KOIZUMI, Tatsuya]",
+        "q": "Q3",
+        "dp": "水4"
+    },
+    "51-52741": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-52741&je_cd=1&lct_idx=A000000000172342",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "現代中国論A2[Contemporary Chinese Culture A2]",
+        "teacher": "古泉　達矢[KOIZUMI, Tatsuya]",
+        "q": "Q2",
+        "dp": "月4"
+    },
+    "51-52742": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-52742&je_cd=1&lct_idx=A000000000172810",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "現代中国論B2[Contemporary Chinese Culture B2]",
+        "teacher": "古泉　達矢[KOIZUMI, Tatsuya]",
+        "q": "Q4",
+        "dp": "月4"
+    },
+    "51-52743": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-52743&je_cd=1&lct_idx=A000000000172811",
+        "rui": "国際学類",
+        "iki": "人間社会学域",
+        "title": "現代中国論2E[Contemporary Chinese Culture 2E]",
+        "teacher": "古泉　達矢[KOIZUMI, Tatsuya]",
+        "q": "Q4",
+        "dp": "水5"
+    },
+    "51-90109": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-90109&je_cd=1&lct_idx=A000000000165627",
+        "rui": "学校教育学類",
+        "iki": "人間社会学域",
+        "title": "学習指導論[Theory of Instruction and Learning]",
+        "teacher": "土井　妙子[DOI, Taeko]",
+        "q": "Q1,Q2",
+        "dp": "水3"
+    },
+    "51-90134": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-90134&je_cd=1&lct_idx=A000000000165625",
+        "rui": "学校教育学類",
+        "iki": "人間社会学域",
+        "title": "生活科教育法[Methods of Teaching Subject of Life]",
+        "teacher": "土井　妙子[DOI, Taeko]",
+        "q": "Q1,Q2",
+        "dp": "火2"
+    },
+    "51-90141": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-90141&je_cd=1&lct_idx=A000000000167052",
+        "rui": "学校教育学類",
+        "iki": "人間社会学域",
+        "title": "算数科教育演習[Practice in Elementary Mathematics Education]",
+        "teacher": "伊藤　伸也[ITOH, Shinya]",
+        "q": "Q3,Q4",
+        "dp": "火5"
+    },
+    "51-90180": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-90180&je_cd=1&lct_idx=A000000000167041",
+        "rui": "学校教育学類",
+        "iki": "人間社会学域",
+        "title": "数学科教育演習[Practice in Secondary Mathematics Education]",
+        "teacher": "伊藤　伸也[ITOH, Shinya]",
+        "q": "Q1,Q2",
+        "dp": "水5"
+    },
+    "51-90407": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-90407&je_cd=1&lct_idx=A000000000171083",
+        "rui": "学校教育学類",
+        "iki": "人間社会学域",
+        "title": "環境と教育[Environmental Education]",
+        "teacher": "土井　妙子[DOI, Taeko]",
+        "q": "Q3",
+        "dp": "火4"
+    },
+    "51-90464": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=51-90464&je_cd=1&lct_idx=A000000000167038",
+        "rui": "学校教育学類",
+        "iki": "人間社会学域",
+        "title": "数学科教育実践研究",
+        "teacher": "伊藤　伸也[ITOH, Shinya]",
+        "q": "Q1,Q2",
+        "dp": "火3"
+    },
+    "52-20041.201": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=52-20041.201&je_cd=1&lct_idx=A000000000156446",
+        "rui": "学域共通",
+        "iki": "理工学域",
+        "title": "アカデミックスキル[Academic Skill]",
+        "teacher": "添田　貴宏[SOETA, Takahiro], 山口　孝浩[YAMAGUCHI, Takahiro]",
+        "q": "Q1",
+        "dp": "火5"
+    },
+    "52-20042.201": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=52-20042.201&je_cd=1&lct_idx=A000000000156451",
+        "rui": "学域共通",
+        "iki": "理工学域",
+        "title": "プレゼン・ディベート論[Presentation and Debate]",
+        "teacher": "添田　貴宏[SOETA, Takahiro], 山口　孝浩[YAMAGUCHI, Takahiro]",
+        "q": "Q2",
+        "dp": "火5"
+    },
+    "52-26003.001": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=52-26003.001&je_cd=1&lct_idx=A000000000156728",
+        "rui": "数物科学類",
+        "iki": "理工学域",
+        "title": "基礎解析１Ａ[Advanced Calculus 1A]",
+        "teacher": "大塚　浩史[OHTSUKA, Hiroshi]",
+        "q": "Q1",
+        "dp": "金3〜4"
+    },
+    "52-26004.001": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=52-26004.001&je_cd=1&lct_idx=A000000000156729",
+        "rui": "数物科学類",
+        "iki": "理工学域",
+        "title": "基礎解析１Ｂ[Advanced Calculus 1B]",
+        "teacher": "大塚　浩史[OHTSUKA, Hiroshi]",
+        "q": "Q2",
+        "dp": "金3〜4"
+    },
+    "52-41002": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=52-41002&je_cd=1&lct_idx=A000000000157180",
+        "rui": "機械工学類（新）",
+        "iki": "理工学域",
+        "title": "計算機プログラミング演習[Exercise in Computer Programming]",
+        "teacher": "河野　孝昭[KONO,Takaaki], 小松　信義[KOMATSU, Nobuyoshi]",
+        "q": "Q1,Q2",
+        "dp": "水1"
+    },
+    "52-44052": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=52-44052&je_cd=1&lct_idx=A000000000157731",
+        "rui": "地球社会基盤学類",
+        "iki": "理工学域",
+        "title": "地球惑星科学ゼミナール（２）Ａ[Seminar on Earth and Planetary Science (2) A]",
+        "teacher": "コース全教員[All course faculty], 佐川　拓也[SAGAWA, Takuya], 森下　知晃[MORISHITA, Tomoaki], 石野　咲子[ISHINO, Sakiko]",
+        "q": "Q1",
+        "dp": "火5"
+    },
+    "52-44053": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=52-44053&je_cd=1&lct_idx=A000000000157732",
+        "rui": "地球社会基盤学類",
+        "iki": "理工学域",
+        "title": "地球惑星科学ゼミナール（２）Ｂ[Seminar on Earth and Planetary Science (2) B]",
+        "teacher": "コース全教員[All course faculty], 佐川　拓也[SAGAWA, Takuya], 森下　知晃[MORISHITA, Tomoaki], 石野　咲子[ISHINO, Sakiko]",
+        "q": "Q2",
+        "dp": "火5"
+    },
+    "52-44054": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=52-44054&je_cd=1&lct_idx=A000000000157733",
+        "rui": "地球社会基盤学類",
+        "iki": "理工学域",
+        "title": "地球惑星科学ゼミナール（２）Ｃ[Seminar on Earth and Planetary Science (2) C]",
+        "teacher": "コース全教員[All course faculty], 佐川　拓也[SAGAWA, Takuya], 森下　知晃[MORISHITA, Tomoaki], 石野　咲子[ISHINO, Sakiko]",
+        "q": "Q3",
+        "dp": "月5"
+    },
+    "52-44055": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=52-44055&je_cd=1&lct_idx=A000000000157734",
+        "rui": "地球社会基盤学類",
+        "iki": "理工学域",
+        "title": "地球惑星科学ゼミナール（２）Ｄ[Seminar on Earth and Planetary Science (2) D]",
+        "teacher": "コース全教員[All course faculty], 佐川　拓也[SAGAWA, Takuya], 森下　知晃[MORISHITA, Tomoaki], 石野　咲子[ISHINO, Sakiko]",
+        "q": "Q4",
+        "dp": "月5"
+    },
+    "52-44153": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=52-44153&je_cd=1&lct_idx=A000000000164956",
+        "rui": "地球社会基盤学類",
+        "iki": "理工学域",
+        "title": "地球惑星科学ゼミナールＡ[Seminar on Earth and Planetary Science A]",
+        "teacher": "コース全教員[All course faculty], 佐川　拓也[SAGAWA, Takuya], 森下　知晃[MORISHITA, Tomoaki], 石野　咲子[ISHINO, Sakiko]",
+        "q": "Q1",
+        "dp": "火5"
+    },
+    "52-44154": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=52-44154&je_cd=1&lct_idx=A000000000164957",
+        "rui": "地球社会基盤学類",
+        "iki": "理工学域",
+        "title": "地球惑星科学ゼミナールＢ[Seminar on Earth and Planetary Science B]",
+        "teacher": "コース全教員[All course faculty], 佐川　拓也[SAGAWA, Takuya], 森下　知晃[MORISHITA, Tomoaki], 石野　咲子[ISHINO, Sakiko]",
+        "q": "Q2",
+        "dp": "火5"
+    },
+    "52-44155": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=52-44155&je_cd=1&lct_idx=A000000000164958",
+        "rui": "地球社会基盤学類",
+        "iki": "理工学域",
+        "title": "地球惑星科学ゼミナールＣ[Seminar on Earth and Planetary Science C]",
+        "teacher": "コース全教員[All course faculty], 佐川　拓也[SAGAWA, Takuya], 森下　知晃[MORISHITA, Tomoaki], 石野　咲子[ISHINO, Sakiko]",
+        "q": "Q3",
+        "dp": "月5"
+    },
+    "52-44156": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=52-44156&je_cd=1&lct_idx=A000000000164959",
+        "rui": "地球社会基盤学類",
+        "iki": "理工学域",
+        "title": "地球惑星科学ゼミナールＤ[Seminar on Earth and Planetary Science D]",
+        "teacher": "コース全教員[All course faculty], 佐川　拓也[SAGAWA, Takuya], 森下　知晃[MORISHITA, Tomoaki], 石野　咲子[ISHINO, Sakiko]",
+        "q": "Q4",
+        "dp": "月5"
+    },
+    "52-46039.001": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=52-46039.001&je_cd=1&lct_idx=A000000000157986",
+        "rui": "数物科学類",
+        "iki": "理工学域",
+        "title": "数理解析概論ａ[Introductory Mathematical sciences a]",
+        "teacher": "小原　功任[OHARA, Katsuyoshi]",
+        "q": "Q3",
+        "dp": "火2"
+    },
+    "52-46040.001": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=52-46040.001&je_cd=1&lct_idx=A000000000157987",
+        "rui": "数物科学類",
+        "iki": "理工学域",
+        "title": "数理解析概論ｂ[Introductory Mathematical sciences b]",
+        "teacher": "小原　功任[OHARA, Katsuyoshi]",
+        "q": "Q4",
+        "dp": "火2"
+    },
+    "52-46080": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=52-46080&je_cd=1&lct_idx=A000000000169068",
+        "rui": "数物科学類",
+        "iki": "理工学域",
+        "title": "ナノ科学ａ[Nano-Science a]",
+        "teacher": "石井　史之[ISHII, Fumiyuki]",
+        "q": "Q1",
+        "dp": "火4"
+    },
+    "52-46081": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=52-46081&je_cd=1&lct_idx=A000000000169069",
+        "rui": "数物科学類",
+        "iki": "理工学域",
+        "title": "ナノ科学ｂ[Nano-Science b]",
+        "teacher": "石井　史之[ISHII, Fumiyuki]",
+        "q": "Q2",
+        "dp": "火4"
+    },
+    "53-13203": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=53-13203&je_cd=1&lct_idx=A000000000177145",
+        "rui": "保健学類",
+        "iki": "医薬保健学域",
+        "title": "生体の構造A[Human Anatomy A]",
+        "teacher": "川島　博子[KAWASHIMA, Hiroko]",
+        "q": "Q1",
+        "dp": "金1"
+    },
+    "53-13204": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=53-13204&je_cd=1&lct_idx=A000000000177146",
+        "rui": "保健学類",
+        "iki": "医薬保健学域",
+        "title": "生体の構造B[Human Anatomy B]",
+        "teacher": "川島　博子[KAWASHIMA, Hiroko]",
+        "q": "Q2",
+        "dp": "金1"
+    },
+    "53-19002": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=53-19002&je_cd=1&lct_idx=A000000000177166",
+        "rui": "保健学類",
+        "iki": "医薬保健学域",
+        "title": "学域GS言語科目Ⅰ[GS English Language Courses for Undergraduates 1]",
+        "teacher": "川島　博子[KAWASHIMA, Hiroko]",
+        "q": "Q3",
+        "dp": "水1"
+    },
+    "53-45239": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=53-45239&je_cd=1&lct_idx=A000000000177313",
+        "rui": "保健学類",
+        "iki": "医薬保健学域",
+        "title": "放射線機器学実験Ⅱ[Radiological Mechinery Experiment 2]",
+        "teacher": "川島　博子[KAWASHIMA, Hiroko], 北尾　梓[KITAO, Azusa], 澁谷　孝行[SHIBUTANI, Takayuki]",
+        "q": "Q1,Q2",
+        "dp": "水3〜4"
+    },
+    "53-45258": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=53-45258&je_cd=1&lct_idx=A000000000177328",
+        "rui": "保健学類",
+        "iki": "医薬保健学域",
+        "title": "画像解剖学A[Anatomy for Imaging Diagnosis A]",
+        "teacher": "川島　博子[KAWASHIMA, Hiroko]",
+        "q": "Q3",
+        "dp": "金2"
+    },
+    "53-45259": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=53-45259&je_cd=1&lct_idx=A000000000177329",
+        "rui": "保健学類",
+        "iki": "医薬保健学域",
+        "title": "画像解剖学B[Anatomy for Imaging Diagnosis B]",
+        "teacher": "川島　博子[KAWASHIMA, Hiroko]",
+        "q": "Q4",
+        "dp": "金2"
+    },
+    "53-45605": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=53-45605&je_cd=1&lct_idx=A000000000178326",
+        "rui": "保健学類",
+        "iki": "医薬保健学域",
+        "title": "超音波検査技術学A[Clinical Ultrasound Technology A]",
+        "teacher": "川島　博子[KAWASHIMA, Hiroko]",
+        "q": "Q1",
+        "dp": "月2"
+    },
+    "53-45606": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=53-45606&je_cd=1&lct_idx=A000000000178327",
+        "rui": "保健学類",
+        "iki": "医薬保健学域",
+        "title": "超音波検査技術学B[Clinical Ultrasound Technology B]",
+        "teacher": "川島　博子[KAWASHIMA, Hiroko]",
+        "q": "Q2",
+        "dp": "月2"
+    },
+    "53-52100": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=53-52100&je_cd=1&lct_idx=A000000000084125",
+        "rui": "薬学類",
+        "iki": "医薬保健学域",
+        "title": "プレシジョン創薬論[Precision Drug Development ]",
+        "teacher": "金田　勝幸[KANEDA, Katsuyuki], 中嶋　美紀[NAKAJIMA, Miki], 白坂　善之[SHIRASAKA, Yoshiyuki], 荒川　大[ARAKAWA, Hiroshi], 吉田　直子[YOSHIDA, Naoko]",
+        "q": "Q1",
+        "dp": "月2"
+    },
+    "55-21102": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=55-21102&je_cd=1&lct_idx=A000000000162971",
+        "rui": "先導学類",
+        "iki": "融合学域",
+        "title": "現代社会を知る[Contemporary Society]",
+        "teacher": "尾島　恭子[OJIMA, Kyoko], 大友　信秀[OTOMO, Nobuhide], 西脇　ゆり[NISHIWAKI, Yuri], 岡本　理惠[OKAMOTO, Rie]",
+        "q": "Q1",
+        "dp": "火2"
+    },
+    "55-21203": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=55-21203&je_cd=1&lct_idx=A000000000162981",
+        "rui": "先導学類",
+        "iki": "融合学域",
+        "title": "国際協力体制[International Cooperation Systems]",
+        "teacher": "河内　幾帆[KOUCHI, Ikuho], 堤　敦朗[TSUTSUMI, Atsuro], 飯田　玲子[IIDA, Reiko], 渡辺　敦子[WATANABE, Atsuko]",
+        "q": "Q2",
+        "dp": "水2"
+    },
+    "55-23001": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=55-23001&je_cd=1&lct_idx=A000000000163036",
+        "rui": "スマート創成科学類",
+        "iki": "融合学域",
+        "title": "アントレプレナー基礎[Introduction to Entrepreneurship]",
+        "teacher": "坂本　二郎[SAKAMOTO, Jiro], 秋田　純一[AKITA, Junichi], 南保　英孝[NAMBO, Hidetaka], 中山　晶一朗[NAKAYAMA, Shoichiro], 野村　章洋[NOMURA, Akihiro]",
+        "q": "Q1",
+        "dp": "水5"
+    },
+    "55-23002": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=55-23002&je_cd=1&lct_idx=A000000000163273",
+        "rui": "スマート創成科学類",
+        "iki": "融合学域",
+        "title": "アントレプレナー演習Ⅰ[Entrepreneurship Seminar 1]",
+        "teacher": "坂本　二郎[SAKAMOTO, Jiro], 秋田　純一[AKITA, Junichi], 南保　英孝[NAMBO, Hidetaka]",
+        "q": "Q1",
+        "dp": "火5"
+    },
+    "7431m.A01": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=7431m.A01&je_cd=1&lct_idx=A000000000176179",
+        "rui": "言語科目Ａ",
+        "iki": "共通教育",
+        "title": "フランス語実践基礎１[Applied Fundamentals of French 1]",
+        "teacher": "MENOU LOIC HENRI PAUL",
+        "q": "Q1",
+        "dp": "木4"
+    },
+    "7431m.B01": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=7431m.B01&je_cd=1&lct_idx=A000000000176180",
+        "rui": "言語科目Ａ",
+        "iki": "共通教育",
+        "title": "フランス語実践基礎１[Applied Fundamentals of French 1]",
+        "teacher": "MENOU LOIC HENRI PAUL",
+        "q": "Q1",
+        "dp": "木4"
+    },
+    "7431m.C01": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=7431m.C01&je_cd=1&lct_idx=A000000000176185",
+        "rui": "言語科目Ａ",
+        "iki": "共通教育",
+        "title": "フランス語実践基礎１[Applied Fundamentals of French 1]",
+        "teacher": "MENOU LOIC HENRI PAUL",
+        "q": "Q1",
+        "dp": "木3"
+    },
+    "7431m.D01": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=7431m.D01&je_cd=1&lct_idx=A000000000176186",
+        "rui": "言語科目Ａ",
+        "iki": "共通教育",
+        "title": "フランス語実践基礎１[Applied Fundamentals of French 1]",
+        "teacher": "MENOU LOIC HENRI PAUL",
+        "q": "Q1",
+        "dp": "木3"
+    },
+    "7431n.A01": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=7431n.A01&je_cd=1&lct_idx=A000000000176190",
+        "rui": "言語科目Ａ",
+        "iki": "共通教育",
+        "title": "フランス語実践基礎２[Applied Fundamentals of French 2]",
+        "teacher": "MENOU LOIC HENRI PAUL",
+        "q": "Q2",
+        "dp": "木4"
+    },
+    "7431n.B01": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=7431n.B01&je_cd=1&lct_idx=A000000000176191",
+        "rui": "言語科目Ａ",
+        "iki": "共通教育",
+        "title": "フランス語実践基礎２[Applied Fundamentals of French 2]",
+        "teacher": "MENOU LOIC HENRI PAUL",
+        "q": "Q2",
+        "dp": "木4"
+    },
+    "7431n.C01": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=7431n.C01&je_cd=1&lct_idx=A000000000176196",
+        "rui": "言語科目Ａ",
+        "iki": "共通教育",
+        "title": "フランス語実践基礎２[Applied Fundamentals of French 2]",
+        "teacher": "MENOU LOIC HENRI PAUL",
+        "q": "Q2",
+        "dp": "木3"
+    },
+    "7431n.D01": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=7431n.D01&je_cd=1&lct_idx=A000000000176197",
+        "rui": "言語科目Ａ",
+        "iki": "共通教育",
+        "title": "フランス語実践基礎２[Applied Fundamentals of French 2]",
+        "teacher": "MENOU LOIC HENRI PAUL",
+        "q": "Q2",
+        "dp": "木3"
+    },
+    "7431o.A01": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=7431o.A01&je_cd=1&lct_idx=A000000000176223",
+        "rui": "言語科目Ａ",
+        "iki": "共通教育",
+        "title": "フランス語実践基礎３[Applied Fundamentals of French 3]",
+        "teacher": "MENOU LOIC HENRI PAUL",
+        "q": "Q3",
+        "dp": "木4"
+    },
+    "7431o.B01": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=7431o.B01&je_cd=1&lct_idx=A000000000176224",
+        "rui": "言語科目Ａ",
+        "iki": "共通教育",
+        "title": "フランス語実践基礎３[Applied Fundamentals of French 3]",
+        "teacher": "MENOU LOIC HENRI PAUL",
+        "q": "Q3",
+        "dp": "木4"
+    },
+    "7431o.C01": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=7431o.C01&je_cd=1&lct_idx=A000000000176229",
+        "rui": "言語科目Ａ",
+        "iki": "共通教育",
+        "title": "フランス語実践基礎３[Applied Fundamentals of French 3]",
+        "teacher": "MENOU LOIC HENRI PAUL",
+        "q": "Q3",
+        "dp": "木3"
+    },
+    "7431o.D01": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=7431o.D01&je_cd=1&lct_idx=A000000000176230",
+        "rui": "言語科目Ａ",
+        "iki": "共通教育",
+        "title": "フランス語実践基礎３[Applied Fundamentals of French 3]",
+        "teacher": "MENOU LOIC HENRI PAUL",
+        "q": "Q3",
+        "dp": "木3"
+    },
+    "7431p.C01": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=7431p.C01&je_cd=1&lct_idx=A000000000176240",
+        "rui": "言語科目Ａ",
+        "iki": "共通教育",
+        "title": "フランス語実践基礎４[Applied Fundamentals of French 4]",
+        "teacher": "MENOU LOIC HENRI PAUL",
+        "q": "Q4",
+        "dp": "木3"
+    },
+    "7431p.D01": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=7431p.D01&je_cd=1&lct_idx=A000000000176241",
+        "rui": "言語科目Ａ",
+        "iki": "共通教育",
+        "title": "フランス語実践基礎４[Applied Fundamentals of French 4]",
+        "teacher": "MENOU LOIC HENRI PAUL",
+        "q": "Q4",
+        "dp": "木3"
+    },
+    "7513a.07": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=7513a.07&je_cd=1&lct_idx=A000000000174431",
+        "rui": "基礎",
+        "iki": "共通教育",
+        "title": "線形代数学ⅠＡ[Linear Algebra 1A]",
+        "teacher": "小原　功任[OHARA, Katsuyoshi]",
+        "q": "Q1",
+        "dp": "木1"
+    },
+    "7513b.07": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=7513b.07&je_cd=1&lct_idx=A000000000174446",
+        "rui": "基礎",
+        "iki": "共通教育",
+        "title": "線形代数学ⅠＢ[Linear Algebra 1B]",
+        "teacher": "小原　功任[OHARA, Katsuyoshi]",
+        "q": "Q2",
+        "dp": "木1"
+    },
+    "79500.04": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=79500.04&je_cd=1&lct_idx=A000000000174261",
+        "rui": "導入",
+        "iki": "共通教育",
+        "title": "大学・社会生活論[Lecture on Life in Campus and Society]",
+        "teacher": "土井　妙子[DOI, Taeko], 山本　卓[YAMAMOTO, Taku], 吉川　弘明[YOSHIKAWA, Hiroaki], 和田　隆志[WADA, Takashi], 未定[MITEI]",
+        "q": "Q1",
+        "dp": "木3"
+    },
+    "46-06197.2": {
+        "link": "https://eduweb.sta.kanazawa-u.ac.jp/Portal/Public/Syllabus/DetailMain.aspx?lct_year=2024&lct_cd=46-06197.2&je_cd=1&lct_idx=A000000000170993",
+        "rui": "非正規生",
+        "iki": "国際機構",
+        "title": "日本の歴史[Japanese History]",
+        "teacher": "山本　洋[YAMAMOTO, Hiroshi]",
+        "q": "Q1,Q2",
         "dp": "水3"
     }
 }

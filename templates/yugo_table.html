@@ -2,6 +2,27 @@
 <html lang="ja">
     <script>
         const quarterRadios = document.getElementsByName('quarter');
+        const dict =  {
+            "電子情報通信": "電情",
+            "観光デザイン": "観デザ",
+            "スマート創成科": "スマ創",
+            "学校教育共同教員養成課程": "学教(共)",
+            "学校教育": "学教"
+        }
+        const colors = [
+            "#00AA00",
+            "#CC0000",
+            "#0000CC",
+            "#222222",
+            "#AA00AA",
+            "#DD00DD",
+            "#DDCC33",
+            "#00DD77",
+            "#7700DD",
+            "#DD0077",
+            "#0077DD",
+            "#77DD00"
+        ]
         function setCookie(isReset) {
             if (!isReset) {
                 cookies["kand"] = document.getElementById('kand').checked.toString();
@@ -160,26 +181,60 @@
                     });
                 }
 
-                //console.log(r_course_info);
-
-                r_course_info = r_course_info.filter((course) => {
-                    if (showAllCoursesCheckbox.checked) {
+                if (!showAllCoursesCheckbox.checked) {
+                    r_course_info = r_course_info.filter((course) => {
                         return !donyu.includes(course.ja_title);
+                    });
+                }
+
+                // 科目をタイトルでグループ化し、学類を結合する処理
+                const groupedCourses = r_course_info.reduce((acc, course) => {
+                    if (!acc[course.ja_title]) {
+                        acc[course.ja_title] = {...course, rui: [course.rui], link: [course.link]};
+                    } else {
+                        acc[course.ja_title].rui.push(course.rui);
+                        acc[course.ja_title].link.push(course.link);
                     }
-                    return true;
-                });
+                    return acc;
+                }, {});
 
+                for (const courseTitle in groupedCourses) {
+                    const course = groupedCourses[courseTitle];
+                    const ruiCounts = course.rui.reduce((acc, rui) => {
+                        acc[rui] = (acc[rui] || 0) + 1;
+                        return acc;
+                    }, {});
 
-                for (item in r_course_info) {
-                    //console.log(r_course_info[item]);
-                    const spl = r_course_info[item].day_period.split('');
+                    let uniqueRuis = new Set();
+                    course.rui.forEach(rui => {
+                        if (ruiCounts[rui] > 1) {
+                            uniqueRuis.add(`<重>${rui}`);
+                        } else {
+                            uniqueRuis.add(rui);
+                        }
+                    });
+
+                    course.rui = Array.from(uniqueRuis); // Setを配列に変換して重複排除後の学類リストを更新
+                }
+
+                // グループ化された科目情報を配列に変換
+                const combinedCourses = Object.values(groupedCourses).map(course => ({
+                    ...course,
+                    rui: course.rui.join(','),
+                    link: course.link.join('\t')
+                }));
+
+                // combinedCourses を使用して表を描画
+                for (const course of combinedCourses) {
+                    const title = course.ja_title;
+                    const spl = course.day_period.split('');
                     const day = spl[0];
                     const period = spl[1];
 
                     var day_alp = '';
                     var id = '';
 
-                    if (r_course_info[item].day_period == '集中') {
+                    if (course.day_period == '集中') {
                         day_alp = 'SP';
                         console.log('集中');
                         id = 'SP';
@@ -201,58 +256,84 @@
                                 day_alp = 'F';
                                 break;
                         }
-                                    id = day_alp + period;
-                                    console.log(id);
+                        id = day_alp + period;
+                        //console.log(id);
                     }
-
-                    //console.log(r_course_info)
 
                     const courseElement = document.createElement('div');
-                    //courseElement.href = r_course_info[item].link;
+                    const tipElements = document.createElement('div');
+                    const lower = document.createElement('div');
+                    lower.className = "lower";
+                    tipElements.className = "tips";
                     courseElement.className = "course";
                     courseElement.innerHTML = `
-                        <a class="title" href="${r_course_info[item].link}">${r_course_info[item].ja_title}</a>
+                        <h3 class="title" >${course.ja_title}</a>
                     `;
 
-                    if (r_course_info[item].rui == '先導学類') {
-                        courseElement.innerHTML += `
-                            <div style="display: flex; flex-flow: row;">
-                                <p class="sendo">先導</p>
-                                <p class="teacher">${r_course_info[item].ja_teacher}</p>
-                            </div>
-                        `;
-                    } else if (r_course_info[item].rui == '観光デザイン学類') {
-                        courseElement.innerHTML += `
-                            <div style="display: flex; flex-flow: row;">
-                                <p class="kand">観デザ</p>
-                                <p class="teacher">${r_course_info[item].ja_teacher}</p>
-                            </div>
-                        `;
-                    } else if (r_course_info[item].rui == 'スマート創成科学類') {
-                        courseElement.innerHTML += `
-                            <div style="display: flex; flex-flow: row;">
-                                <p class="suma">スマ創</p>
-                                <p class="teacher">${r_course_info[item].ja_teacher}</p>
-                            </div>
-                        `;
-                    } else {
-                        //console.log(ruis_aff);
-                        //console.log(r_course_info[item].rui);
-                        let matchedRui = ruis_aff.find(rui => r_course_info[item].rui === rui);
-                        if (matchedRui) {
-                            //console.log(matchedRui);
-                            courseElement.innerHTML += `
-                                <div style="display: flex; flex-flow: row;">
-                                    <p class="denjo">${matchedRui}</p>
-                                    <p class="teacher">${r_course_info[item].ja_teacher}</p>
-                                </div>
-                            `;
-                        } else {
-                            courseElement.innerHTML += `
-                                <p class="teacher">${r_course_info[item].ja_teacher}</p>
-                            `;
+                    const ruis = course.rui.split(',');
+                    const links = course.link.split('\t');
+                    let norui = true;
+                    let checking_ruis = ['先導学類', '観光デザイン学類', 'スマート創成科学類'];
+                    checking_ruis = checking_ruis.concat(ruis_aff);
+                    //console.log(checking_ruis);
+                    console.log(ruis);
+                    console.log(links);
+                    for (let rui of ruis) {
+                        for (let c_rui of checking_ruis) {
+                            if (rui.endsWith(c_rui)) {
+                                let ju;
+                                if (rui.startsWith('<重>')) {
+                                    ju = "<重>";
+                                    rui = rui.replace("<重>", "");
+                                } else {
+                                    ju = "";
+                                }
+                                let wr_rui = rui.replace("学類", "");
+                                
+                                if (wr_rui in dict) {
+                                    wr_rui = dict[wr_rui];
+                                } else {
+                                    wr_rui = wr_rui;
+                                }
+                                wr_rui = ju + wr_rui;
+                                if (!ju) {
+                                    tipElements.innerHTML += `
+                                        <div class="rui_tip:or" style="background-color: ${colors[checking_ruis.indexOf(rui.replace("<重>", ""))]}">
+                                            <a href="${links[ruis.indexOf(rui.replace("<重>", ""))]}" style="color: #FFFFFF">
+                                                <p class="rui_text" color: "#FFFFFF">${wr_rui}</p>
+                                            </a>
+                                        </div>
+                                    `;
+                                    } else {
+                                    tipElements.innerHTML += `
+                                        <div class="rui_tip:ju" style="border: 4px solid ${colors[checking_ruis.indexOf(rui.replace("<重>", ""))]}">
+                                            <a href="${links[ruis.indexOf(rui.replace("<重>", ""))]}" style="color: ${colors[checking_ruis.indexOf(rui.replace("<重>", ""))]}">
+                                                <p class="rui_text">${wr_rui}</p>
+                                            </a>
+                                        </div>
+                                    `;
+                                    }
+                                    norui = false;
+                                    break;
+                            }
                         }
                     }
+                    const courseDetails = document.createElement('div');
+                    courseDetails.className = "courseDetails";
+                    courseDetails.appendChild(tipElements); // tipElementsを追加
+
+                    // 教員名の要素を作成して追加
+                    const teacherNameElement = document.createElement('div');
+                    teacherNameElement.className = "teacherName";
+                    if (norui) {
+                        teacherNameElement.innerHTML = `<a href="${links[0]}">${course.ja_teacher}</a>`;
+                    } else {
+                        teacherNameElement.innerHTML = `<p>${course.ja_teacher}</p>`;
+                    }
+                    courseDetails.appendChild(teacherNameElement);
+
+                    // courseElementにcourseDetailsを追加
+                    courseElement.appendChild(courseDetails);
 
                     const cell = document.getElementById(id);
                     if (cell) {
@@ -274,65 +355,60 @@
         });
     </script>
 <style>
+    .rui_tip\:or {
+        color: #FFFFFF;
+        margin: 1px;
+        border-radius: 4px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 2px;
+
+    }
+    .rui_tip\:ju {
+        color: #FFFFFF;
+        margin: 1px;
+        border-radius: 4px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 2px;
+    }
+    .tips {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start; /* 左寄せにする場合 */
+        justify-content: flex-start; /* 上から詰める */
+        height: 100%; /* セルの高さに合わせて伸ばす */
+    }
+    .lower {
+        display: flex;
+        flex-direction: row;    
+        align-items: flex-start; /* 左寄せにする場合 */
+        height: 100%; /* セルの高さに合わせて伸ばす */
+    }
+
     .course {
         border: 1px solid #000;
-        padding: 5px;
+        border-radius: 5px;
+        padding: 4px;
         margin: 9px;
         align-items: flex-start;
         box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
     }
+    .courseDetails {
+        display: flex;
+        align-items: center; /* 中央揃え */
+    }
+    .teacherName {
+        margin-left: 10px; /* tipと教員名の間隔を調整 */
+    }
     div {
         background-color: #FFFFFF;
-    }
-    .sendo {
-        background-color: #008800;
-        color: #FFFFFF;
-        margin: 5px;
-        border-radius: 3px;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        padding: 3px;
-    }
-    .kand {
-        background-color: #AA0000;
-        color: #FFFFFF;
-        margin: 5px;
-        border-radius: 3px;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        padding: 3px;
-    }
-    .suma {
-        background-color: #0000AA;
-        color: #FFFFFF;
-        margin: 5px;
-        border-radius: 3px;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: flex-start;
-        padding: 3px;
-        margin: 5px;
-    }
-    .denjo {
-        background-color: #222222;
-        color: #FFFFFF;
-        margin: 5px;
-        border-radius: 3px;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: flex-start;
-        padding: 3px;
-        margin: 5px;
     }
     td {
         background-color: #F5F5F5;
@@ -409,11 +485,13 @@
 </style>
 <body>
     <h1>【非公式】金沢大学シラバスから引いてる時間割表(機能テスト中)</h1>
-    <p style="font-size: 20px">融合の一部必修科目など、検索結果に単純に現れなかった科目は表示できません。ご注意ください。　　　最終更新2024/03/02</p>
+    <p style="font-size: 20px">融合の一部必修科目など、検索結果に単純に現れなかった科目は表示できません。ご注意ください。　　　最終更新2024/03/05</p>
     <a href="https://github.com/ogawa3427/risyu/issues">苦情はここ(GitHub)</a>
     <br>
     <a href="https://github.com/ogawa3427/risyu/blob/main/course_info.json">学士課程の全データ(たぶん)</a>
     <br>
+    <p><重>がついている科目は複数の同学類かつ同名の講義が見つかったものです。実際のシラバスから再度確認してください。</p>
+    <p>学類名のバッチまたは教員名をクリックするとシラバスにジャンプします。</p>
     <button id="toggleButton" style="padding: 15px;">学類選択</button>
     <div id="expandableContent" class="content" style="width: 100%; ">
         <table border="1">
