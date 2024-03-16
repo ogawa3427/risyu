@@ -181,7 +181,7 @@
                     });
                 }
 
-                if (!showAllCoursesCheckbox.checked) {
+                if (showAllCoursesCheckbox.checked) {
                     r_course_info = r_course_info.filter((course) => {
                         return !donyu.includes(course.ja_title);
                     });
