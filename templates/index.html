@@ -44,23 +44,52 @@
         href="{{ url_for('deadoralive') }}" style="margin-left: 20px;">死活監視</a>
 
     <div id="buttons">
-        <div><button class="day-button">月1</button><button class="day-button">火1</button><button
-                class="day-button">水1</button><button class="day-button">木1</button><button
-                class="day-button">金1</button><label><input type="checkbox" id="whonlygs">GSのみ</label></div>
-        <div><button class="day-button">月2</button><button class="day-button">火2</button><button
-                class="day-button">水2</button><button class="day-button">木2</button><button
-                class="day-button">金2</button><label><input type="checkbox" id="whotea">教員名を非表示</label></div>
-        <div><button class="day-button">月3</button><button class="day-button">火3</button><button
-                class="day-button">水3</button><button class="day-button">木3</button><button
-                class="day-button">金3</button><label><input type="checkbox" id="whono">時間割番号を省略</label></div>
-        <div><button class="day-button">月4</button><button class="day-button">火4</button><button
-                class="day-button">水4</button><button class="day-button">木4</button><button
-                class="day-button">金4</button><label><input type="checkbox" id="whrya">対象学生を簡略化</label></div>
-        <div><button class="day-button">月5</button><button class="day-button">火5</button><button
-                class="day-button">水5</button><button class="day-button">木5</button><button
-                class="day-button">金5</button><label><input type="checkbox" id="whoname">時間割名を省略</label></div>
-        <div><button class="day-button">6限</button><button class="day-button">7限</button><button
-                class="day-button">8限</button><button class="day-button">集中</button><select id="dropdown">
+        <div>
+            <button class="day-button">月1</button>
+            <button class="day-button">火1</button>
+            <button class="day-button">水1</button>
+            <button class="day-button">木1</button>
+            <button class="day-button">金1</button>
+            <label><input type="checkbox" id="whonlygs">GSのみ</label>
+        </div>
+        <div>
+            <button class="day-button">月2</button>
+            <button class="day-button">火2</button>
+            <button class="day-button">水2</button>
+            <button class="day-button">木2</button>
+            <button class="day-button">金2</button>
+            <label><input type="checkbox" id="whotea">教員名を非表示</label>
+        </div>
+        <div>
+            <button class="day-button">月3</button>
+            <button class="day-button">火3</button>
+            <button class="day-button">水3</button>
+            <button class="day-button">木3</button>
+            <button class="day-button">金3</button>
+            <label><input type="checkbox" id="whono">時間割番号を省略</label>
+        </div>
+        <div>
+            <button class="day-button">月4</button>
+            <button class="day-button">火4</button>
+            <button class="day-button">水4</button>
+            <button class="day-button">木4</button>
+            <button class="day-button">金4</button>
+            <label><input type="checkbox" id="whrya">対象学生を簡略化</label>
+        </div>
+        <div>
+            <button class="day-button">月5</button>
+            <button class="day-button">火5</button>
+            <button class="day-button">水5</button>
+            <button class="day-button">木5</button>
+            <button class="day-button">金5</button>
+            <label><input type="checkbox" id="whoname">時間割名を省略</label>
+        </div>
+        <div>
+            <button class="day-button">6限</button>
+            <button class="day-button">7限</button>
+            <button class="day-button">8限</button>
+            <button class="day-button">集中</button>
+            <select id="dropdown">
                 <option value="0">全群</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -68,8 +97,12 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
                 <option value="6">6</option>
-            </select></div>
-        <div><input type="text" id="freeword"><button class="day-button">ﾌﾘｰﾜｰﾄﾞ検索</button></div>
+            </select>
+        </div>
+        <div>
+            <input type="text" id="freeword">
+            <button class="day-button">ﾌﾘｰﾜｰﾄﾞ検索</button>
+        </div>
     </div>
 
     <table id="myTable"></table>
