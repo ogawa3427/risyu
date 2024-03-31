@@ -2,6 +2,16 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="risyu-man" />
+    <meta property="og:description" content="金沢大学履修登録支援スクリプト(risyu)の総合的なマニュアルです。" />
+    <meta property="og:url" content="https://kurisyushien.org/man" />
+    <meta property="og:site_name" content="risyu" />
+    <meta property="og:image" content="{{ url_for('static', filename='img/r.png') }}" />
+    <!-- Twitterカードの設定 -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@Ogawa3427" />
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <title>risyu</title>
     <style>
         /* ボタンに5ピクセルのマージンを追加 */
@@ -49,6 +59,7 @@
     <a href="#top">先頭</a><br>
     <a href="#lice">ライセンスとメッセージ</a><br>
     <a href="#func">機能の紹介</a><br>
+    <a href="#api">risyu-API</a><br>
     <a href="#ver">バージョン情報</a><br>
     <a href="#links">リンク</a><br>
     <a href="#tech">技術仕様</a><br>
@@ -105,6 +116,15 @@
         <button>Cookieを消去する</button>
         <p>所属やチェックボックスの情報を消去します</p>
     </div>
+
+    <h3 id="api">risyu-API</h3>
+    <p>このサービスはAPI部分と表示部分で構成されています。常識的な範囲において<a href="https://kurisyushien.org/api">こちら</a>を叩くとTSVが返ってくるようにしています。</p>
+    <h4>１行目</h4>
+    <p>データのタイムスタンプ \t valid-test<br>タイムスタンプはYYYY/MM/DD HH:MM:SSの形式です。valid-testはこのデータが有効かどうかを示します。testかvalidです。</p>
+    <h4>２行目</h4>
+    <p>ヘッダー行です。この行には列の名前が入っています。</p>
+    <h4>３行目以降</h4>
+    <p>データ行です。</p>
 
     <h3 id="ver">バージョン情報</h3>
     <h4>web版</h4>
@@ -182,9 +202,13 @@
             <td>補正期間にとりあえず対応</td>
         </tr>
         <tr>
-            <td class="cellb">1.2.2</td>
+            <td class="cellg">1.2.2</td>
             <td>コードの関数志向化と辞書の微修正</td>
-        </tr>            
+        </tr>
+        <tr>
+            <td class="cellb">1.9.0</td>
+            <td>2024Q1に向けてTSV化</td>
+        </tr>
     </table>
     <p>青背景　現行バージョン(安定版とは限らない)<br>緑背景　安定版<br>白背景　開発版</p>
 
@@ -226,7 +250,7 @@
         </tr>
         <tr>
             <td><a href="http://kurisyushien.org/api">http://kurisyushien.org/api</a></td>
-            <td>最新のCSVを返すAPI、JSON実際はJSONなんでうまくやってください<br>実はここの/apiにもつながってる</td>
+            <td>実はここの/apiにもつながってる</td>
         </tr>
         <tr>
             <td><a href="http://kurisyushien.org/deadoralive_api">http://kurisyushien.org/deadoralive_api</a></td>
