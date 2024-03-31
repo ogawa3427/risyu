@@ -5,15 +5,36 @@
     --gr: #777;
 }
 
-@media screen and (max-width: 959px) {
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: var(--wh);
+    height: 100%;
+}
+
+@media screen and (min-width: 600px) {
     .container {
         background-color: #f00;
     }
+    .outer {
+        background-color: var(--lg); /* 背景色 */
+        border: 2px solid var(--gr); /* 枠線 */
+        width: 600px; /* 初期幅 */
+        height: 100%; /* 高さを画面いっぱいに */
+        overflow: auto; /* コンテンツがオーバーフローした場合にスクロールバーを表示 */
+        resize: both; /* 水平方向と垂直方向にリサイズ可能 */
+        padding: 10px; /* 内側の余白 */
+        box-sizing: border-box; /* paddingとborderをwidthとheightに含める */
+    }
 }
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 600px) {
     .container {
         background-color: #0f0;
+    }
+    .outer {
+        background-color: #fff;
     }
 }
 
