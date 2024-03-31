@@ -20,4 +20,5 @@ counter.txt
 htmls/
 
 !static/css/styles.css
+!static/r.png
 
