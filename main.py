@@ -136,9 +136,8 @@ def man():
 
 @app.route('/api', methods=['GET'])
 def get_example():
-    with open('recieved.json', 'r', encoding='utf-8') as f:
-        recieved = json.load(f)
-        recieved['header'] = "時間割番号,科目区分,時間割名,曜日時限,教員名,対象学生,適正人数,登録数,残数"
+    with open('output.tsv', 'r', encoding='utf-8') as f:
+        recieved = f.read()
     res = jsonify(recieved)
     res.headers.add('Access-Control-Allow-Origin', '*')
     return res
