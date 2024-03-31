@@ -179,6 +179,8 @@
                     //console.log(rowgun)
                     if (whonlygs) {
                         return item["科目区分"].includes("ＧＳ科目");
+                    } else {
+                        return true;
                     }
                 }
                 )
@@ -310,11 +312,13 @@
             }
             return true;
         })
+        localKeyOrder = localKeyOrder.filter(key => key !== "onechar");
         createTableFromLines(displayData, localKeyOrder);
         console.log(cookies)
     }
 
         let tiplist = [];
+        mode = "toro"
         if (mode === "toro") {
             tiplist = ["", "適正人数", "全志望者", "優先指定", "第１希望", "第２希望", "第３希望", "第４希望", "第５希望"]
         } else {
@@ -331,14 +335,20 @@
 
             let specialHeaders = [];
             let specialTexts = [];
+            mode = "toro"
             if (mode == "hose") {
+                console.log("hose")
                 specialHeaders = ["適正人数", "登録数", "残数"]
                 specialTexts = ["適正", "登録", "残"]
             } else {
                 specialHeaders = ["適正人数", "全登録数", "優先指定", "第１希望", "第２希望", "第３希望", "第４希望", "第５希望"];
                 specialTexts = ["適正", "全", "優先", "第1", "2", "3", "4", "5"];
             }
+            console.log(specialHeaders)
+            console.log(specialTexts)
             let newRow = {};
+            keyOrder = ["時間割番号", "科目区分", "時間割名", "曜日時限", "教員名", "対象学生", "適正人数", "全登録数", "優先指定", "第１希望", "第２希望", "第３希望", "第４希望", "第５希望"];
+            console.log(keyOrder)
             keyOrder.forEach(key => {
                 newRow[key] = specialHeaders.includes(key) ? specialTexts[specialHeaders.indexOf(key)] : "";
             });
