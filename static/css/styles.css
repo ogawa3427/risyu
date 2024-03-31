@@ -1,0 +1,111 @@
+:root {
+    --bl: #222;
+    --wh: #fff;
+    --lg: #f0f0f0;
+    --gr: #777;
+}
+
+@media screen and (max-width: 959px) {
+    .container {
+        background-color: #f00;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .container {
+        background-color: #0f0;
+    }
+}
+
+.pipo_container {
+    display: flex;
+    flex-direction: row; /* 横方向に要素を並べる */
+    align-items: center; /* 要素を縦方向の中央に配置 */
+    width: 100%;
+}
+
+.pipo_container > div, .pipo_container > .ch_container {
+    flex-grow: 1; /* 利用可能なスペースを均等に分配 */
+    display: flex;
+    align-items: center; /* チェックボックスとラベルを中央揃え */
+}
+
+.ch_container {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: center; /* 中央揃え（縦方向） */
+    justify-content: flex-end; /* チェックボックスとラベルを右寄せ */
+    padding-right: 10px; /* 右側に少し余白を設ける */
+    padding: 0;
+    margin: 0;
+    height: inherit;
+    width: 100%; /* 幅を親要素に合わせる */
+}
+
+.day-button {
+    margin: 0;
+    background-color: var(--lg);
+    border: 1px solid var(--gr);
+    font-size: calc(1em + 1vw);
+    white-space: nowrap; /* テキストを折り返さない */
+    overflow: hidden; /* コンテンツがオーバーフローした場合に隠す */
+    text-overflow: ellipsis; /* オーバーフローしたテキストを省略記号で表示 */
+    height: 100%; /* 与えられた縦幅いっぱいに */
+}
+
+.day-button:hover {
+    background-color: var(--bl);
+    color: var(--wh);
+}
+
+.ch_box_input {
+    height: inherit;
+    aspect-ratio: 1 / 1;
+    padding: 0;
+    margin: 0;
+    flex: 0 0 auto; /* チェックボックスのサイズを固定 */
+    display: none;
+}
+
+.checkmark:hover {
+    background-color: var(--bl);
+    color: var(--wh);
+}
+
+.checkmark {
+    display: flex;
+    align-items: center; /* テキストを中央揃え（縦方向） */
+    justify-content: center; /* テキストを中央揃え（横方向） */
+    width: 100%; /* 幅を親要素に合わせる */
+    font-size: calc(1em + 1.5vw); /* フォントサイズを大きくする */
+    height: 100%; /* 与えられた縦幅いっぱいに */
+    text-align: center;
+    background-color: var(--lg);
+    border: 1px solid var(--gr);
+    flex-grow: 1;
+    overflow: hidden; /* コンテンツがオーバーフローした場合に隠す */
+    text-overflow: ellipsis; /* オーバーフローしたテキストを省略記号で表示 */
+    white-space: nowrap; /* テキストを折り返さない */
+}
+
+.ch_box_input:checked ~ .checkmark {
+    background-color: var(--bl);
+    color: var(--wh);
+}
+
+.ch_box_input:hover ~ .checkmark {
+    background-color: var(--bl);
+    color: var(--wh);
+}
+
+.dropdown {
+    background-color: var(--lg);
+    border: 1px solid var(--gr);
+    overflow: hidden;
+    width: calc(50vw);
+    font-size: calc(1em + 1.5vw);
+    padding: calc(0.1em);
+    margin: 0;
+    line-height: 100%;
+}

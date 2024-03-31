@@ -18,3 +18,6 @@ __pycache__/app.cpython-311.pyc
 counter.txt
 
 htmls/
+
+!static/css/styles.css
+
