@@ -86,7 +86,7 @@ else:
 @app.route('/')
 def index():
     global count
-    with open(os.path.join(os.path.expanduser('~'), 'risyu', 'counter.txt'), 'w', encoding='utf-8') as f:
+    with open(os.path.join(os.path.expanduser('~'), 'counter.txt'), 'w', encoding='utf-8') as f:
         count += 1
         f.write(str(count))
 
