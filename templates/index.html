@@ -3,20 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <title>risyu</title>
     <style>
         /* ボタンに5ピクセルのマージンを追加 */
-        #buttons button {
-            margin: 1px;
-            background-color: #f0f0f0;
-            border: 1px solid #ddd;
-            font-size: 20px;
-        }
-
-        #buttons button:hover {
-            background-color: #222;
-            color: #fff;
-        }
 
         .tooltip {
             position: absolute;
@@ -44,52 +34,67 @@
         href="{{ url_for('deadoralive') }}" style="margin-left: 20px;">死活監視</a>
 
     <div id="buttons">
-        <div>
-            <button class="day-button">月1</button>
-            <button class="day-button">火1</button>
-            <button class="day-button">水1</button>
-            <button class="day-button">木1</button>
-            <button class="day-button">金1</button>
-            <label><input type="checkbox" id="whonlygs">GSのみ</label>
+        <div class="pipo_container">
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">月1</button></div>
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">火1</button></div>
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">水1</button></div>
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">木1</button></div>
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">金1</button></div>
+            <div class="ch_container">
+              <input type="checkbox" id="whonlygs" class="ch_box_input">
+              <label for="whonlygs" class="checkmark">GSのみ</label>
+            </div>
+          </div>
+        <div class="pipo_container">
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">月2</button></div>
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">火2</button></div>
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">水2</button></div>
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">木2</button></div>
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">金2</button></div>
+            <div class="ch_container">
+                <input type="checkbox" id="whotea" class="ch_box_input">
+                <label for="whotea" class="checkmark">教員名を非表示</label>
+            </div>
         </div>
-        <div>
-            <button class="day-button">月2</button>
-            <button class="day-button">火2</button>
-            <button class="day-button">水2</button>
-            <button class="day-button">木2</button>
-            <button class="day-button">金2</button>
-            <label><input type="checkbox" id="whotea">教員名を非表示</label>
+        <div class="pipo_container">
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">月3</button></div>
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">火3</button></div>
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">水3</button></div>
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">木3</button></div>
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">金3</button></div>
+            <div class="ch_container">
+                <input type="checkbox" id="whono" class="ch_box_input">
+                <label for="whono" class="checkmark">時間割番号を省略</label>
+            </div>
         </div>
-        <div>
-            <button class="day-button">月3</button>
-            <button class="day-button">火3</button>
-            <button class="day-button">水3</button>
-            <button class="day-button">木3</button>
-            <button class="day-button">金3</button>
-            <label><input type="checkbox" id="whono">時間割番号を省略</label>
+        <div class="pipo_container">
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">月4</button></div>
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">火4</button></div>
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">水4</button></div>
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">木4</button></div>
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">金4</button></div>
+            <div class="ch_container">
+                <input type="checkbox" id="whrya" class="ch_box_input">
+                <label for="whrya" class="checkmark">対象学生を簡略化</label>
+            </div>
         </div>
-        <div>
-            <button class="day-button">月4</button>
-            <button class="day-button">火4</button>
-            <button class="day-button">水4</button>
-            <button class="day-button">木4</button>
-            <button class="day-button">金4</button>
-            <label><input type="checkbox" id="whrya">対象学生を簡略化</label>
+        <div class="pipo_container">
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">月5</button></div>
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">火5</button></div>
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">水5</button></div>
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">木5</button></div>
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">金5</button></div>
+            <div class="ch_container">
+                <input type="checkbox" id="whoname" class="ch_box_input">
+                <label for="whoname" class="checkmark">時間割名を省略</label>
+            </div>
         </div>
-        <div>
-            <button class="day-button">月5</button>
-            <button class="day-button">火5</button>
-            <button class="day-button">水5</button>
-            <button class="day-button">木5</button>
-            <button class="day-button">金5</button>
-            <label><input type="checkbox" id="whoname">時間割名を省略</label>
-        </div>
-        <div>
-            <button class="day-button">6限</button>
-            <button class="day-button">7限</button>
-            <button class="day-button">8限</button>
-            <button class="day-button">集中</button>
-            <select id="dropdown">
+        <div class="pipo_container">
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">6限</button></div>
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">7限</button></div>
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">8限</button></div>
+            <div style="flex: 1; width: 100%;"><button class="day-button" style="width: 100%;">集中</button></div>
+            <select id="dropdown" class="day-button dropdown">
                 <option value="0">全群</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -100,7 +105,7 @@
             </select>
         </div>
         <div>
-            <input type="text" id="freeword">
+            <input type="text" id="freeword" class="day-button">
             <button class="day-button">ﾌﾘｰﾜｰﾄﾞ検索</button>
         </div>
     </div>
