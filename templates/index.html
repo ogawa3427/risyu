@@ -130,7 +130,8 @@
         <!--        <button onclick="shareOnTwitter()">Tweet Now</button> -->
     </div>
 
-    <script src="{{ url_for('static', filename='logic.js') }}"></script>
+    <script src="{{ url_for('static', filename='data_logic.js') }}"></script>
+    <script src="{{ url_for('static', filename='cookie_logic.js') }}"></script>
     <script>
 
 
@@ -156,7 +157,7 @@
             let whoname = document.getElementById("whoname").checked;
             rowgun = document.getElementById("dropdown").value;
 
-            //console.log(buttonText)
+            console.log(buttonText)
             cookiewriter(["whonlygs", "whotea", "whono", "whrya", "whoname"])
             //console.log(cookies);
             //console.log(rowgun);
@@ -165,16 +166,27 @@
 
             //フィルターはじめっか
             //1
-            const displayData = data
+            let displayData = data
                 .filter(item => {
                     return !Object.values(item).some(value => value === undefined);
                 })
+            console.log(displayData)
+
+            displayData = displayData
                 .filter(item => {
                     //（条件2
-                    if (!itemfilter(item["科目区分"], "ＧＳ科目", whonlygs)) {
-                        return false;
+                    //console.log(item)
+                    //console.log(rowgun)
+                    if (whonlygs) {
+                        return item["科目区分"].includes("ＧＳ科目");
                     }
+                }
+                )
 
+            console.log(displayData)
+
+            displayData = displayData
+                .filter(item => {
                     // 時間割番号のフィルタリング
                     if (rowgun !== "0") {
                         let regex;
@@ -183,18 +195,32 @@
                         //} else {
                         regex = new RegExp("^7" + rowgun + ".*");
                         //}
+                        console.log(item["時間割番号"]);
                         console.log("regex:", regex);
-                        if (!regex.test(item["時間割番号"])) {
-                            return false;
+                        if (regex.test(item["時間割番号"])) {
+                            return true;
                         }
+                    } else {
+                        return true;
                     }
+                })
+            console.log(displayData)
 
-
+            displayData = displayData
+                .filter(item => {
                     // (まえ)
-                    if (!allfilter(item, freewordValue, (buttonText === "ﾌﾘｰﾜｰﾄﾞ検索" && (cookies.searchaorb == "b")))) {
-                        return false;
+                    if (buttonText === "ﾌﾘｰﾜｰﾄﾞ検索" && (cookies.searchaorb == "b") && item["時間割名"] === freewordValue) {
+                        return true;
                     }
+                    if (buttonText === "ﾌﾘｰﾜｰﾄﾞ検索" && (cookies.searchaorb == "b") && item["教員名"] === freewordValue) {
+                        return true;
+                    }
+                    return true;
+                })
+            console.log(displayData)
 
+            displayData = displayData
+                .filter(item => {
                     // フリーワード検索でない場合の日程によるフィルタリング
                     if (buttonText !== 'ﾌﾘｰﾜｰﾄﾞ検索') {
                         if (buttonText === '6限' || buttonText === '7限' || buttonText === '8限') {
@@ -213,7 +239,9 @@
                     }
                     return true;
                 })
+            console.log(displayData)
 
+            displayData = displayData
                 .map(item => {
                     const newItem = { ...item };
                     //console.log(newItem['時間割名']);
@@ -227,10 +255,16 @@
                         delete newItem["科目区分"];
                         localKeyOrder = localKeyOrder.filter(key => key !== "科目区分");
                     }
+                    return newItem; // 追加された行
+                })
+            console.log(displayData)
 
                     //時間割番号の跡地
 
+            displayData = displayData
+                .map(item => {
                     // 4
+                    let newItem = { ...item };
                     if (whrya === true) {
                         localKeyOrder = localKeyOrder.filter(key => key !== "対象学生");
                         if (newItem['onechar'] === "0") {
@@ -251,12 +285,10 @@
                         if (newItem['onechar'] === "3") {
                             newItem['onechar'] = "GREI" + newItem['onechar'];
                         }
-                    }
-                    console.log(data)
-                    // 5
+                    }                    // 5
                     // 科目名について、weakdict を使用して置換
-                    const weakdict = {{ weakdict| tojson | safe
-                }};
+                    const weakdict = {{ weakdict| tojson | safe }}
+            
         newItem['時間割名'] = dictioner(newItem['時間割名'], weakdict, (cookies.digree == "s") && whoname);
         newItem['教員名'] = dictioner(newItem['教員名'], weakdict, (((cookies.digree == "s") && whoname) && (!whotea)));
 
@@ -265,11 +297,17 @@
         newItem['教員名'] = dictioner(newItem['教員名'], strodict, (((cookies.digree == "s") && whoname) && (!whotea)));
         return newItem;
                 })
+
                 
             
                 .filter(item => {
             // (あと)
-            return allfilter(item, freewordValue, (buttonText === "ﾌﾘｰﾜｰﾄﾞ検索" && (cookies.searchaorb == "a")));
+            if (buttonText === "ﾌﾘｰﾜｰﾄﾞ検索" && (cookies.searchaorb == "a" && item["時間割名"].includes(freewordValue))) {
+                return true;
+            }
+            if (buttonText === "ﾌﾘｰﾜｰﾄﾞ検索" && (cookies.searchaorb == "a" && item["教員名"].includes(freewordValue))) {
+                return true;
+            }
             return true;
         })
         createTableFromLines(displayData, localKeyOrder);
@@ -441,124 +479,123 @@
         let cookies = {};
         let roleDict = {};
         let data = null;
+        let headers = [];
+        let lines = [];
 
-        let theline = "";
-        let headers = "";
-
-
+        function swsetter(keys, cookies, defo) {
+            for (let i = 0; i < keys.length; i++) {
+                if (typeof cookies[keys[i]] !== "undefined") {
+                    document.getElementById(keys[i]).checked = (cookies[keys[i] === "true"]);
+                } else {
+                    document.getElementById(keys[i]).checked = defo[i];
+                }
+            }
+        }
 
         window.addEventListener("DOMContentLoaded", function () {
             console.log("hogehoge")
             let mode = "{{ mode }}"
 
             getCSV().then(gotData => {
-                data = gotData;
+                const ps = resParse(gotData);
                 //document.cookie = "role" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-                const asof = data["asof"];
+                const asof = ps["date"] + "現在";
                 let asofdisp = document.getElementById("dateDisplay");
                 asofdisp.textContent = asof;
+
+                data = ps["data"];
+                headers = ps["header"];
 
                 cookies = cookiereader()
 
                 let defo = [true, true, false, true, true]
                 swsetter(["whonlygs", "whotea", "whono", "whrya", "whoname"], cookies, defo)
 
-                const rolelist = {{ rolelist| tojson | safe
-            }}.map(item => item.replace(/^ART/, ""));
-        if (typeof cookies.role !== "undefined" && cookies.role !== "") {
-            //console.log("NOTnewperson")
-            for (let i = 0; i < rolelist.length; i++) {
-                roleDict[rolelist[i]] = parseInt(cookies.role.charAt(i), 10);
-            }
-        } else {
-            alert("「所属設定」を行うことで\n「対象学生を簡略化」が動作するようになります")
-        }
 
-
-        theline = data["csv"].replace(/&amp;/g, '&');
-        headers = data["header"];
-
-        const rows = theline.trim().split('eskape').map(row => row.split(','));
-        headers = headers.split(',')
-        data = rows.map(row => {
-            const obj = {};
-            headers.forEach((header, i) => {
-                obj[header] = row[i];
-            });
-            return obj;
-        });
-
-        mode = "{{ mode }}"
-        if (mode == "toro") {
-            data.forEach(item => {
-                const firstMinusYusen = parseInt(item["第１希望"], 10) - parseInt(item["優先指定"], 10);
-                item.firstMinusYusen = firstMinusYusen;
-            });
-
-            const flowlooper = ["優先指定", "firstMinusYusen", "第２希望", "第３希望", "第４希望", "第５希望"];
-            data.forEach(item => {
-                let ruiseki = 0;
-                let flowflag = false;
-
-                for (const key of flowlooper) {
-                    if (flowflag) {
-                        item[key] = "GREI" + item[key];
-                        if (key === "firstMinusYusen") {
-                            item["第１希望"] = "GREI" + item["第１希望"];
-                        }
-                        continue;
+                if (typeof cookies.role !== "undefined" && cookies.role !== "") {
+                    //console.log("NOTnewperson")
+                    for (let i = 0; i < rolelist.length; i++) {
+                        roleDict[rolelist[i]] = parseInt(cookies.role.charAt(i), 10);
                     }
-                    ruiseki += parseInt(item[key], 10);
-                    if (ruiseki > parseInt(item["適正人数"], 10)) {
-                        item[key] = "OBER" + item[key];
-                        flowflag = true;
-                        if (key === "firstMinusYusen") {
-                            item["第１希望"] = "OBER" + item["第１希望"];
-                        }
-                    }
-                }
-            });
-        } else {
-            data.forEach(item => {
-                if (item["残数"] == 0) {
-                    item["残数"] = "IPPAI" + item["残数"];
-                    item["登録数"] = "IPPAI" + item["登録数"];
                 } else {
-                    item["残数"] = "OUKE" + item["残数"];
-                    item["登録数"] = "OUKE" + item["登録数"];
-                    item["時間割名"] = "OUKE" + item["時間割名"];
+                    //alert("「所属設定」を行うことで\n「対象学生を簡略化」が動作するようになります")
                 }
+
+                console.log(headers)
+
+                //mode = "{{ mode }}"
+                mode = "toro"
+                if (mode == "toro") {
+                    data.forEach(item => {
+                        const firstMinusYusen = parseInt(item["第１希望"], 10) - parseInt(item["優先指定"], 10);
+                        item.firstMinusYusen = firstMinusYusen;
+                    });
+
+                    data.forEach(item => {
+                        let ruiseki = 0;
+                        let flowflag = false;
+                        const flowlooper = ["優先指定", "第１希望", "第２希望", "第３希望", "第４希望", "第５希望"];
+                        for (const key of flowlooper) {
+                            if (flowflag) {
+                                item[key] = "GREI" + item[key];
+                                if (key === "firstMinusYusen") {
+                                    item["第１希望"] = "GREI" + item["第１希望"];
+                                }
+                                continue;
+                            }
+                            ruiseki += parseInt(item[key], 10);
+                            if (ruiseki > parseInt(item["適正人数"], 10)) {
+                                item[key] = "OBER" + item[key];
+                                flowflag = true;
+                                if (key === "firstMinusYusen") {
+                                    item["第１希望"] = "OBER" + item["第１希望"];
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    data.forEach(item => {
+                        if (item["残数"] == 0) {
+                            item["残数"] = "IPPAI" + item["残数"];
+                            item["登録数"] = "IPPAI" + item["登録数"];
+                        } else {
+                            item["残数"] = "OUKE" + item["残数"];
+                            item["登録数"] = "OUKE" + item["登録数"];
+                            item["時間割名"] = "OUKE" + item["時間割名"];
+                        }
+                    });
+                }
+
+                console.log(data)
+
+                data.forEach(item => {
+                    //console.log(roleDict)
+                    //console.log(item["対象学生"])
+                    if (roleDict.hasOwnProperty(item["対象学生"])) {
+                        item['onechar'] = roleDict[item["対象学生"]];
+                    }
+                });
+
+                let freewordValue = "";
+
+                let buttons = document.querySelectorAll(".day-button");
+                buttons.forEach(function (button) {
+                    button.addEventListener("click", function (event) {
+                        handleButtonClick(event, data);
+                    });
+                });
+
+                document.getElementById("freeword").addEventListener("keypress", function (event) {
+                    if (event.key === "Enter") {
+                        event.preventDefault(); // デフォルトのエンターキーの挙動を防ぐ
+                        handleButtonClick({ target: { textContent: 'ﾌﾘｰﾜｰﾄﾞ検索' } }, data);
+                    }
+                });
+
+                console.log(data)
+
             });
-        }
-
-        data.forEach(item => {
-            //console.log(roleDict)
-            //console.log(item["対象学生"])
-            if (roleDict.hasOwnProperty(item["対象学生"])) {
-                item['onechar'] = roleDict[item["対象学生"]];
-            }
         });
-
-        let freewordValue = "";
-
-        let buttons = document.querySelectorAll(".day-button");
-        buttons.forEach(function (button) {
-            button.addEventListener("click", function (event) {
-                handleButtonClick(event, data);
-            });
-        });
-
-        document.getElementById("freeword").addEventListener("keypress", function (event) {
-            if (event.key === "Enter") {
-                event.preventDefault(); // デフォルトのエンターキーの挙動を防ぐ
-                handleButtonClick({ target: { textContent: 'ﾌﾘｰﾜｰﾄﾞ検索' } }, data);
-            }
-        });
-
-        console.log(data)
-
-        });
-    });
 
     </script>
 
