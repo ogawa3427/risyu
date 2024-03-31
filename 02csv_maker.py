@@ -1,88 +1,37 @@
 import re
 import os
+import bs4
+import csv
+
 csvs_directory = os.path.join(os.getcwd(), 'csvs')
 
-import json
-import csv
-import time
+with open('raw.html', 'r', encoding='utf-8') as file:
+    page_source = file.read()
 
-#source = "金沢大学教務システム - 抽選科目登録状況.htm"
-source = 'page_source.html'
+bs = bs4.BeautifulSoup(page_source, 'html.parser')
 
-toggle = 0
-scptname = '02csv_maker'
+# 指定されたtableを取得するためのコード
+table = bs.find('table', {'id': 'ctl00_phContents_ucRegistrationStatus_gv'})
 
-while True:
-	try:
-		with open(source, 'r', encoding='utf-8') as f:
-			line = f.readline()
-			mode = 0
-			content=''
-			name = ''
-			while line:
-				if "ctl00_phContents_ucRegistrationStatus_lb" in line:
-					name = line
-				if '						</tbody></table>' in line:
-					mode = 2
-				if mode == 1:
-					if "</tr><tr" in line:
-						line = "eskape"
-					content += line
-				if 'th align' in line:
-					mode = 1
-				line = f.readline()
+with open('output.tsv', 'w', newline='', encoding='utf-8') as csvfile:
+    writer = csv.writer(csvfile, delimiter='\t')
+    
+    # ヘッダーを動的に取得して書き出す
+    header_row = table.find('tr')
+    headers = [header.text.strip() for header in header_row.find_all('th')]
+    writer.writerow(headers)
 
-		content = content.replace(" ", "")
-		content = content.replace("\t", "")
-		content = content.replace("\n", "")
-		content = content.replace("</span>", "")
-		content = re.sub(r'<span.*?>', '', content)
-		content = re.sub(r'<td.*?>', '<td>', content)
-		content = content.replace("</td><td>", ",")
-		content = content.replace("<td>", "")
-		content = content.replace("</td>", "")
-		content = content.replace("&amp;", "&")
-		content = re.sub(r'<\/tr>.*', '', content)
-
-		content = re.sub(r'^\n', '', content)
-		content = content.replace("eskape", "\n")
-		#header = "時間割番号,科目区分,時間割名,曜日時限,教員名,対象学生,適正人数,全登録数,優先指定,第１希望,第２希望,第３希望,第４希望,第５希望"
-		#contents = header + '\n' + content
-		contents = content
-		#こんなことしかできない自分のことが大嫌いだ
-		contents = contents.replace("月2,火2", "月2，火2")
-
-		name = re.sub(r'<.*?>', '', name)
-		name = re.sub(r'\t', '', name)
-		name = re.sub(r'[ :\/]', '', name)
-		name = re.sub(r'\n', '', name)
-		name = "risyu" + name
-		name = name + ".csv"
-		
-		path = os.path.join(csvs_directory, name)
-		with open(path, 'w', encoding='utf-8') as file:
-			file.write(contents)
-
-		print('CSV_made_sucsessfuly')
-		print(path)
-
-		with open('deadoralive.json', 'r', encoding='utf-8') as f:
-			deadoralive = json.load(f)
-		
-		deadoralive[scptname][scptname + str(toggle)] = int(time.time()/1)
-
-		diff01 = abs(deadoralive[scptname][scptname + '0'] - deadoralive[scptname][scptname + '1'])
-		deadoralive[scptname][scptname + '_diff'] = diff01
-
-		with open('deadoralive.json', 'w', encoding='utf-8') as f:
-			json.dump(deadoralive, f, indent=4)
-
-		toggle = 1 - toggle
-
-		current_second = time.localtime().tm_sec
-		sleeptime = 60 - current_second
-		time.sleep(sleeptime)    
-	except:
-
-		print('CSV_error')
-
+    # 各行について情報を抽出し、TSVに書き出す
+    for row in table.find_all('tr')[1:]:  # 最初の行はヘッダーなのでスキップ
+        cols = row.find_all('td')
+        if cols:
+            data = []
+            for col in cols:
+                # <span>タグがあれば、そのテキストを取得
+                span = col.find('span')
+                if span:
+                    data.append(span.text.strip().replace('\n', ' '))
+                else:
+                    # <td>タグ内のテキストから改行をスペースに置換
+                    data.append(col.text.strip().replace('\n', ' '))
+            writer.writerow(data)

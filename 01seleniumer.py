@@ -14,9 +14,99 @@ import time
 import  requests
 import  os
 import  json
+import re
+import csv
+import  bs4
+import  sys
+import  json
+
+target = 'https://eduweb.sta.kanazawa-u.ac.jp/portal/Public/Regist/RegistrationStatus.aspx?year=2024&lct_term_cd=11'
+args = sys.argv
+if len(args) > 1 and args[1] == 'test':
+    target = 'https://ogawa3427.github.io/risyu-error_page/dummy.html'
+else:
+    target = 'https://eduweb.sta.kanazawa-u.ac.jp/portal/Public/Regist/RegistrationStatus.aspx?year=2024&lct_term_cd=11'
 
 toggle = 0
 scptname = '01seleniumer'
+
+try:
+    while True:
+        options = Options()
+        options.add_argument("--headless")
+        webdriver_service = Service(ChromeDriverManager().install())
+        driver = webdriver.Chrome(service=webdriver_service, options=options)
+
+        driver.get(target)
+        driver.implicitly_wait(5)
+        driver.save_screenshot("screenshot.png")
+
+        select_element = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "ctl00_phContents_ucRegistrationStatus_ddlLns_ddl"))
+        )
+        select = Select(select_element)
+        select.select_by_value('0')
+
+        driver.implicitly_wait(5)
+        driver.save_screenshot("screenshot2.png")
+
+        page_source = driver.page_source
+        with open("raw.html", "w", encoding="utf-8") as file:
+            file.write(page_source) 
+
+        driver.quit()
+
+        print('success')
+
+        csvs_directory = os.path.join(os.getcwd(), 'csvs')
+
+        with open('raw.html', 'r', encoding='utf-8') as file:
+            page_source = file.read()
+
+        bs = bs4.BeautifulSoup(page_source, 'html.parser')
+
+        # 指定されたtableを取得するためのコード
+        table = bs.find('table', {'id': 'ctl00_phContents_ucRegistrationStatus_gv'})
+
+        date = bs.find('span', {'id': 'ctl00_phContents_ucRegistrationStatus_lblDate'}).text
+        meta_data = [
+            date
+        ]
+        if len(args) > 1 and args[1] == 'test':
+            meta_data.append('test')
+        else:
+            meta_data.append('valid')
+
+        with open('output.tsv', 'w', newline='', encoding='utf-8') as csvfile:
+            writer = csv.writer(csvfile, delimiter='\t')
+            writer.writerow(meta_data)
+            
+            # ヘッダーを動的に取得して書き出す
+            header_row = table.find('tr')
+            headers = [header.text.strip() for header in header_row.find_all('th')]
+            writer.writerow(headers)
+
+            # 各行について情報を抽出し、TSVに書き出す
+            for row in table.find_all('tr')[1:]:  # 最初の行はヘッダーなのでスキップ
+                cols = row.find_all('td')
+                if cols:
+                    data = []
+                    for col in cols:
+                        # <span>タグがあれば、そのテキストを取得
+                        span = col.find('span')
+                        if span:
+                            data.append(span.text.strip().replace('\n', ' '))
+                        else:
+                            # <td>タグ内のテキストから改行をスペースに置換
+                            data.append(col.text.strip().replace('\n', ' '))
+                    writer.writerow(data)
+
+        print('success2')
+        time.sleep(45)
+except:
+    driver.quit()
+    print('error')
+    print(sys.exc_info())
 
 try:
     while True:
