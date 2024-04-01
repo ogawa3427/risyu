@@ -217,6 +217,9 @@
                     else if (buttonText === "ﾌﾘｰﾜｰﾄﾞ検索" && item["教員名"].includes(freewordValue)) {
                         return true;
                     } else {
+                        if (buttonText !== 'ﾌﾘｰﾜｰﾄﾞ検索') {
+                            return true;
+                        }
                     return false;
                     }
                 })
