@@ -23,3 +23,5 @@ htmls/
 !static/r.png
 !static/cookie_logic.js
 !static/data_logic.js
+
+csvs/
