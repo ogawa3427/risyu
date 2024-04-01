@@ -209,13 +209,16 @@
             displayData = displayData
                 .filter(item => {
                     // (まえ)
-                    if (buttonText === "ﾌﾘｰﾜｰﾄﾞ検索" && (cookies.searchaorb == "b") && item["時間割名"] === freewordValue) {
+                    //if (buttonText === "ﾌﾘｰﾜｰﾄﾞ検索" && (cookies.searchaorb == "b") && item["時間割名"] === freewordValue) {
+                    if (buttonText === "ﾌﾘｰﾜｰﾄﾞ検索" && item["時間割名"].includes(freewordValue)) {
                         return true;
                     }
-                    if (buttonText === "ﾌﾘｰﾜｰﾄﾞ検索" && (cookies.searchaorb == "b") && item["教員名"] === freewordValue) {
+                    //if (buttonText === "ﾌﾘｰﾜｰﾄﾞ検索" && (cookies.searchaorb == "b") && item["教員名"] === freewordValue) {
+                    else if (buttonText === "ﾌﾘｰﾜｰﾄﾞ検索" && item["教員名"].includes(freewordValue)) {
                         return true;
+                    } else {
+                    return false;
                     }
-                    return true;
                 })
             console.log(displayData)
 
@@ -258,6 +261,8 @@
                     return newItem; // 追加された行
                 })
             console.log(displayData)
+            console.log(buttonText)
+            console.log(freewordValue)
 
                     //時間割番号の跡地
 
