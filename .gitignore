@@ -24,4 +24,13 @@ htmls/
 !static/cookie_logic.js
 !static/data_logic.js
 
-csvs/
+csvs/*.csv
+csvs/*.tsv
+csvs/*00
+csvs/*01
+csvs/*02
+a_csvs/*
+
+!csvs/renamer.py
+!csvs/tsver.py
+!csvs/joiner.py
