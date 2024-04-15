@@ -211,12 +211,28 @@ for fa in fas:
         q = value.get("q", "")
         dp = value.get("dp", "")
 
-        match = re.search(pattern, link)
-        if match:
-            lct_cd_value = match.group(1)
-            #print(lct_cd_value)
+        print(key)
+
+        if link:
+            match = re.search(pattern, link)
+            if match:
+                lct_cd_value = match.group(1)
+                #print(lct_cd_value)
+                data[lct_cd_value] = {
+                    "link": link,
+                    "rui": rui,
+                    "iki": iki,
+                    "title": title,
+                    "teacher": teacher,
+                    "q": q,
+                    "dp": dp
+                }
+            else:
+                print(f"lct_cdの値が見つかりませんでした")
+        else:
+            lct_cd_value = key
             data[lct_cd_value] = {
-                "link": link,
+                "link": "",
                 "rui": rui,
                 "iki": iki,
                 "title": title,
@@ -224,8 +240,8 @@ for fa in fas:
                 "q": q,
                 "dp": dp
             }
-        else:
-            print(f"lct_cdの値が見つかりませんでした。リンク: {link}")
+        #print(data)
+        
 
     print(data)
 
