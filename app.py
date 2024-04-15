@@ -7,8 +7,6 @@ import time
 from flask import jsonify
 from flask import request
 from markupsafe import Markup
-import matplotlib.pyplot as plt
-import numpy as np
 
 app = Flask(__name__)
 
