@@ -7,6 +7,8 @@ import time
 from flask import jsonify
 from flask import request
 from markupsafe import Markup
+import matplotlib.pyplot as plt
+import numpy as np
 
 app = Flask(__name__)
 
@@ -67,9 +69,9 @@ with open(os.path.join(os.path.expanduser('~'), 'risyu', 'sv_admin', qur), 'r', 
     rolelist = json.load(f)
 keys_list = list(rolelist.keys())
 
-with open('dns.json', 'r', encoding='utf-8') as f:
-    dns = json.load(f)
-    #print(dns)
+with open('2024q1_dns.tsv', 'r', encoding='utf-8') as f:
+    reader = csv.reader(f, delimiter='\t')
+    dns = {row[0]: row[2]+row[3] for row in reader}
 
 with open("course_info.json", "r", encoding="utf-8") as f:
     course_info = json.load(f)
@@ -82,6 +84,11 @@ if (str(os.environ.get('RISYU_ENV')) == 'dev'):
 else:
     depander = parent_depander['prod']
     print('prod')
+
+data_q1 = []
+with open('2024q1.tsv', 'r', encoding='utf-8') as f:
+    reader = csv.reader(f, delimiter='\t')
+    data_q1 = [row for row in reader]
 
 @app.route('/')
 def index():
@@ -104,16 +111,43 @@ def index():
 
 @app.route('/img/<string:id>')
 def img(id):
-    img_path = f'/imgs/{id}.png'
-    print(img_path)
-
+    print(id)
     fullname = dns[id]
+    teiin = 0
+
+    filtered = []
+    for item in data_q1:
+        if item[1] == id:
+            filtered.append(item)
+    filtered = sorted(filtered, key=lambda x: x[0])
+    teiin = filtered[0][2]
+    # 十分ごとに平均する処理
+    averaged_data = {}
+    for item in filtered:
+        # YYYYMMDDhhmmをキーとする
+        key = item[0][:11] + '0'
+        if key not in averaged_data:
+            averaged_data[key] = [list(map(int, item[2:]))]
+        else:
+            averaged_data[key].append(list(map(int, item[2:])))
+    
+    # 平均値を計算
+    for key in averaged_data:
+        averaged_data[key] = [sum(x)/len(x) for x in zip(*averaged_data[key])]
+        # 平均データの先頭にキー(日時)を追加
+        averaged_data[key].insert(0, key)
+
+    # 辞書をリストに変換し、日時でソート
+    averaged_list = sorted(list(averaged_data.values()), key=lambda x: x[0])
+    for item in averaged_list:
+        item[2] = teiin
+    print(averaged_list)
     return render_template(
         'img.html',
         id=id,
-        img_path=img_path,
+        data=averaged_list,
         fullname=fullname
-        )
+    )
 
 @app.route('/set')
 def set():
