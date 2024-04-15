@@ -34,3 +34,5 @@ a_csvs/*
 !csvs/renamer.py
 !csvs/tsver.py
 !csvs/joiner.py
+
+/imgs/
