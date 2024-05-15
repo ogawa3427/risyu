@@ -106,7 +106,7 @@ def index():
 @app.route('/img/<string:id>')
 def img(id):
     print(id)
-    fullname = dns[id]
+    #fullname = dns[id]
     teiin = 0
     with open(f'imgs/risyu{id}.tsv', 'r', encoding='utf-8') as f:
         data_q1 = [line.strip().split('\t') for line in f]
@@ -142,7 +142,7 @@ def img(id):
         'img.html',
         id=id,
         data=averaged_list,
-        fullname=fullname
+        #fullname=fullname
     )
 
 @app.route('/set')
