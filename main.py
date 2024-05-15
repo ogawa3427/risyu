@@ -83,10 +83,6 @@ else:
     depander = parent_depander['prod']
     print('prod')
 
-data_q1 = []
-with open('2024q1.tsv', 'r', encoding='utf-8') as f:
-    reader = csv.reader(f, delimiter='\t')
-    data_q1 = [row for row in reader]
 
 @app.route('/')
 def index():
@@ -112,6 +108,8 @@ def img(id):
     print(id)
     fullname = dns[id]
     teiin = 0
+    with open(f'imgs/risyu{id}.tsv', 'r', encoding='utf-8') as f:
+        data_q1 = [line.strip().split('\t') for line in f]
 
     filtered = []
     for item in data_q1:

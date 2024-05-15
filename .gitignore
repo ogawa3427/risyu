@@ -37,3 +37,4 @@ a_csvs/*
 
 /imgs/
 /rcsvs/
+/__pycache__/
