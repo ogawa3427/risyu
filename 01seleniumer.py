@@ -22,12 +22,12 @@ import  json
 
 from datetime import datetime
 
-target = 'https://eduweb.sta.kanazawa-u.ac.jp/portal/Public/Regist/RegistrationStatus.aspx?year=2024&lct_term_cd=11'
+target = 'https://eduweb.sta.kanazawa-u.ac.jp/portal/Public/Regist/RegistrationStatus.aspx?year=2024&lct_term_cd=12'
 args = sys.argv
 if len(args) > 1 and args[1] == 'test':
     target = 'https://ogawa3427.github.io/risyu-error_page/dummy.html'
 else:
-    target = 'https://eduweb.sta.kanazawa-u.ac.jp/portal/Public/Regist/RegistrationStatus.aspx?year=2024&lct_term_cd=11'
+    target = 'https://eduweb.sta.kanazawa-u.ac.jp/portal/Public/Regist/RegistrationStatus.aspx?year=2024&lct_term_cd=12'
 
 toggle = 0
 scptname = '01seleniumer'
