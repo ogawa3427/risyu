@@ -20,6 +20,8 @@ import  bs4
 import  sys
 import  json
 
+from datetime import datetime
+
 target = 'https://eduweb.sta.kanazawa-u.ac.jp/portal/Public/Regist/RegistrationStatus.aspx?year=2024&lct_term_cd=11'
 args = sys.argv
 if len(args) > 1 and args[1] == 'test':
@@ -58,7 +60,7 @@ try:
 
         print('success')
 
-        csvs_directory = os.path.join(os.getcwd(), 'csvs')
+        csvs_directory = os.path.join(os.getcwd(), 'rcsvs')
 
         with open('raw.html', 'r', encoding='utf-8') as file:
             page_source = file.read()
@@ -102,6 +104,30 @@ try:
                     writer.writerow(data)
 
         print('success2')
+        with open('output.tsv', 'r', encoding='utf-8') as f:
+            tsv = f.read()
+        tsv = tsv.split('\n')
+        for i in range(len(tsv)):
+            tsv[i] = tsv[i].split('\t')
+
+        datetime_obj = datetime.strptime(tsv[0][0], '%Y/%m/%d %H:%M:%S')
+        print(datetime_obj)
+        date_str = datetime_obj.strftime('%Y%m%d%H%M%S')
+        print(date_str)
+
+        # 空の要素を含む行をフィルタリングして新しいリストを作成
+        filtered_tsv = [row for row in tsv if any(cell.strip() for cell in row) or row[0] == '\"\"']
+        filename = 'risyu' + date_str + '.tsv'
+        with open(os.path.join(csvs_directory, filename), 'w', newline='', encoding='utf-8') as csvfile:
+            writer = csv.writer(csvfile, delimiter='\t')
+            writer.writerows(filtered_tsv[2:])
+
+        for filtered_row in filtered_tsv[2:]:
+            print(filtered_row)
+            ind_filename = 'risyu' + filtered_row[0] + '.tsv'
+            filtered_row = date_str + '\t' + '\t'.join(filtered_row)
+            with open(os.path.join(csvs_directory, ind_filename), 'a', newline='', encoding='utf-8') as csvfile:
+                csvfile.write(filtered_row + '\n')
         time.sleep(45)
 except:
     driver.quit()
@@ -113,7 +139,7 @@ try:
         #os.mkdir('screenshots')
         # Setup Chrome options
         options = Options()
-        options.add_argument("--headless") # Ensure GUI is off. Remove this line if you want to see the browser navigating.
+        #options.add_argument("--headless") # Ensure GUI is off. Remove this line if you want to see the browser navigating.
         
         # Set path to chromedriver as a service
         webdriver_service = Service(ChromeDriverManager().install())

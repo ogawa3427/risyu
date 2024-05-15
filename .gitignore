@@ -36,3 +36,4 @@ a_csvs/*
 !csvs/joiner.py
 
 /imgs/
+/rcsvs/
