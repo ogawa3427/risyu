@@ -148,7 +148,7 @@ def img(id):
         'img.html',
         id=id,
         data=averaged_list,
-        #fullname=fullname
+        fullname=data_q1[0][3]
     )
 
 @app.route('/set')
