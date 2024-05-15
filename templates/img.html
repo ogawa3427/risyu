@@ -12,6 +12,7 @@
     <canvas id="myChart" style="width:100%;height:100vh;"></canvas>
     <script>
         const data = {{ data | tojson }};
+        console.log(data);
         const teiin = data[0][1];
         const labels = data.map(item => item[0].slice(0, 4) + '年' + item[0].slice(4, 6) + '月' + item[0].slice(6, 8) + '日' + item[0].slice(8, 10) + '時' + item[0].slice(10, 12) + '分' + item[0].slice(12, 14) + '秒');
         const yuusen = data.map(item => item[3]);
