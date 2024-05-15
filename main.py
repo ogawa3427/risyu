@@ -111,33 +111,39 @@ def img(id):
     with open(f'rcsvs/risyu{id}.tsv', 'r', encoding='utf-8') as f:
         data_q1 = [line.strip().split('\t') for line in f]
 
-    filtered = []
+    no_doubling = []
+    seen = set()
     for item in data_q1:
-        if item[1] == id:
-            filtered.append(item)
-    filtered = sorted(filtered, key=lambda x: x[0])
-    teiin = filtered[0][2]
-    # 十分ごとに平均する処理
-    averaged_data = {}
-    for item in filtered:
-        # YYYYMMDDhhmmをキーとする
-        key = item[0][:11] + '0'
-        if key not in averaged_data:
-            averaged_data[key] = [list(map(int, item[2:]))]
-        else:
-            averaged_data[key].append(list(map(int, item[2:])))
+        if item[0] not in seen:
+            no_doubling.append(item)
+            seen.add(item[0])
+    # 各リスト内で7から16の要素を抽出
+    extracted_data = []
+    for item in no_doubling:
+        extracted_data.append([item[0]] + item[7:])
     
-    # 平均値を計算
-    for key in averaged_data:
-        averaged_data[key] = [sum(x)/len(x) for x in zip(*averaged_data[key])]
-        # 平均データの先頭にキー(日時)を追加
-        averaged_data[key].insert(0, key)
+    print(extracted_data)
 
-    # 辞書をリストに変換し、日時でソート
-    averaged_list = sorted(list(averaged_data.values()), key=lambda x: x[0])
-    for item in averaged_list:
-        item[2] = teiin
-    print(averaged_list)
+    averaged_data = []
+    if len(extracted_data) > 240:
+    # 10項目ごとにデータを平均化する処理
+        temp_data = []
+        for index, item in enumerate(extracted_data):
+            temp_data.append(item[1:])
+            if (index + 1) % 10 == 0 or index == len(extracted_data) - 1:
+                # 各列の平均を計算
+                averaged_row = [sum(col) / len(col) for col in zip(*temp_data)]
+                # 平均化された行にIDを追加して最終リストに追加
+                averaged_data.append([item[0]] + averaged_row)
+                temp_data = []  # リセット
+
+    averaged_list = []
+    if len(averaged_data) > 0:
+        for item in averaged_data:
+            averaged_list.append([item[0]] + item[1:])
+    else:
+        averaged_list = extracted_data
+        
     return render_template(
         'img.html',
         id=id,
