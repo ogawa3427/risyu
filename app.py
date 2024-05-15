@@ -108,7 +108,7 @@ def img(id):
     print(id)
     #fullname = dns[id]
     teiin = 0
-    with open(f'imgs/risyu{id}.tsv', 'r', encoding='utf-8') as f:
+    with open(f'rcsvs/risyu{id}.tsv', 'r', encoding='utf-8') as f:
         data_q1 = [line.strip().split('\t') for line in f]
 
     filtered = []
