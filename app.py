@@ -112,11 +112,11 @@ def img(id):
         data_q1 = [line.strip().split('\t') for line in f]
 
     no_doubling = []
-    seen = set()
+    seen = []
     for item in data_q1:
         if item[0] not in seen:
             no_doubling.append(item)
-            seen.add(item[0])
+            seen.append(item[0])
     # 各リスト内で7から16の要素を抽出
     extracted_data = []
     for item in no_doubling:
@@ -143,7 +143,7 @@ def img(id):
             averaged_list.append([item[0]] + item[1:])
     else:
         averaged_list = extracted_data
-        
+
     return render_template(
         'img.html',
         id=id,
