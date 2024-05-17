@@ -103,6 +103,11 @@ def index():
         mode = 'hose'
     )
 
+#20240517144602  76E10b.203      ＧＳ科目        論理学と数学の基礎（数学的発想法）      金3     小原　功任    全学生（共通教育科目に係る卒業要件未充足の2年以上優先） 70      130     37      105     22   21       0
+#20240517144702  76E10b.203      ＧＳ科目        論理学と数学の基礎（数学的発想法）      金3     小原　功任    全学生（共通教育科目に係る卒業要件未充足の2年以上優先） 70      130     37      105     22   21       0
+#20240517144802  76E10b.203      ＧＳ科目        論理学と数学の基礎（数学的発想法）      金3     小原　功任    全学生（共通教育科目に係る卒業要件未充足の2年以上優先） 70      130     37      105     22   21       0
+#20240517144901  76E10b.203      ＧＳ科目        論理学と数学の基礎（数学的発想法）      金3     小原　功任    全学生（共通教育科目に係る卒業要件未充足の2年以上優先） 70      130     37      105     22   21       0
+
 @app.route('/img/<string:id>')
 def img(id):
     print(id)
@@ -126,6 +131,12 @@ def img(id):
 
     averaged_data = []
     if len(extracted_data) > 240:
+        # リストの値を30個に一個で間引く処理
+        thinned_data = []
+        for index, item in enumerate(extracted_data):
+            if (index + 1) % 30 == 0:
+                thinned_data.append(item)
+    if False:
     # 10項目ごとにデータを平均化する処理
         temp_data = []
         for index, item in enumerate(extracted_data):
@@ -143,7 +154,7 @@ def img(id):
             averaged_list.append([item[0]] + item[1:])
     else:
         averaged_list = extracted_data
-
+    averaged_list = thinned_data
     return render_template(
         'img.html',
         id=id,
