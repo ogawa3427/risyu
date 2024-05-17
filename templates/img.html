@@ -17,10 +17,10 @@
         const labels = data.map(item => item[0].slice(0, 4) + '年' + item[0].slice(4, 6) + '月' + item[0].slice(6, 8) + '日' + item[0].slice(8, 10) + '時' + item[0].slice(10, 12) + '分' + item[0].slice(12, 14) + '秒');
         const yuusen = data.map(item => item[3]);
         const daiichi = data.map(item => item[4]);
-        const daiini = data.map(item => item[5] + item[4]); 
-        const daisan = data.map(item => item[6] + item[5] + item[4]);
-        // const daiyon = data.map(item => item[7] + item[6] + item[5] + item[4]);
-        // const daigo = data.map(item => item[8] + item[7] + item[6] + item[5] + item[4]);
+        const daiini = data.map(item => Number(item[5]) + Number(item[4])); 
+        const daisan = data.map(item => Number(item[6]) + Number(item[5]) + Number(item[4]));
+        const daiyon = data.map(item => Number(item[7]) + Number(item[6]) + Number(item[5]) + Number(item[4]));
+        const daigo = data.map(item => Number(item[8]) + Number(item[7]) + Number(item[6]) + Number(item[5]) + Number(item[4]));
 
         const ctx = document.getElementById('myChart').getContext('2d');
         const myChart = new Chart(ctx, {
@@ -56,20 +56,20 @@
                         borderColor: 'rgb(75, 192, 192)',
                         tension: 0.1
                     },
-                    // {
-                    //     label: '第四希望',
-                    //     data: daiyon,
-                    //     fill: false,
-                    //     borderColor: 'rgb(153, 102, 255)',
-                    //     tension: 0.1
-                    // },
-                    // {
-                    //     label: '第五希望',
-                    //     data: daigo,
-                    //     fill: false,
-                    //     borderColor: 'rgb(255, 159, 64)',
-                    //     tension: 0.1
-                    // },
+                    {
+                        label: '第四希望',
+                        data: daiyon,
+                        fill: false,
+                        borderColor: 'rgb(153, 102, 255)',
+                        tension: 0.1
+                    },
+                    {
+                        label: '第五希望',
+                        data: daigo,
+                        fill: false,
+                        borderColor: 'rgb(255, 159, 64)',
+                        tension: 0.1
+                    },
                     {
                         label: '定員',
                         data: Array(labels.length).fill(teiin),
