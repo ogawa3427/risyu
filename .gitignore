@@ -38,3 +38,6 @@ a_csvs/*
 /imgs/
 /rcsvs/
 /__pycache__/
+
+script.txt
+/rcsv/
