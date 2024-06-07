@@ -183,7 +183,14 @@ def man():
         )
 
 def error():
-    res = jsonify({'error': 'in valid input'})
+    res = jsonify(
+        {
+            'status': 'error',
+            'operation type': 'unknown',
+            'message': 'in valid input',
+            'data': ''
+        }
+    )
     res.headers.add('Access-Control-Allow-Origin', '*')
     res.status_code = 400
     return res
@@ -206,7 +213,14 @@ def get_example():
                 for line in file:
                     if word in line:
                         matched_lines.append(line.strip().split('\t'))
-            res = jsonify(matched_lines)
+            res = jsonify(
+                {
+                    'status': 'success',
+                    'operation type': 'search',
+                    'message': 'found by yyyyMMddHHmm',
+                    'data': matched_lines
+                }
+            )
             res.headers.add('Access-Control-Allow-Origin', '*')
             return res
         
@@ -221,17 +235,39 @@ def get_example():
                             nums.append(s_line[1])
                         else:
                             if len(nums) > 1:
-                                res = jsonify(nums)
+                                res = jsonify(
+                                    {
+                                        'status': 'redirect',
+                                        'operation type': 'search',
+                                        'message': 'multiple classes found, please specify one',
+                                        'data': nums
+                                    }
+                                )
                                 res.headers.add('Access-Control-Allow-Origin', '*')
+                                res.status_code = 300
                                 return res
                         matched_lines.append(s_line)
-                res = jsonify(matched_lines)
+                res = jsonify(
+                    {
+                        'status': 'success',
+                        'operation type': 'search',
+                        'message': 'found by class code',
+                        'data': matched_lines
+                    }
+                )
                 res.headers.add('Access-Control-Allow-Origin', '*')
                 return res
             
         elif re.match(r'^\d{14}$', word):
             message = {'error':'this type of query must be 12 digits'}
-            res = jsonify(message)
+            res = jsonify(
+                {
+                    'status': 'error',
+                    'operation type': 'search',
+                    'message': message,
+                    'data': ''
+                }
+            )
             res.headers.add('Access-Control-Allow-Origin', '*')
             res.status_code = 400
             return res
@@ -260,7 +296,14 @@ def get_example():
             for line in file:
                 if timestr in line:
                     matched_lines.append(line.strip().split('\t'))
-        res = jsonify(matched_lines)
+        res = jsonify(
+            {
+                'status': 'success',
+                'operation type': 'realtime',
+                'message': 'thanks for participating in the hackathon',
+                'data': matched_lines
+            }
+        )
         res.headers.add('Access-Control-Allow-Origin', '*')
         return res
 
@@ -273,9 +316,15 @@ def get_example():
             for line in lines:
                 if word in line:
                     matched_lines.append(line.strip().split('\t'))
-            res = jsonify(matched_lines)
+            res = jsonify(
+                {
+                    'status': 'success',
+                    'operation type': 'exchange',
+                    'message': 'found by class code',
+                    'data': matched_lines
+                }
+            )
             res.headers.add('Access-Control-Allow-Origin', '*')
-            print(matched_lines)
             return res
     elif mode_value == 'all':
         with open('2024q1_dns.tsv', 'r', encoding='utf-8') as f:
@@ -286,7 +335,14 @@ def get_example():
             print(line)
             line = line.split('\t')
             tosend.append([line[0], line[2]])
-        res = jsonify(tosend)
+        res = jsonify(
+            {
+                'status': 'success',
+                'operation type': 'all',
+                'message': 'all classes',
+                'data': tosend
+            }
+        )
         res.headers.add('Access-Control-Allow-Origin', '*')
         return res
     else:
