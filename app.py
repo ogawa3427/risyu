@@ -213,6 +213,18 @@ def get_example():
                 for line in file:
                     if word in line:
                         matched_lines.append(line.strip().split('\t'))
+            if len(matched_lines) == 0:
+                res = jsonify(
+                    {
+                        'status': 'error',
+                        'operation type': 'search',
+                        'message': 'not found by yyyyMMddHHmm',
+                        'data': ''
+                    }
+                )
+                res.headers.add('Access-Control-Allow-Origin', '*')
+                res.status_code = 404
+                return res
             res = jsonify(
                 {
                     'status': 'success',
@@ -247,6 +259,18 @@ def get_example():
                                 res.status_code = 300
                                 return res
                         matched_lines.append(s_line)
+                if len(matched_lines) == 0:
+                    res = jsonify(
+                        {
+                            'status': 'error',
+                            'operation type': 'search',
+                            'message': 'not found by class code',
+                            'data': ''
+                        }
+                    )
+                    res.headers.add('Access-Control-Allow-Origin', '*')
+                    res.status_code = 404
+                    return res
                 res = jsonify(
                     {
                         'status': 'success',
