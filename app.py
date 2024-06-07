@@ -7,6 +7,7 @@ import time
 from flask import jsonify
 from flask import request
 from markupsafe import Markup
+import subprocess
 
 app = Flask(__name__)
 
@@ -170,13 +171,85 @@ def man():
         'man.html'
         )
 
-@app.route('/api', methods=['GET'])
-def get_example():
-    with open('output.tsv', 'r', encoding='utf-8') as f:
-        recieved = f.read()
-    res = jsonify(recieved)
+def error():
+    res = jsonify({'error': 'in valid input'})
     res.headers.add('Access-Control-Allow-Origin', '*')
     return res
+
+@app.route('/api', methods=['GET'])
+def get_example():
+    mode_value = request.args.get('mode', '')
+    word = request.args.get('word', '')
+
+    if mode_value == '':
+        with open('output.tsv', 'r', encoding='utf-8') as f:
+            received = f.read()
+        res = jsonify(received)
+        res.headers.add('Access-Control-Allow-Origin', '*')
+        return res
+    elif mode_value == 'search':
+        if re.match(r'^\d{12}$', word):
+            matched_lines = []
+            with open('2024q1.tsv', 'r', encoding='utf-8') as file:
+                for line in file:
+                    if word in line:
+                        matched_lines.append(line.strip().split('\t'))
+            res = jsonify(matched_lines)
+            res.headers.add('Access-Control-Allow-Origin', '*')
+            return res
+        
+        elif re.match(r'^[a-zA-Z0-9]{5,7}\.?[a-zA-Z0-9]{0,3}$', word):
+            matched_lines = []
+            nums = []
+            with open('2024q1.tsv', 'r', encoding='utf-8') as file:
+                for line in file:
+                    if word in line:
+                        s_line = line.strip().split('\t')
+                        if s_line[1] not in nums:
+                            nums.append(s_line[1])
+                        else:
+                            if len(nums) > 1:
+                                res = jsonify(nums)
+                                res.headers.add('Access-Control-Allow-Origin', '*')
+                                return res
+                        matched_lines.append(s_line)
+                res = jsonify(matched_lines)
+                res.headers.add('Access-Control-Allow-Origin', '*')
+                return res
+            
+        elif re.match(r'^\d{14}$', word):
+            return 'this type of query must be 12 digits'
+            
+        else:
+            return error()
+    elif mode_value == 'exchange' and re.match(r'^[a-zA-Z0-9]{5,7}\.?[a-zA-Z0-9]{0,3}$', word):
+            print('exchange')
+            matched_lines = []
+            with open('2024q1_dns.tsv', 'r', encoding='utf-8') as f:
+                received = f.read()
+            lines = received.split('\n')
+            for line in lines:
+                if word in line:
+                    matched_lines.append(line.strip().split('\t'))
+            res = jsonify(matched_lines)
+            res.headers.add('Access-Control-Allow-Origin', '*')
+            print(matched_lines)
+            return res
+    elif mode_value == 'all':
+        with open('2024q1_dns.tsv', 'r', encoding='utf-8') as f:
+            received = f.read()
+        lines = received.strip().split('\n')
+        tosend = []
+        for line in lines:
+            print(line)
+            line = line.split('\t')
+            tosend.append([line[0], line[2]])
+        res = jsonify(tosend)
+        res.headers.add('Access-Control-Allow-Origin', '*')
+        return res
+    else:
+        return error()
+
 
 @app.route('/deadoralive')
 def deadoralive():
