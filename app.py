@@ -185,6 +185,7 @@ def man():
 def error():
     res = jsonify({'error': 'in valid input'})
     res.headers.add('Access-Control-Allow-Origin', '*')
+    res.status_code = 400
     return res
 
 @app.route('/api', methods=['GET'])
@@ -229,10 +230,40 @@ def get_example():
                 return res
             
         elif re.match(r'^\d{14}$', word):
-            return 'this type of query must be 12 digits'
-            
+            message = {'error':'this type of query must be 12 digits'}
+            res = jsonify(message)
+            res.headers.add('Access-Control-Allow-Origin', '*')
+            res.status_code = 400
+            return res
+        
         else:
             return error()
+        
+    elif mode_value == 'hackathon':
+        matched_lines = []
+        timestr = ''
+        # 2 23 56
+        # 3 23 57
+        #現在時刻hhmmでを取得
+        now = time.strftime('%H%M')
+        #現在時刻hhmmをint型に変換
+        now_ = int(now)
+        now = str(now)
+        if len(now) == 3:
+            now = '0' + now
+        if now_ < 2355:
+            timestr = '20240403' + now
+        else:
+            timestr = '20240402' + now
+        print(timestr)
+        with open('2024q1.tsv', 'r', encoding='utf-8') as file:
+            for line in file:
+                if timestr in line:
+                    matched_lines.append(line.strip().split('\t'))
+        res = jsonify(matched_lines)
+        res.headers.add('Access-Control-Allow-Origin', '*')
+        return res
+
     elif mode_value == 'exchange' and re.match(r'^[a-zA-Z0-9]{5,7}\.?[a-zA-Z0-9]{0,3}$', word):
             print('exchange')
             matched_lines = []
