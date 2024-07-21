@@ -100,7 +100,7 @@ def index():
         qur=qur,
         count=count,
         linka = depander['linka'],
-        fetcher = depander['fetcher'],
+        fetcher = 'https://kurisyushien.org/api', #depander['fetcher'],
         mode = 'hose'
     )
 

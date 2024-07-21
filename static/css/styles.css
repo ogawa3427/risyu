@@ -20,12 +20,19 @@ body {
     .outer {
         background-color: var(--lg); /* 背景色 */
         border: 2px solid var(--gr); /* 枠線 */
-        width: 600px; /* 初期幅 */
+        width: 100%; /* 幅を100%に */
         height: 100%; /* 高さを画面いっぱいに */
         overflow: auto; /* コンテンツがオーバーフローした場合にスクロールバーを表示 */
-        resize: both; /* 水平方向と垂直方向にリサイズ可能 */
+        /* resize: both; 水平方向と垂直方向にリサイズ可能 */
         padding: 10px; /* 内側の余白 */
         box-sizing: border-box; /* paddingとborderをwidthとheightに含める */
+    }
+    .buttons {
+        display: flex; /* ボタンを横方向に並べる */
+        justify-content: space-between; /* ボタンを左右に均等に配置 */
+        padding: 0px; /* 内側の余白 */
+        margin: 0; /* 外側の余白 */
+        background-color: red; /* 背景色 */
     }
 }
 
@@ -62,17 +69,24 @@ body {
     margin: 0;
     height: inherit;
     width: 100%; /* 幅を親要素に合わせる */
+    flex: 8; /* 横幅を4分の1にする */
 }
 
 .day-button {
-    margin: 0;
+    margin: 0.05em;
+    padding: 0;
     background-color: var(--lg);
     border: 1px solid var(--gr);
-    font-size: calc(1em + 1vw);
+    font-size: calc(1.2em + 1vw);
     white-space: nowrap; /* テキストを折り返さない */
     overflow: hidden; /* コンテンツがオーバーフローした場合に隠す */
     text-overflow: ellipsis; /* オーバーフローしたテキストを省略記号で表示 */
     height: 100%; /* 与えられた縦幅いっぱいに */
+    /* aspect-ratio: 1; */
+    flex: 1;
+    width: 100%;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 1);
+
 }
 
 .day-button:hover {
@@ -81,12 +95,14 @@ body {
 }
 
 .ch_box_input {
+    /* margin: 0.05em;
     height: inherit;
-    aspect-ratio: 1 / 1;
+    /* aspect-ratio: 1 / 1; 
     padding: 0;
     margin: 0;
-    flex: 0 0 auto; /* チェックボックスのサイズを固定 */
+    /* flex: 0 0 auto; チェックボックスのサイズを固定 */
     display: none;
+    /* width: 100%; */
 }
 
 .checkmark:hover {
@@ -95,19 +111,31 @@ body {
 }
 
 .checkmark {
+    margin: 0.05em;
+    padding: 0;
     display: flex;
     align-items: center; /* テキストを中央揃え（縦方向） */
     justify-content: center; /* テキストを中央揃え（横方向） */
     width: 100%; /* 幅を親要素に合わせる */
-    font-size: calc(1em + 1.5vw); /* フォントサイズを大きくする */
+    font-size: calc(1.2em + 1vw); /* フォントサイズを大きくする */
     height: 100%; /* 与えられた縦幅いっぱいに */
     text-align: center;
     background-color: var(--lg);
     border: 1px solid var(--gr);
-    flex-grow: 1;
+    flex: 1;
     overflow: hidden; /* コンテンツがオーバーフローした場合に隠す */
     text-overflow: ellipsis; /* オーバーフローしたテキストを省略記号で表示 */
     white-space: nowrap; /* テキストを折り返さない */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 1);
+}
+
+.freeword {
+    margin: 0.05em;
+    padding: 0.05em;
+    height: 100%;
+    width: 100%;
+    font-size: calc(1.2em + 1vw);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 1);
 }
 
 .ch_box_input:checked ~ .checkmark {
