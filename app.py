@@ -101,7 +101,7 @@ def index():
         count=count,
         linka = depander['linka'],
         fetcher = 'https://kurisyushien.org/api', #depander['fetcher'],
-        mode = 'nothose',
+        mode = 'toro',
     )
 
 #20240517144602  76E10b.203      ＧＳ科目        論理学と数学の基礎（数学的発想法）      金3     小原　功任    全学生（共通教育科目に係る卒業要件未充足の2年以上優先） 70      130     37      105     22   21       0
