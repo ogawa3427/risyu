@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/home/ogawa34/risyu/01seleniumer.py", line 19, in <module>
+    import  bs4
+ModuleNotFoundError: No module named 'bs4'

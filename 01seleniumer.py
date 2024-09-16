@@ -121,6 +121,10 @@ try:
         with open(os.path.join(csvs_directory, filename), 'w', newline='', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile, delimiter='\t')
             writer.writerows(filtered_tsv[2:])
+            
+        with open('output.tsv', 'w', newline='', encoding='utf-8') as csvfile:
+            writer = csv.writer(csvfile, delimiter='\t')
+            writer.writerows(filtered_tsv)
 
         for filtered_row in filtered_tsv[2:]:
             print(filtered_row)
