@@ -22,12 +22,12 @@ import  json
 
 from datetime import datetime
 
-target = 'https://eduweb.sta.kanazawa-u.ac.jp/portal/Public/Regist/RegistrationStatus.aspx?year=2024&lct_term_cd=12'
+target = 'https://eduweb.sta.kanazawa-u.ac.jp/portal/Public/Regist/RegistrationStatus.aspx?year=2024&lct_term_cd=21'
 args = sys.argv
 if len(args) > 1 and args[1] == 'test':
     target = 'https://ogawa3427.github.io/risyu-error_page/dummy.html'
 else:
-    target = 'https://eduweb.sta.kanazawa-u.ac.jp/portal/Public/Regist/RegistrationStatus.aspx?year=2024&lct_term_cd=12'
+    target = 'https://eduweb.sta.kanazawa-u.ac.jp/portal/Public/Regist/RegistrationStatus.aspx?year=2024&lct_term_cd=21'
 
 toggle = 0
 scptname = '01seleniumer'
@@ -128,7 +128,7 @@ try:
             filtered_row = date_str + '\t' + '\t'.join(filtered_row)
             with open(os.path.join(csvs_directory, ind_filename), 'a', newline='', encoding='utf-8') as csvfile:
                 csvfile.write(filtered_row + '\n')
-        time.sleep(45)
+        time.sleep(250)
 except:
     driver.quit()
     print('error')

@@ -15,7 +15,7 @@ qur = '2023q4.json'
 
 app.json.ensure_ascii = False
 
-csvs_directory = os.path.join(os.path.expanduser('~'), 'risyu', 'csvs')
+csvs_directory = os.path.join(os.path.expanduser('~'), 'risyu', 'rcsvs')
 
 count = 0
 
