@@ -32,8 +32,8 @@ else:
 toggle = 0
 scptname = '01seleniumer'
 
-try:
-    while True:
+while True:
+    try:
         options = Options()
         options.add_argument("--headless")
         webdriver_service = Service(ChromeDriverManager().install())
@@ -133,11 +133,12 @@ try:
             with open(os.path.join(csvs_directory, ind_filename), 'a', newline='', encoding='utf-8') as csvfile:
                 csvfile.write(filtered_row + '\n')
         time.sleep(250)
-except:
-    driver.quit()
-    print('error')
-    print(sys.exc_info())
-
+    except Exception as e:
+        driver.quit()
+        print('error')
+        print(e)
+        print(sys.exc_info())
+        continue
 try:
     while True:
         #os.mkdir('screenshots')
