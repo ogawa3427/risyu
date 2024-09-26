@@ -111,9 +111,9 @@ while True:
             tsv[i] = tsv[i].split('\t')
 
         datetime_obj = datetime.strptime(tsv[0][0], '%Y/%m/%d %H:%M:%S')
-        print(datetime_obj)
+        # print(datetime_obj)
         date_str = datetime_obj.strftime('%Y%m%d%H%M%S')
-        print(date_str)
+        # print(date_str)
 
         # 空の要素を含む行をフィルタリングして新しいリストを作成
         filtered_tsv = [row for row in tsv if any(cell.strip() for cell in row) or row[0] == '\"\"']
@@ -127,7 +127,7 @@ while True:
             writer.writerows(filtered_tsv)
 
         for filtered_row in filtered_tsv[2:]:
-            print(filtered_row)
+            # print(filtered_row)
             ind_filename = 'risyu' + filtered_row[0] + '.tsv'
             filtered_row = date_str + '\t' + '\t'.join(filtered_row)
             with open(os.path.join(csvs_directory, ind_filename), 'a', newline='', encoding='utf-8') as csvfile:
