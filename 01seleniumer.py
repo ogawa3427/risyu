@@ -103,7 +103,7 @@ while True:
                             data.append(col.text.strip().replace('\n', ' '))
                     writer.writerow(data)
 
-        print('success2')
+        print('success2 written output.tsv')
         with open('output.tsv', 'r', encoding='utf-8') as f:
             tsv = f.read()
         tsv = tsv.split('\n')
