@@ -19,6 +19,8 @@ counter.txt
 
 htmls/
 
+es/
+
 !static/css/styles.css
 !static/r.png
 !static/cookie_logic.js
