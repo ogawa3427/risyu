@@ -24,7 +24,7 @@ csvs_directory = os.path.join(os.getcwd(), 'csvs')
 while True:
     try:
         options = Options()
-        options.add_argument("--headless") # Ensure GUI is off. Remove this line if you want to see the browser navigating.
+        # options.add_argument("--headless") # Ensure GUI is off. Remove this line if you want to see the browser navigating.
         
         webdriver_service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=webdriver_service, options=options)
@@ -48,9 +48,11 @@ while True:
         
         driver.find_element(By.NAME, "_eventId_proceed").click()
                 
-        link = driver.find_element(By.LINK_TEXT, "アラーム確認完了")
-        link.click()
-        
+        try:
+            link = driver.find_element(By.LINK_TEXT, "アラーム確認完了")
+            link.click()
+        except:
+            pass
         element = driver.find_element(By.XPATH,"//a[span[text()='学務情報サービス']]")
         driver.execute_script("arguments[0].click();", element)
         
