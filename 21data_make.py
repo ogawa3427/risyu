@@ -53,7 +53,12 @@ while True:
             link.click()
         except:
             pass
-        element = driver.find_element(By.XPATH,"//a[span[text()='学務情報サービス']]")
+
+        # 明示的な待機を追加
+        wait = WebDriverWait(driver, 1)
+        element = wait.until(
+            EC.presence_of_element_located((By.XPATH, "//*[contains(text(), '学務情報サービス')]"))
+        )
         driver.execute_script("arguments[0].click();", element)
         
         all_handles = driver.window_handles
@@ -103,6 +108,7 @@ while True:
             all_handles = driver.window_handles
             driver.switch_to.window(all_handles[-1])
 
+            print(driver.page_source)  # 現在のページのHTMLを出力
 
             #02
             mode = 0
