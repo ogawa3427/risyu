@@ -15,6 +15,7 @@ import  requests
 import  os
 import  json
 import re
+import pytz
 
 toggle = 0
 scptname = '21data_make'
@@ -79,8 +80,9 @@ while True:
         #こんなことしかできない自分のことが大嫌いだ
         contents = contents.replace("月2,火2", "月2，火2")
 
-        # 現在時刻を取得
-        current_time = time.strftime("%Y/%m/%d %H:%M:%S")
+        # 現在時刻を取得（JST）
+        jst = pytz.timezone('Asia/Tokyo')
+        current_time = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(time.time() + 9 * 3600))
         valid_status = "valid"
 
         # TSVファイル用のデータを作成
