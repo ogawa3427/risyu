@@ -24,7 +24,7 @@ csvs_directory = os.path.join(os.getcwd(), 'csvs')
 while True:
     try:
         options = Options()
-        # options.add_argument("--headless") # Ensure GUI is off. Remove this line if you want to see the browser navigating.
+        options.add_argument("--headless") # Ensure GUI is off. Remove this line if you want to see the browser navigating.
         
         webdriver_service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=webdriver_service, options=options)
@@ -91,7 +91,7 @@ while True:
                 tsv_contents += line.replace(',', '\t') + '\n'
 
         # TSVファイルを保存
-        tsv_path = os.path.join(csvs_directory, 'output.tsv')
+        tsv_path = os.path.join('output.tsv')
         with open(tsv_path, 'w', encoding='utf-8') as file:
             file.write(tsv_contents)
 
