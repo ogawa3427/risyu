@@ -19,7 +19,7 @@ import  json
 import re
 
 toggle = 0
-scptname = '01seleniumer'
+scptname = 'table_s'
 
 data = {}
 
@@ -154,7 +154,7 @@ for fa in fas:
 
 
         # 年度を2024年度に設定
-        year_select.select_by_value("2024")
+        year_select.select_by_value("2025")
         print('year')
         driver.get_screenshot_as_file("screenshots4.png")
 
