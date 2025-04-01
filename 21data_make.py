@@ -79,6 +79,25 @@ while True:
         #こんなことしかできない自分のことが大嫌いだ
         contents = contents.replace("月2,火2", "月2，火2")
 
+        # 現在時刻を取得
+        current_time = time.strftime("%Y/%m/%d %H:%M:%S")
+        valid_status = "valid"
+
+        # TSVファイル用のデータを作成
+        tsv_contents = f"{current_time}\t{valid_status}\n"
+        tsv_contents += "時間割番号\t科目区分\t時間割名\t曜日時限\t教員名\t対象学生\t適正人数\t全登録数\t優先指定\t第１希望\t第２希望\t第３希望\t第４希望\t第５希望\n"
+        for line in contents.split('\n'):
+            if line.strip():
+                tsv_contents += line.replace(',', '\t') + '\n'
+
+        # TSVファイルを保存
+        tsv_path = os.path.join(csvs_directory, 'output.tsv')
+        with open(tsv_path, 'w', encoding='utf-8') as file:
+            file.write(tsv_contents)
+
+        print('TSV_made_successfully')
+        print(tsv_path)
+
         name = re.sub(r'<.*?>', '', name)
         name = re.sub(r'\t', '', name)
         name = re.sub(r'[ :\/]', '', name)
