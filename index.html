@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="ja" data-theme="dark">
+<script>
+  // テーマをちらつかせないよう最速で復元
+  (function() {
+    const t = localStorage.getItem('risyu-theme');
+    if (t) document.documentElement.dataset.theme = t;
+  })();
+</script>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>risyu</title>
+  <link rel="icon" href="/static/favicon.ico">
+  <style>
+    [data-theme="dark"] {
+      --bg:      #0b1020;
+      --bg2:     #0f172d;
+      --bg3:     #131e38;
+      --border:  #1e3055;
+      --text:    #d6e0ff;
+      --text2:   #7a90c0;
+      --accent:  #4a8fff;
+      --active-bg:   #1e3f80;
+      --active-text: #ffffff;
+      --active-border: #4a8fff;
+      --tag-gs-bg:    #1a3a14;
+      --tag-gs-text:  #7de87a;
+      --zero-text:    #ff7070;
+      --remain-text:  #7de87a;
+      --row-hover:    #101c35;
+    }
+    [data-theme="light"] {
+      --bg:      #f2f4f8;
+      --bg2:     #ffffff;
+      --bg3:     #e8ecf4;
+      --border:  #c8d4e8;
+      --text:    #1a2040;
+      --text2:   #5060a0;
+      --accent:  #1a5fff;
+      --active-bg:   #1a5fff;
+      --active-text: #ffffff;
+      --active-border: #0044cc;
+      --tag-gs-bg:    #d0f0cc;
+      --tag-gs-text:  #1a6018;
+      --zero-text:    #cc2222;
+      --remain-text:  #1a8018;
+      --row-hover:    #e0e8f8;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Control panel ── */
+    .ctrl {
+      flex-shrink: 0;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 14px 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      align-items: flex-start;
+    }
+
+    /* day/period grid */
+    .day-grid {
+      display: grid;
+      grid-template-columns: 1.5em repeat(5, 2em);
+      grid-template-rows: repeat(6, 1.9em);
+      gap: 3px;
+    }
+    .gc {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      user-select: none;
+      transition: background .1s, color .1s, border-color .1s;
+    }
+    .gc.corner { cursor: default; }
+    .gc.hdr {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      font-weight: 700;
+    }
+    .gc.body {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text2);
+    }
+    .gc.active {
+      background: var(--active-bg);
+      color: var(--active-text);
+      border-color: var(--active-border);
+    }
+    .gc:not(.corner):hover { filter: brightness(1.2); }
+
+    /* buttons & search */
+    .tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+    .btn {
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 5px 11px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all .1s;
+      white-space: nowrap;
+    }
+    .btn:hover { filter: brightness(1.15); }
+    .btn.active {
+      background: var(--active-bg);
+      color: var(--active-text);
+      border-color: var(--active-border);
+    }
+    input[type="text"] {
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 13px;
+      width: 200px;
+    }
+    input[type="text"]::placeholder { color: var(--text2); }
+    input[type="text"]:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+    /* status bar */
+    .status {
+      flex-basis: 100%;
+      font-size: 12px;
+      color: var(--text2);
+      display: flex;
+      gap: 12px;
+    }
+
+    /* ── Main / table ── */
+    main {
+      flex: 1;
+      overflow: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--bg2);
+    }
+    th {
+      padding: 7px 10px;
+      text-align: left;
+      color: var(--text2);
+      font-weight: 600;
+      font-size: 12px;
+      white-space: nowrap;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 6px 10px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    tr:hover td { background: var(--row-hover); }
+
+    .tag-gs {
+      display: inline-block;
+      background: var(--tag-gs-bg);
+      color: var(--tag-gs-text);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .tag-other {
+      display: inline-block;
+      color: var(--text2);
+      font-size: 11px;
+    }
+    .zero { color: var(--zero-text); font-weight: 700; }
+    .remain { color: var(--remain-text); font-weight: 700; }
+
+    .col-name { min-width: 180px; }
+    .col-jigen { white-space: nowrap; }
+
+    th[data-col] { cursor: pointer; }
+    th[data-col]:hover { color: var(--text); }
+
+    /* 折りたたみ中の列 */
+    th.col-collapsed {
+      width: 4px !important;
+      min-width: 4px !important;
+      max-width: 4px !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      background: var(--border) !important;
+      cursor: pointer !important;
+    }
+    td.col-collapsed {
+      width: 4px !important;
+      min-width: 4px !important;
+      max-width: 4px !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      white-space: nowrap !important;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--text2);
+      padding: 80px 20px;
+      font-size: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h1>新・risyu</h1>
+  <p>apiを使う開発者諸君、突然適当に仕様変えてすいません‼️</p>
+  <div class="ctrl">
+    <div class="day-grid" id="dayGrid"></div>
+    <div class="tools">
+      <button class="btn" id="btnChushin">集中</button>
+      <button class="btn" id="btnGS">GS のみ</button>
+      <input type="text" id="search" placeholder="フリーワード (Enter で絞り込み)">
+      <div style="flex-basis:100%;height:0"></div>
+      <button class="btn" id="btnTheme">ライトモード</button>
+      <button class="btn" id="btnReload">再読込</button>
+    </div>
+    <div class="status">
+      <span id="statusText">loading...</span>
+      <span id="countText"></span>
+      <span id="lastUpdate"></span>
+    </div>
+  </div>
+
+  <main>
+    <div id="tableWrap"></div>
+  </main>
+
+  <script>
+    const DAYS    = ['月', '火', '水', '木', '金'];
+    const PERIODS = [1, 2, 3, 4, 5];
+    const ENDPOINT = '/api';
+
+    let allRows      = [];
+    let headers      = [];
+    let selected     = new Set(); // "月1", "火3" など
+    let showChushin  = false;
+    let showGSOnly   = false;
+    let searchText   = '';
+    let collapsedCols = new Set(); // cols 配列上のインデックス (0-7)
+
+    // ── グリッド構築 ──
+    const grid = document.getElementById('dayGrid');
+
+    // corner
+    const corner = el('div', 'gc corner');
+    grid.appendChild(corner);
+
+    // day headers
+    DAYS.forEach(day => {
+      const c = el('div', 'gc hdr', day);
+      c.title = `${day}曜日でフィルター / Shift+クリックで追加`;
+      c.addEventListener('click', e => toggleDay(day, e.shiftKey));
+      grid.appendChild(c);
+    });
+
+    // period rows
+    PERIODS.forEach(p => {
+      const ph = el('div', 'gc hdr', String(p));
+      ph.title = `${p}限でフィルター / Shift+クリックで追加`;
+      ph.addEventListener('click', e => togglePeriod(p, e.shiftKey));
+      grid.appendChild(ph);
+
+      DAYS.forEach(day => {
+        const c = el('div', 'gc body');
+        c.dataset.key = day + p;
+        c.title = `${day}${p}でフィルター / Shift+クリックで追加`;
+        c.addEventListener('click', e => toggleCell(day + p, e.shiftKey));
+        grid.appendChild(c);
+      });
+    });
+
+    function el(tag, cls, text) {
+      const e = document.createElement(tag);
+      e.className = cls;
+      if (text != null) e.textContent = text;
+      return e;
+    }
+
+    // ── フィルタートグル ──
+    // shift=false: このキーのみに絞り込む (既に単独選択中ならクリアで全件)
+    // shift=true:  OR追加 / 解除
+    function toggleCell(key, shift) {
+      if (shift) {
+        selected.has(key) ? selected.delete(key) : selected.add(key);
+      } else {
+        const onlyThis = selected.size === 1 && selected.has(key);
+        selected.clear();
+        if (!onlyThis) selected.add(key);
+      }
+      syncGrid(); render();
+    }
+    function toggleDay(day, shift) {
+      const keys = PERIODS.map(p => day + p);
+      if (shift) {
+        const allOn = keys.every(k => selected.has(k));
+        keys.forEach(k => allOn ? selected.delete(k) : selected.add(k));
+      } else {
+        const onlyThis = keys.every(k => selected.has(k)) && selected.size === keys.length;
+        selected.clear();
+        if (!onlyThis) keys.forEach(k => selected.add(k));
+      }
+      syncGrid(); render();
+    }
+    function togglePeriod(p, shift) {
+      const keys = DAYS.map(d => d + p);
+      if (shift) {
+        const allOn = keys.every(k => selected.has(k));
+        keys.forEach(k => allOn ? selected.delete(k) : selected.add(k));
+      } else {
+        const onlyThis = keys.every(k => selected.has(k)) && selected.size === keys.length;
+        selected.clear();
+        if (!onlyThis) keys.forEach(k => selected.add(k));
+      }
+      syncGrid(); render();
+    }
+    function syncGrid() {
+      grid.querySelectorAll('.gc.body').forEach(c => {
+        c.classList.toggle('active', selected.has(c.dataset.key));
+      });
+      // day headers
+      DAYS.forEach((day, i) => {
+        const hdr = grid.querySelectorAll('.gc.hdr')[i + 1]; // +1 for skip period header in each row
+        const keys = PERIODS.map(p => day + p);
+        hdr.classList.toggle('active', keys.some(k => selected.has(k)));
+      });
+      // period headers
+      PERIODS.forEach((p, i) => {
+        // period headers are at positions: (i+1) rows * 6 cols => first element of each row after row0
+        const allHdrs = [...grid.querySelectorAll('.gc.hdr')];
+        // day headers: indices 1-5, period headers: 6, 12, 18, 24, 30 in the flat list
+        // simpler: find by text
+        allHdrs.forEach(h => {
+          if (h.textContent === String(p)) {
+            const keys = DAYS.map(d => d + p);
+            h.classList.toggle('active', keys.some(k => selected.has(k)));
+          }
+        });
+      });
+    }
+
+    // ── ボタン ──
+    document.getElementById('btnChushin').addEventListener('click', function() {
+      showChushin = !showChushin;
+      this.classList.toggle('active', showChushin);
+      render();
+    });
+    document.getElementById('btnGS').addEventListener('click', function() {
+      showGSOnly = !showGSOnly;
+      this.classList.toggle('active', showGSOnly);
+      render();
+    });
+    document.getElementById('search').addEventListener('keydown', e => {
+      if (e.key === 'Enter') { searchText = e.target.value.trim(); render(); }
+    });
+    // ── localStorage ──
+    const LS_THEME    = 'risyu-theme';
+    const LS_COLLAPSED = 'risyu-collapsed';
+
+    function savePrefs() {
+      localStorage.setItem(LS_THEME, document.documentElement.dataset.theme);
+      localStorage.setItem(LS_COLLAPSED, JSON.stringify([...collapsedCols]));
+    }
+    function loadPrefs() {
+      // テーマはインラインスクリプトで復元済み。ボタンのラベルだけ合わせる
+      const theme = document.documentElement.dataset.theme;
+      document.getElementById('btnTheme').textContent = theme === 'dark' ? 'ライトモード' : 'ダークモード';
+
+      const raw = localStorage.getItem(LS_COLLAPSED);
+      if (raw) {
+        try { JSON.parse(raw).forEach(i => collapsedCols.add(Number(i))); } catch (_) {}
+      }
+    }
+
+    document.getElementById('btnTheme').addEventListener('click', function() {
+      const html = document.documentElement;
+      const isDark = html.dataset.theme === 'dark';
+      html.dataset.theme = isDark ? 'light' : 'dark';
+      this.textContent = isDark ? 'ダークモード' : 'ライトモード';
+      savePrefs();
+    });
+    document.getElementById('btnReload').addEventListener('click', loadData);
+
+    // ── データ取得 ──
+    async function loadData() {
+      document.getElementById('statusText').textContent = 'loading...';
+      document.getElementById('countText').textContent = '';
+      try {
+        const res  = await fetch(ENDPOINT, { cache: 'no-store' });
+        const json = await res.json();
+        if (!json.ok) {
+          document.getElementById('statusText').textContent = `${json.reason || 'error'}: ${json.message || ''}`;
+          return;
+        }
+        const rows = json.rows || [];
+        if (rows.length < 2) {
+          document.getElementById('statusText').textContent = 'データなし';
+          return;
+        }
+        headers = rows[1];
+        allRows  = rows.slice(2);
+        document.getElementById('lastUpdate').textContent = `最終取得: ${rows[0]?.[0] ?? ''}`;
+        document.getElementById('statusText').textContent = json.reason || 'ok';
+        render();
+      } catch (e) {
+        document.getElementById('statusText').textContent = `エラー: ${e}`;
+      }
+    }
+
+    // ── フィルタリング ──
+    function applyFilters(rows) {
+      return rows.filter(row => {
+        const jigen = row[3] || '';
+        const kubun = row[1] || '';
+
+        // グリッド + 集中
+        const cellMatch    = selected.size > 0 && [...selected].some(k => jigen.includes(k));
+        const chushinMatch = showChushin && jigen === '集中';
+        if (selected.size > 0 || showChushin) {
+          if (!cellMatch && !chushinMatch) return false;
+        }
+
+        // GS のみ
+        if (showGSOnly && !kubun.includes('ＧＳ')) return false;
+
+        // フリーワード
+        if (searchText) {
+          const q = searchText.toLowerCase();
+          if (!row.join('\t').toLowerCase().includes(q)) return false;
+        }
+
+        return true;
+      });
+    }
+
+    // ── カラム折りたたみ ──
+    function toggleColCollapse(colIdx) {
+      collapsedCols.has(colIdx) ? collapsedCols.delete(colIdx) : collapsedCols.add(colIdx);
+      document.querySelectorAll(`[data-col="${colIdx}"]`).forEach(el => {
+        el.classList.toggle('col-collapsed', collapsedCols.has(colIdx));
+      });
+      savePrefs();
+    }
+
+    // ── 描画 ──
+    function render() {
+      const filtered = applyFilters(allRows);
+      document.getElementById('countText').textContent = `${filtered.length} 件`;
+
+      const wrap = document.getElementById('tableWrap');
+      if (filtered.length === 0) {
+        wrap.innerHTML = '<p class="empty">該当する授業がありません</p>';
+        return;
+      }
+
+      // ヘッダー名でインデックスを解決 (適正人数以降にカラムが増えても対応)
+      function hi(name) { return headers.indexOf(name); }
+      const SKIP = [];//['対象学生']; // 非表示にする列名
+      const cols = headers
+        .map((h, i) => ({ h, i }))
+        .filter(({ h }) => !SKIP.includes(h))
+        .map(({ i }) => i);
+
+      // 特定カラムの表示idx (存在しない場合 -1)
+      const iKubun  = hi('科目区分');
+      const iName   = hi('時間割名');
+      const iJigen  = hi('曜日時限');
+      const iZan    = hi('残数');
+
+      const table = document.createElement('table');
+
+      const thead = document.createElement('thead');
+      const thr   = document.createElement('tr');
+      cols.forEach((dataIdx, colIdx) => {
+        const th       = document.createElement('th');
+        const label    = headers[dataIdx] || '';
+        th.textContent = label;
+        th.dataset.col = colIdx;
+        th.title       = `${label} — クリックで折りたたみ / 展開`;
+        if (collapsedCols.has(colIdx)) th.classList.add('col-collapsed');
+        th.addEventListener('click', () => toggleColCollapse(colIdx));
+        thr.appendChild(th);
+      });
+      thead.appendChild(thr);
+      table.appendChild(thead);
+
+      const tbody = document.createElement('tbody');
+      filtered.forEach(row => {
+        const tr = document.createElement('tr');
+        cols.forEach((dataIdx, colIdx) => {
+          const td = document.createElement('td');
+          const v  = row[dataIdx] ?? '';
+          td.dataset.col = colIdx;
+          if (collapsedCols.has(colIdx)) td.classList.add('col-collapsed');
+
+          if (dataIdx === iKubun) {
+            const span = document.createElement('span');
+            if (v.includes('ＧＳ')) {
+              span.className   = 'tag-gs';
+              span.textContent = 'GS';
+            } else {
+              span.className   = 'tag-other';
+              span.textContent = v;
+            }
+            td.appendChild(span);
+          } else if (dataIdx === iName) {
+            td.classList.add('col-name');
+            td.textContent = v;
+          } else if (dataIdx === iJigen) {
+            td.classList.add('col-jigen');
+            td.textContent = v;
+          } else if (dataIdx === iZan) {
+            td.textContent = v;
+            td.classList.add(v === '0' ? 'zero' : 'remain');
+          } else {
+            td.textContent = v;
+          }
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+
+      wrap.innerHTML = '';
+      wrap.appendChild(table);
+    }
+
+    loadPrefs();
+    loadData();
+  </script>
+</body>
+</html>
