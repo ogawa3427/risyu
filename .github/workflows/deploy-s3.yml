@@ -1,0 +1,39 @@
+name: Deploy static to S3
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "index.html"
+      - "static/favicon.ico"
+      - ".github/workflows/deploy-s3.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Upload index.html
+        run: |
+          aws s3 cp "index.html" "s3://${{ secrets.S3_BUCKET }}/index.html" \
+            --content-type "text/html; charset=utf-8" \
+            --cache-control "no-cache, no-store, must-revalidate"
+
+      - name: Upload favicon
+        run: |
+          aws s3 cp "static/favicon.ico" "s3://${{ secrets.S3_BUCKET }}/static/favicon.ico" \
+            --content-type "image/x-icon" \
+            --cache-control "public, max-age=604800"
