@@ -355,7 +355,7 @@
       });
       // day headers
       DAYS.forEach((day, i) => {
-        const hdr = grid.querySelectorAll('.gc.hdr')[i + 1]; // +1 for skip period header in each row
+        const hdr = grid.querySelectorAll('.gc.hdr')[i];
         const keys = PERIODS.map(p => day + p);
         hdr.classList.toggle('active', keys.some(k => selected.has(k)));
       });
