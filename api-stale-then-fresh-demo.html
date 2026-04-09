@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>stale-then-fresh demo</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b1020;
+      --panel: #131d39;
+      --border: #2a3a6b;
+      --text: #deebff;
+      --sub: #9eb1da;
+      --ok: #7de87a;
+      --warn: #ffd072;
+      --bad: #ff8b8b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 16px;
+    }
+    h1 { margin: 0 0 12px; font-size: 18px; }
+    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+    button {
+      border: 1px solid var(--border);
+      background: #1b2a54;
+      color: var(--text);
+      border-radius: 8px;
+      padding: 7px 12px;
+      cursor: pointer;
+    }
+    button:hover { filter: brightness(1.1); }
+    .card {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+    }
+    .k { color: var(--sub); font-size: 12px; margin-bottom: 6px; }
+    .v { font-size: 14px; }
+    .ok { color: var(--ok); }
+    .warn { color: var(--warn); }
+    .bad { color: var(--bad); }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+    }
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 12px;
+      color: var(--sub);
+      line-height: 1.5;
+      max-height: 320px;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>stale-then-fresh 関数デモ</h1>
+  <div class="row">
+    <button id="runBtn">run staleThenFresh()</button>
+    <span id="status" class="v">待機中</span>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="k">initial（すぐ返す側）</div>
+      <pre id="initialOut">-</pre>
+    </div>
+    <div class="card">
+      <div class="k">updated（Promiseで後から返す側）</div>
+      <pre id="updatedOut">-</pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="k">実行ログ</div>
+    <pre id="logOut">-</pre>
+  </div>
+
+  <script>
+    const ENDPOINT = "/api";
+    const FALLBACK_DURATION_MS = 15000;
+    const COLDSTART_BUFFER_MS = 3000;
+    const FIRST_CHECK_RATIO = 0.8;
+    const CHECK_RETRY_DELAY_MS = 3000;
+    const MAX_CHECK_RETRY = 10;
+    const MAX_BACKOFF_MS = 30000;
+
+    const ui = {
+      runBtn: document.getElementById("runBtn"),
+      status: document.getElementById("status"),
+      initialOut: document.getElementById("initialOut"),
+      updatedOut: document.getElementById("updatedOut"),
+      logOut: document.getElementById("logOut"),
+    };
+
+    function log(msg) {
+      const now = new Date().toLocaleTimeString("ja-JP");
+      const old = ui.logOut.textContent === "-" ? "" : ui.logOut.textContent + "\n";
+      ui.logOut.textContent = old + "[" + now + "] " + msg;
+    }
+
+    function computeAvgDurationMs(recentRefreshes) {
+      const samples = (recentRefreshes || [])
+        .filter((r) => r.success)
+        .slice(0, 5)
+        .map((r) => r.durationMs)
+        .filter((v) => Number.isFinite(v) && v > 0);
+      if (samples.length === 0) return FALLBACK_DURATION_MS;
+      const sum = samples.reduce((a, b) => a + b, 0);
+      return Math.round(sum / samples.length);
+    }
+
+    function sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    async function fetchApiWithBackoff(endpoint, onLog) {
+      let backoffMs = 1000;
+      while (true) {
+        try {
+          const res = await fetch(endpoint, { cache: "no-store" });
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          return await res.json();
+        } catch (err) {
+          const waitMs = Math.min(backoffMs, MAX_BACKOFF_MS);
+          onLog("fetch失敗: " + String(err) + " / " + Math.ceil(waitMs / 1000) + "秒後に再試行");
+          await sleep(waitMs);
+          backoffMs = Math.min(backoffMs * 2, MAX_BACKOFF_MS);
+        }
+      }
+    }
+
+    function renderSnapshot(data) {
+      if (!data) return "-";
+      const rowsMeta = data.rows?.[0] || [];
+      return JSON.stringify({
+        reason: data.reason,
+        preparingNext: data.preparingNext,
+        currentCollectStartedAt: data.currentCollectStartedAt,
+        lastCollectAt: data.lastCollectAt,
+        metaRow: rowsMeta,
+        rowCount: data.rowCount,
+      }, null, 2);
+    }
+
+    async function staleThenFresh(options) {
+      const {
+        endpoint,
+        onInitial,
+        onProgress,
+      } = options;
+
+      const initial = await fetchApiWithBackoff(endpoint, onProgress);
+      onInitial(initial);
+
+      const initialLastCollectAt = initial.lastCollectAt;
+      if (!initial.ok) {
+        throw new Error("initial fetch failed: ok=false");
+      }
+      if (!initial.preparingNext) {
+        onProgress("preparingNext=false のため更新待機なし");
+        return { initial, updated: null };
+      }
+
+      const avgDurationMs = computeAvgDurationMs(initial.recentRefreshes);
+      const now = Date.now();
+      const predictedFinishAt = initial.currentCollectStartedAt
+        ? (new Date(initial.currentCollectStartedAt).getTime() + avgDurationMs)
+        : (now + avgDurationMs + COLDSTART_BUFFER_MS);
+      const waitMs = Math.max(predictedFinishAt - now, 1000);
+      const firstCheckWaitMs = Math.max(Math.floor(waitMs * FIRST_CHECK_RATIO), 1000);
+      onProgress("初回待機 " + Math.ceil(firstCheckWaitMs / 1000) + "秒");
+      await sleep(firstCheckWaitMs);
+
+      for (let i = 0; i <= MAX_CHECK_RETRY; i += 1) {
+        const next = await fetchApiWithBackoff(endpoint, onProgress);
+        if (next.lastCollectAt !== initialLastCollectAt) {
+          onProgress("更新検知: lastCollectAt changed");
+          return { initial, updated: next };
+        }
+        if (!next.preparingNext) {
+          onProgress("preparingNext=false で終了");
+          return { initial, updated: null };
+        }
+        if (i === MAX_CHECK_RETRY) {
+          onProgress("未更新のまま最大リトライ到達");
+          return { initial, updated: null };
+        }
+        onProgress("未更新。3秒後に再試行 (" + (i + 1) + "/" + MAX_CHECK_RETRY + ")");
+        await sleep(CHECK_RETRY_DELAY_MS);
+      }
+
+      return { initial, updated: null };
+    }
+
+    async function runDemo() {
+      ui.logOut.textContent = "-";
+      ui.initialOut.textContent = "-";
+      ui.updatedOut.textContent = "-";
+      ui.status.innerHTML = '<span class="warn">実行中</span>';
+      ui.runBtn.disabled = true;
+
+      try {
+        const resultPromise = staleThenFresh({
+          endpoint: ENDPOINT,
+          onInitial: (initial) => {
+            ui.initialOut.textContent = renderSnapshot(initial);
+            log("initial を先に表示");
+          },
+          onProgress: (m) => log(m),
+        });
+
+        // 呼び出し側から見た "future promise" 側
+        const result = await resultPromise;
+        if (result.updated) {
+          ui.updatedOut.textContent = renderSnapshot(result.updated);
+          ui.status.innerHTML = '<span class="ok">完了（updatedあり）</span>';
+        } else {
+          ui.updatedOut.textContent = "updatedなし（fresh返却 or 未更新終了）";
+          ui.status.innerHTML = '<span class="warn">完了（updatedなし）</span>';
+        }
+      } catch (err) {
+        ui.status.innerHTML = '<span class="bad">失敗</span>';
+        log("error: " + String(err));
+      } finally {
+        ui.runBtn.disabled = false;
+      }
+    }
+
+    ui.runBtn.addEventListener("click", runDemo);
+  </script>
+</body>
+</html>

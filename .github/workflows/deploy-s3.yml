@@ -5,6 +5,8 @@ on:
     branches: ["main"]
     paths:
       - "index.html"
+      - "api-viewer.html"
+      - "api-stale-then-fresh-demo.html"
       - "static/favicon.ico"
       - ".github/workflows/deploy-s3.yml"
   workflow_dispatch:
@@ -29,6 +31,18 @@ jobs:
       - name: Upload index.html
         run: |
           aws s3 cp "index.html" "s3://${{ secrets.S3_BUCKET }}/index.html" \
+            --content-type "text/html; charset=utf-8" \
+            --cache-control "no-cache, no-store, must-revalidate"
+
+      - name: Upload api-viewer.html
+        run: |
+          aws s3 cp "api-viewer.html" "s3://${{ secrets.S3_BUCKET }}/api-viewer.html" \
+            --content-type "text/html; charset=utf-8" \
+            --cache-control "no-cache, no-store, must-revalidate"
+
+      - name: Upload api-stale-then-fresh-demo.html
+        run: |
+          aws s3 cp "api-stale-then-fresh-demo.html" "s3://${{ secrets.S3_BUCKET }}/api-stale-then-fresh-demo.html" \
             --content-type "text/html; charset=utf-8" \
             --cache-control "no-cache, no-store, must-revalidate"
 

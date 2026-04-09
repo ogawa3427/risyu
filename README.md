@@ -1,6 +1,12 @@
 API部分は別のリポジトリに切り出して新しくしたくなってきた
 -> https://github.com/ogawa3427/risyu-api
 
+https://github.com/ogawa3427/risyu-api/blob/main/docs/memos/2026-04-09-client-reference-prompt.md
+これとかみてね  
+/api-viewer.htmlとか  
+/api-stale-then-fresh-demo.html とかもいいね  
+
+
 なんか全部めんどくさくなったんで作り直しました (・ω<)
 
 [kurisyushien.org](https://kurisyushien.org)

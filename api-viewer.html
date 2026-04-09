@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>API Viewer</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b1020;
+      --panel: #121a33;
+      --panel-2: #182245;
+      --border: #2a396b;
+      --text: #deebff;
+      --sub: #9fb2da;
+      --good: #7de87a;
+      --warn: #ffcc66;
+      --bad: #ff7f7f;
+      --accent: #63a3ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(11, 16, 32, 0.92);
+      backdrop-filter: blur(4px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 16px;
+    }
+    h1 { margin: 0 0 10px; font-size: 18px; }
+    .meta-grid {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      min-height: 74px;
+    }
+    .k {
+      color: var(--sub);
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+    .v {
+      font-size: 14px;
+      line-height: 1.35;
+      word-break: break-word;
+    }
+    .ok { color: var(--good); }
+    .warn { color: var(--warn); }
+    .bad { color: var(--bad); }
+    .refreshing-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--warn);
+      margin-right: 6px;
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 0.25; transform: scale(0.92); }
+      50% { opacity: 1; transform: scale(1.08); }
+      100% { opacity: 0.25; transform: scale(0.92); }
+    }
+    main {
+      padding: 14px 16px 20px;
+    }
+    .history {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 13px;
+      color: var(--sub);
+      max-height: 180px;
+      overflow: auto;
+    }
+    .controls {
+      margin: 0 0 12px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    button {
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    button:hover { filter: brightness(1.1); }
+    .small { color: var(--sub); font-size: 12px; }
+    .table-wrap {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: auto;
+      background: var(--panel);
+    }
+    .diagram-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .diagram {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+    }
+    .diagram-title {
+      font-size: 13px;
+      color: var(--sub);
+      margin-bottom: 8px;
+    }
+    .state-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+    .node {
+      border: 1px solid var(--border);
+      background: #152146;
+      color: var(--sub);
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-size: 12px;
+      line-height: 1.4;
+      transition: 0.15s;
+    }
+    .node.active {
+      border-color: var(--accent);
+      color: var(--text);
+      background: #244086;
+      box-shadow: 0 0 0 1px #3762c2 inset;
+    }
+    .arrow {
+      color: #7b8fc2;
+      font-size: 12px;
+    }
+    .now {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--text);
+    }
+    .explain {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+    }
+    .explain ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--sub);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .explain li + li {
+      margin-top: 4px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    thead th {
+      position: sticky;
+      top: 0;
+      background: #151f3f;
+      border-bottom: 2px solid var(--border);
+      text-align: left;
+      white-space: nowrap;
+      padding: 8px 10px;
+    }
+    tbody td {
+      border-bottom: 1px solid var(--border);
+      padding: 7px 10px;
+      white-space: nowrap;
+    }
+    tbody tr:hover td { background: #1a2750; }
+    .empty {
+      text-align: center;
+      color: var(--sub);
+      padding: 26px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>/api 自動更新ビューワー</h1>
+    <div class="meta-grid">
+      <div class="card">
+        <div class="k">状態</div>
+        <div class="v" id="stateText">初期化前</div>
+      </div>
+      <div class="card">
+        <div class="k">データ取得日時</div>
+        <div class="v" id="dataAt">-</div>
+      </div>
+      <div class="card">
+        <div class="k">予測残り時間</div>
+        <div class="v" id="countdownText">-</div>
+      </div>
+      <div class="card">
+        <div class="k">更新情報</div>
+        <div class="v" id="statusText">起動中</div>
+      </div>
+    </div>
+  </header>
+  <main>
+    <div class="controls">
+      <button id="manualFetch">今すぐ再取得</button>
+      <span class="small" id="collectInfo">collect: -</span>
+      <span class="small" id="rowInfo">rows: -</span>
+    </div>
+    <div class="diagram-grid">
+      <div class="diagram">
+        <div class="diagram-title">サーバー状態遷移（推定）</div>
+        <div class="state-line" id="serverStateLine">
+          <span class="node" data-server-state="booting">uninitiated / initializing</span>
+          <span class="arrow">→</span>
+          <span class="node" data-server-state="fresh">fresh</span>
+          <span class="arrow">→</span>
+          <span class="node" data-server-state="stale">stale(first)</span>
+          <span class="arrow">→</span>
+          <span class="node" data-server-state="refreshing">refreshing</span>
+          <span class="arrow">→</span>
+          <span class="node" data-server-state="fresh">fresh</span>
+        </div>
+        <div class="now" id="serverNow">現在: -</div>
+      </div>
+      <div class="diagram">
+        <div class="diagram-title">クライアント遷移</div>
+        <div class="state-line" id="clientStateLine">
+          <span class="node" data-client-state="initial_fetch">initial_fetch</span>
+          <span class="arrow">→</span>
+          <span class="node" data-client-state="waiting_prediction">waiting_prediction</span>
+          <span class="arrow">→</span>
+          <span class="node" data-client-state="predicted_check">predicted_check</span>
+          <span class="arrow">→</span>
+          <span class="node" data-client-state="retrying">retrying</span>
+          <span class="arrow">→</span>
+          <span class="node" data-client-state="stopped">stopped</span>
+        </div>
+        <div class="now" id="clientNow">現在: -</div>
+      </div>
+    </div>
+    <div class="explain">
+      <div class="k">この画面の見方</div>
+      <ul>
+        <li>ページ読み込み直後は、まず古くてもいったんデータを表示し、その後に最新データへ差し替える挙動です。</li>
+        <li><strong>uninitiated / initializing</strong>: 初回起動フェーズ。TSVが未準備なので待機するしかありません。</li>
+        <li><strong>fresh</strong>: 十分新しいキャッシュを返している状態。現時点ではそのまま利用して問題ありません。</li>
+        <li><strong>stale(first)</strong>: バックエンドが次の更新準備を開始した直後。今表示中データが古いことは確定で、更新完了待ちです。</li>
+        <li><strong>refreshing</strong>: 実スクレイピング実行中。完了後に <code>lastCollectAt</code> 変化を検知して表示を差し替えます。</li>
+      </ul>
+    </div>
+    <div class="card" style="margin-bottom: 12px;">
+      <div class="k">直近更新履歴</div>
+      <ol class="history" id="historyList"></ol>
+    </div>
+    <div class="table-wrap" id="tableWrap">
+      <div class="empty">データ待機中</div>
+    </div>
+  </main>
+
+  <script>
+    const ENDPOINT = "/api";
+    const FALLBACK_DURATION_MS = 15000;
+    const COLDSTART_BUFFER_MS = 3000;
+    const CHECK_RETRY_DELAY_MS = 3000;
+    const MAX_CHECK_RETRY = 10;
+    const MAX_BACKOFF_MS = 30000;
+    const FIRST_CHECK_RATIO = 0.8;
+
+    const el = {
+      stateText: document.getElementById("stateText"),
+      dataAt: document.getElementById("dataAt"),
+      countdownText: document.getElementById("countdownText"),
+      statusText: document.getElementById("statusText"),
+      collectInfo: document.getElementById("collectInfo"),
+      rowInfo: document.getElementById("rowInfo"),
+      historyList: document.getElementById("historyList"),
+      tableWrap: document.getElementById("tableWrap"),
+      manualFetch: document.getElementById("manualFetch"),
+      serverNow: document.getElementById("serverNow"),
+      clientNow: document.getElementById("clientNow"),
+    };
+
+    const state = {
+      lastCollectAt: null,
+      predictedFinishAtMs: null,
+      retryCheckCount: 0,
+      requestBackoffMs: 1000,
+      clientState: "initial_fetch",
+      serverState: "booting",
+      timers: {
+        refetch: null,
+        countdown: null,
+      },
+    };
+
+    function clearTimer(name) {
+      if (state.timers[name] !== null) {
+        clearTimeout(state.timers[name]);
+        clearInterval(state.timers[name]);
+        state.timers[name] = null;
+      }
+    }
+
+    function clearAllTimers() {
+      clearTimer("refetch");
+      clearTimer("countdown");
+    }
+
+    function formatMsAsSec(ms) {
+      const sec = Math.max(0, Math.ceil(ms / 1000));
+      return sec + "秒";
+    }
+
+    function safeTime(iso) {
+      if (!iso) return "-";
+      const d = new Date(iso);
+      return Number.isNaN(d.getTime()) ? iso : d.toLocaleString("ja-JP");
+    }
+
+    function setStateLabel(json) {
+      const parts = [];
+      if (json.preparingNext) {
+        parts.push('<span class="refreshing-dot"></span>更新準備中');
+      } else {
+        parts.push('<span class="ok">待機中</span>');
+      }
+      parts.push("reason=" + (json.reason || "-"));
+      if (json.reason === "initializing") {
+        parts.push('<span class="warn">初期化中</span>');
+      }
+      el.stateText.innerHTML = parts.join(" / ");
+    }
+
+    function renderHistory(recentRefreshes) {
+      const list = recentRefreshes || [];
+      if (list.length === 0) {
+        el.historyList.innerHTML = "<li>履歴なし</li>";
+        return;
+      }
+      el.historyList.innerHTML = list.map((r) => {
+        const sec = (r.durationMs / 1000).toFixed(1);
+        const klass = r.success ? "ok" : "bad";
+        return "<li><span class=\"" + klass + "\">" + sec + "s / " + (r.success ? "success" : "failed") + "</span> (" + safeTime(r.startedAt) + " → " + safeTime(r.finishedAt) + ")</li>";
+      }).join("");
+    }
+
+    function renderTable(rows) {
+      if (!rows || rows.length < 2) {
+        el.tableWrap.innerHTML = '<div class="empty">有効な rows がありません</div>';
+        return;
+      }
+
+      const headers = rows[1] || [];
+      const dataRows = rows.slice(2);
+      if (headers.length === 0) {
+        el.tableWrap.innerHTML = '<div class="empty">ヘッダーがありません</div>';
+        return;
+      }
+
+      let html = "<table><thead><tr>";
+      for (const h of headers) html += "<th>" + escapeHtml(String(h ?? "")) + "</th>";
+      html += "</tr></thead><tbody>";
+
+      if (dataRows.length === 0) {
+        html += '<tr><td colspan="' + headers.length + '" class="empty">データ行なし</td></tr>';
+      } else {
+        for (const row of dataRows) {
+          html += "<tr>";
+          for (let i = 0; i < headers.length; i += 1) {
+            html += "<td>" + escapeHtml(String(row?.[i] ?? "")) + "</td>";
+          }
+          html += "</tr>";
+        }
+      }
+
+      html += "</tbody></table>";
+      el.tableWrap.innerHTML = html;
+    }
+
+    function escapeHtml(s) {
+      return s
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function computeAvgDurationMs(recentRefreshes) {
+      const samples = (recentRefreshes || []).filter((r) => r.success).slice(0, 5).map((r) => r.durationMs).filter((v) => Number.isFinite(v) && v > 0);
+      if (samples.length === 0) return FALLBACK_DURATION_MS;
+      const sum = samples.reduce((a, b) => a + b, 0);
+      return Math.round(sum / samples.length);
+    }
+
+    function updateCountdownDisplay() {
+      if (state.predictedFinishAtMs == null) {
+        el.countdownText.textContent = "-";
+        return;
+      }
+      const remain = state.predictedFinishAtMs - Date.now();
+      el.countdownText.textContent = formatMsAsSec(remain);
+    }
+
+    function startCountdown(predictedFinishAtMs) {
+      clearTimer("countdown");
+      state.predictedFinishAtMs = predictedFinishAtMs;
+      updateCountdownDisplay();
+      state.timers.countdown = setInterval(updateCountdownDisplay, 1000);
+    }
+
+    function stopAutoUpdate(reasonText) {
+      clearAllTimers();
+      state.predictedFinishAtMs = null;
+      state.retryCheckCount = 0;
+      setClientState("stopped", reasonText || "自動更新停止");
+      if (reasonText) {
+        el.statusText.textContent = reasonText;
+      }
+      el.countdownText.textContent = "-";
+    }
+
+    function scheduleRefetch(waitMs, nextAction) {
+      clearTimer("refetch");
+      state.timers.refetch = setTimeout(nextAction, waitMs);
+    }
+
+    async function fetchApiWithBackoff() {
+      while (true) {
+        try {
+          const res = await fetch(ENDPOINT, { cache: "no-store" });
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          const json = await res.json();
+          state.requestBackoffMs = 1000;
+          return json;
+        } catch (err) {
+          const waitMs = Math.min(state.requestBackoffMs, MAX_BACKOFF_MS);
+          el.statusText.innerHTML = '<span class="bad">fetch失敗</span>: ' + escapeHtml(String(err)) + " / " + formatMsAsSec(waitMs) + " 後に再試行";
+          await sleep(waitMs);
+          state.requestBackoffMs = Math.min(state.requestBackoffMs * 2, MAX_BACKOFF_MS);
+        }
+      }
+    }
+
+    function sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    function setClientState(clientState, detail) {
+      state.clientState = clientState;
+      document.querySelectorAll("[data-client-state]").forEach((n) => {
+        n.classList.toggle("active", n.dataset.clientState === clientState);
+      });
+      el.clientNow.textContent = "現在: " + clientState + (detail ? " / " + detail : "");
+    }
+
+    function estimateServerState(json) {
+      if (json.reason === "initializing") {
+        return "booting";
+      }
+      if (json.reason === "cached" && json.preparingNext === false && json.currentCollectStartedAt == null) {
+        return "fresh";
+      }
+      if (json.reason === "refreshing_in_background" && json.preparingNext === true && json.currentCollectStartedAt == null) {
+        return "stale";
+      }
+      if (json.reason === "refreshing_in_background" && json.preparingNext === true && !!json.currentCollectStartedAt) {
+        return "refreshing";
+      }
+      return "booting";
+    }
+
+    function setServerState(serverState, detail) {
+      state.serverState = serverState;
+      document.querySelectorAll("[data-server-state]").forEach((n) => {
+        n.classList.toggle("active", n.dataset.serverState === serverState);
+      });
+      el.serverNow.textContent = "現在: " + serverState + (detail ? " / " + detail : "");
+    }
+
+    async function refreshNow(source) {
+      if (source === "initial") setClientState("initial_fetch", "初回取得");
+      if (source === "manual") setClientState("initial_fetch", "手動再取得");
+      if (source === "predictedCheck") setClientState("predicted_check", "予測時刻チェック");
+
+      const previousLastCollectAt = state.lastCollectAt;
+      const json = await fetchApiWithBackoff();
+      setServerState(estimateServerState(json), "reason=" + (json.reason || "-"));
+
+      setStateLabel(json);
+      renderHistory(json.recentRefreshes);
+      renderTable(json.rows || []);
+
+      const dataTimestamp = json.rows?.[0]?.[0] || "-";
+      el.dataAt.textContent = dataTimestamp;
+      el.collectInfo.textContent = "currentCollectStartedAt: " + safeTime(json.currentCollectStartedAt);
+      el.rowInfo.textContent = "rowCount: " + (json.rowCount ?? "-");
+
+      if (!json.ok) {
+        el.statusText.textContent = "ok=false: " + (json.reason || "") + " " + (json.message || "");
+        return;
+      }
+
+      const changed = previousLastCollectAt !== null && json.lastCollectAt !== previousLastCollectAt;
+      state.lastCollectAt = json.lastCollectAt;
+
+      if (json.preparingNext) {
+        const avgDurationMs = computeAvgDurationMs(json.recentRefreshes);
+        const now = Date.now();
+        let predictedFinishAt;
+
+        if (json.currentCollectStartedAt) {
+          predictedFinishAt = new Date(json.currentCollectStartedAt).getTime() + avgDurationMs;
+        } else {
+          predictedFinishAt = now + avgDurationMs + COLDSTART_BUFFER_MS;
+        }
+
+        const waitMs = Math.max(predictedFinishAt - now, 1000);
+        startCountdown(predictedFinishAt);
+
+        if (source === "predictedCheck" && !changed) {
+          state.retryCheckCount += 1;
+          if (state.retryCheckCount <= MAX_CHECK_RETRY) {
+            setClientState("retrying", "未更新のため3秒再試行");
+            el.statusText.textContent = "未更新。3秒後に再確認 (" + state.retryCheckCount + "/" + MAX_CHECK_RETRY + ")";
+            state.predictedFinishAtMs = Date.now() + CHECK_RETRY_DELAY_MS;
+            updateCountdownDisplay();
+            scheduleRefetch(CHECK_RETRY_DELAY_MS, () => refreshNow("predictedCheck"));
+          } else {
+            el.statusText.textContent = "未更新が続いたため監視を打ち切り。手動更新してくれ";
+            stopAutoUpdate();
+          }
+        } else {
+          state.retryCheckCount = 0;
+          setClientState("waiting_prediction", "次の予測時刻まで待機");
+          el.statusText.textContent = changed
+            ? "更新検知。表示を差し替え"
+            : (json.message || "次回更新を待機中");
+          const firstCheckWaitMs = Math.max(Math.floor(waitMs * FIRST_CHECK_RATIO), 1000);
+          state.predictedFinishAtMs = Date.now() + firstCheckWaitMs;
+          updateCountdownDisplay();
+          scheduleRefetch(firstCheckWaitMs, () => refreshNow("predictedCheck"));
+        }
+      } else {
+        stopAutoUpdate("preparingNext=false。自動更新停止");
+      }
+
+      if (json.reason === "initializing") {
+        el.statusText.textContent = "初期化中。バックグラウンドの準備完了を待機";
+        if (!json.preparingNext) {
+          state.predictedFinishAtMs = Date.now() + 3000;
+          updateCountdownDisplay();
+          scheduleRefetch(3000, () => refreshNow("predictedCheck"));
+        }
+      }
+    }
+
+    el.manualFetch.addEventListener("click", () => {
+      stopAutoUpdate();
+      refreshNow("manual");
+    });
+
+    refreshNow("initial");
+  </script>
+</body>
+</html>
